@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-accent: var(--accent);
+  --color-mnemonic: var(--mnemonic);
+  --color-hairline: var(--hairline);
+
+  --font-fraunces: "Fraunces", serif;
+  --font-inter: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+@layer base {
+  :root {
+    --ink-900: #14120F;
+    --ink-800: #1F1C17;
+    --paper-100: #F1EBDD;
+    --paper-050: #FAF6EC;
+    --paper-muted: #A69C87;
+    --brass-500: #C9A15A;
+    --brass-600: #A87F3E;
+    --oxblood-500: #7A2E2E;
+    --oxblood-400: #9C4A4A;
+  }
+
+  [data-theme="light"] {
+    --bg: var(--paper-050);
+    --surface: #F1EAD9;
+    --text-primary: #211D17;
+    --text-secondary: #6B6255;
+    --accent: var(--brass-600);
+    --mnemonic: var(--oxblood-500);
+    --hairline: rgba(33,29,23,0.12);
+  }
+
+  [data-theme="dark"], :root {
+    --bg: var(--ink-900);
+    --surface: var(--ink-800);
+    --text-primary: var(--paper-100);
+    --text-secondary: var(--paper-muted);
+    --accent: var(--brass-500);
+    --mnemonic: var(--oxblood-400);
+    --hairline: rgba(241,235,221,0.14);
+  }
+
+  body {
+    @apply bg-bg text-text-primary font-inter min-h-screen transition-colors duration-200 ease-in-out;
+  }
+}

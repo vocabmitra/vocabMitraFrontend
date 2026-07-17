@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vocabulary Vault — Design Direction: The Reading Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink-900: #14120F;
+    --ink-800: #1F1C17;
+    --paper-100: #F1EBDD;
+    --paper-050: #FAF6EC;
+    --paper-muted: #A69C87;
+    --brass-500: #C9A15A;
+    --brass-600: #A87F3E;
+    --oxblood-500: #7A2E2E;
+    --oxblood-400: #9C4A4A;
+    --sage-500: #7C9070;
+    --hairline: rgba(241,235,221,0.14);
+  }
+
+  [data-theme="light"] {
+    --bg: var(--paper-050);
+    --surface: #F1EAD9;
+    --text-primary: #211D17;
+    --text-secondary: #6B6255;
+    --accent: var(--brass-600);
+    --mnemonic: var(--oxblood-500);
+    --hairline: rgba(33,29,23,0.12);
+  }
+
+  [data-theme="dark"] {
+    --bg: var(--ink-900);
+    --surface: var(--ink-800);
+    --text-primary: var(--paper-100);
+    --text-secondary: var(--paper-muted);
+    --accent: var(--brass-500);
+    --mnemonic: var(--oxblood-400);
+    --hairline: rgba(241,235,221,0.14);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    transition: background 0.25s ease, color 0.25s ease;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 56px;
+  }
+  .wordmark {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .wordmark span { color: var(--accent); font-style: italic; }
+
+  .toggle {
+    border: 1px solid var(--hairline);
+    background: transparent;
+    color: var(--text-secondary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+
+  .entry {
+    border-top: 1px solid var(--hairline);
+    padding-top: 40px;
+  }
+
+  .headword-row {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .headword {
+    font-family: 'Fraunces', serif;
+    font-size: 56px;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    padding: 2px 8px;
+  }
+  .phonetic {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+  }
+
+  .meaning {
+    font-size: 19px;
+    line-height: 1.6;
+    max-width: 46ch;
+    margin-bottom: 32px;
+  }
+  .meaning::before {
+    content: "1. ";
+    color: var(--text-secondary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+  }
+
+  .marginnote {
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 32px;
+    max-width: 50ch;
+  }
+  .marginnote::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    background: var(--mnemonic);
+  }
+  .marginnote-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mnemonic);
+    margin-bottom: 6px;
+  }
+  .marginnote-text {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  .citation {
+    border-left: 1px solid var(--hairline);
+    padding-left: 18px;
+    font-size: 15px;
+    color: var(--text-secondary);
+    font-style: italic;
+    max-width: 50ch;
+  }
+  .citation span {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 8px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+  }
+
+  .divider-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin: 48px 0 18px;
+  }
+
+  .card-catalog {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--hairline);
+    border: 1px solid var(--hairline);
+  }
+  .catalog-card {
+    background: var(--bg);
+    padding: 20px 22px;
+    cursor: pointer;
+  }
+  .catalog-card:hover { background: var(--surface); }
+  .catalog-term {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .catalog-meaning {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+  .catalog-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+  }
+
+  .save-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 40px;
+  }
+  .save-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 10px 18px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .save-btn:hover { background: var(--accent); color: var(--bg); }
+  .save-hint { font-size: 12px; color: var(--text-secondary); }
+</style>
+</head>
+<body data-theme="dark">
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="wordmark">vocabulary <span>vault</span></div>
+    <button class="toggle" onclick="toggleTheme()">☾ / ☀ &nbsp;toggle mode</button>
+  </div>
+
+  <div class="eyebrow">Word of the day · UPSC</div>
+
+  <div class="entry">
+    <div class="headword-row">
+      <div class="headword">Alleviate</div>
+      <div class="tag">upsc</div>
+    </div>
+    <div class="phonetic">/əˈliːvieɪt/ &nbsp;·&nbsp; verb</div>
+
+    <div class="meaning">To make suffering, deficiency, or a problem less severe.</div>
+
+    <div class="marginnote">
+      <div class="marginnote-label">Mnemonic</div>
+      <div class="marginnote-text">"Ali ne vaaty kr ke pain kam kr diya" — Ali turns down the valve, and the pain eases.</div>
+    </div>
+
+    <div class="citation">
+      "The new policy is expected to alleviate congestion in the old quarter."
+      <span>Example usage</span>
+    </div>
+
+    <div class="save-row">
+      <button class="save-btn">+ save to my vault</button>
+      <span class="save-hint">Requires an account</span>
+    </div>
+  </div>
+
+  <div class="divider-label">Browse · UPSC</div>
+  <div class="card-catalog">
+    <div class="catalog-card">
+      <div class="catalog-term">Benevolent</div>
+      <div class="catalog-meaning">Kind and generous</div>
+      <div class="catalog-tag">upsc</div>
+    </div>
+    <div class="catalog-card">
+      <div class="catalog-term">Malevolent</div>
+      <div class="catalog-meaning">Wishing harm to others</div>
+      <div class="catalog-tag">upsc</div>
+    </div>
+    <div class="catalog-card">
+      <div class="catalog-term">Scrutinize</div>
+      <div class="catalog-meaning">Examine closely</div>
+      <div class="catalog-tag">upsc</div>
+    </div>
+    <div class="catalog-card">
+      <div class="catalog-term">Magnanimous</div>
+      <div class="catalog-meaning">Generous and forgiving</div>
+      <div class="catalog-tag">upsc</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function toggleTheme() {
+    const html = document.body;
+    const current = html.getAttribute('data-theme');
+    html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+  }
+</script>
+</body>
+</html>
