@@ -1,1 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
+@import "./styles/globals.css";
+
+@theme {
+  --color-cream: var(--cream);
+  --color-cream-card: var(--cream-card);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+
+  --color-gre: var(--gre);
+  --color-upsc: var(--upsc);
+  --color-cat: var(--cat);
+  --color-ssc: var(--ssc);
+  --color-cuet: var(--cuet);
+
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+
+  --font-bricolage: "Bricolage Grotesque", sans-serif;
+  --font-inter: "Inter", sans-serif;
+  --font-space: "Space Mono", monospace;
+
+  --animate-pop-in: popIn 0.5s var(--ease) forwards;
+  --animate-fade-up: fadeUp 0.8s var(--ease) forwards;
+  --animate-float: floaty 6s ease-in-out infinite;
+  --animate-toast-in: toastIn 0.3s var(--ease) forwards;
+  --animate-toast-out: toastOut 0.3s var(--ease) forwards;
+  --animate-modal-in: modalIn 0.4s var(--ease) forwards;
+}
+
+.outline-black {
+  outline: 1px solid #000;
+}

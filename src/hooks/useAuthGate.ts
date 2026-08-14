@@ -1,27 +1,25 @@
-import { useAuthStore } from '@/store/useAuthStore';
-import { useUIStore } from '@/store/useUIStore';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../store/useAuthStore';
 
-let pendingAction: (() => void) | null = null;
+/**
+ * useAuthGate — exact pattern from spec Section 6.
+ *
+ * Returns a `requireAuth` function that:
+ * - Runs the action immediately if the user is authenticated
+ * - Redirects to the /auth page if not
+ *
+ * Rule: browsing is always public.
+ * Only bookmark and mark-as-learned go through requireAuth.
+ */
+export function useAuthGate() {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const navigate = useNavigate();
 
-export const useAuthGate = () => {
-  const { isAuthenticated } = useAuthStore();
-  const { openAuthModal } = useUIStore();
-
-  const requireAuth = (action: () => void) => {
+  return function requireAuth(action: () => void) {
     if (isAuthenticated) {
       action();
     } else {
-      pendingAction = action;
-      openAuthModal('login');
+      navigate('/auth');
     }
   };
-
-  const executePendingAction = () => {
-    if (pendingAction) {
-      pendingAction();
-      pendingAction = null;
-    }
-  };
-
-  return { requireAuth, executePendingAction };
-};
+}

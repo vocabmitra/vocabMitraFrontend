@@ -1,16 +1,49 @@
-import { AppError } from '@/types';
+import axios from 'axios';
 import { ERROR_MESSAGES } from './errorMessages';
 
-export function normalizeError(error: any): AppError {
-  console.error('[Error Details]:', error);
+export interface AppError {
+  message: string;
+  code?: string;
+}
 
-  const code = error?.response?.data?.error?.code || error?.code || 'DEFAULT';
-  const friendlyMessage = ERROR_MESSAGES[code] || ERROR_MESSAGES.DEFAULT;
+/**
+ * Normalize any thrown error into a safe AppError.
+ * - Logs raw backend payload to console for debugging
+ * - Returns ONLY a friendly user-facing message
+ * - Components MUST NEVER receive or render error.response.data.error.message directly
+ */
+export function normalizeError(error: unknown): AppError {
+  // Network error (no response received)
+  if (axios.isAxiosError(error)) {
+    if (!error.response) {
+      console.error('[API Network Error]', error.message);
+      return { message: ERROR_MESSAGES.NETWORK_ERROR, code: 'NETWORK_ERROR' };
+    }
 
-  const appError = new Error(friendlyMessage) as AppError;
-  appError.code = code;
-  appError.friendlyMessage = friendlyMessage;
-  appError.originalError = error;
+    // Server returned an error response
+    const status = error.response.status;
+    const payload = error.response.data;
 
-  return appError;
+    // Log raw payload for debugging — never shown to user
+    console.error(`[API Error ${status}]`, payload);
+
+    // Try to extract backend error code from confirmed envelope
+    const backendCode: string | undefined =
+      payload?.error?.code ?? payload?.code ?? undefined;
+
+    if (backendCode && ERROR_MESSAGES[backendCode]) {
+      return { message: ERROR_MESSAGES[backendCode], code: backendCode };
+    }
+
+    // HTTP status fallbacks
+    if (status === 401) return { message: ERROR_MESSAGES.AUTH_UNAUTHORIZED, code: 'AUTH_UNAUTHORIZED' };
+    if (status === 404) return { message: ERROR_MESSAGES.VOCAB_NOT_FOUND, code: 'VOCAB_NOT_FOUND' };
+    if (status >= 500) return { message: ERROR_MESSAGES.SERVER_ERROR, code: 'SERVER_ERROR' };
+
+    return { message: ERROR_MESSAGES.DEFAULT, code: 'DEFAULT' };
+  }
+
+  // Non-Axios errors
+  console.error('[Unexpected Error]', error);
+  return { message: ERROR_MESSAGES.DEFAULT, code: 'DEFAULT' };
 }

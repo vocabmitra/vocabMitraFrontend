@@ -1,6 +1,17 @@
 export const ERROR_MESSAGES: Record<string, string> = {
-  MOCK_ERROR: 'Simulated failure occurred. Please try again.',
-  UNAUTHORIZED: 'You need to log in to perform this action.',
-  NOT_FOUND: 'The requested resource was not found.',
-  DEFAULT: 'An unexpected error occurred.',
+  // Auth errors
+  AUTH_INVALID_CREDENTIALS: "That email or password doesn't match our records.",
+  AUTH_EMAIL_TAKEN: 'An account with this email already exists.',
+  AUTH_USERNAME_TAKEN: 'That username is already taken.',
+  AUTH_UNAUTHORIZED: 'You need to log in to do that.',
+
+  // Vocab errors
+  VOCAB_NOT_FOUND: "That word doesn't seem to exist anymore.",
+
+  // Network / server errors
+  NETWORK_ERROR: "Can't reach the server. Check your connection and try again.",
+  SERVER_ERROR: 'Something went wrong on our end. Please try again.',
+
+  // Fallback
+  DEFAULT: 'Something went wrong on our end. Please try again.',
 };

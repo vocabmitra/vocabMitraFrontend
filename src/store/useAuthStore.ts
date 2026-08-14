@@ -1,46 +1,43 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { mockAuthApi } from '@/api/mock/mockAuth.api';
-import { User } from '@/types';
-import { normalizeError } from '@/utils/errorHandler';
+import type { AuthUser } from '../types';
+import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from '../utils/constants';
 
-interface AuthState {
-  user: User | null;
+interface AuthStore {
+  user: AuthUser | null;
+  token: string | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string) => Promise<void>;
+  login: (user: AuthUser, token: string) => void;
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>()(
+export const useAuthStore = create<AuthStore>()(
   persist(
     (set) => ({
       user: null,
+      token: null,
       isAuthenticated: false,
-      isLoading: false,
-      login: async (email, password) => {
-        set({ isLoading: true });
-        try {
-          const user = await mockAuthApi.login(email, password);
-          set({ user, isAuthenticated: true, isLoading: false });
-        } catch (err) {
-          set({ isLoading: false });
-          throw normalizeError(err);
-        }
+
+      login: (user, token) => {
+        localStorage.setItem(AUTH_TOKEN_KEY, token);
+        localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
+        set({ user, token, isAuthenticated: true });
       },
-      signup: async (email, password) => {
-        set({ isLoading: true });
-        try {
-          const user = await mockAuthApi.signup(email, password);
-          set({ user, isAuthenticated: true, isLoading: false });
-        } catch (err) {
-          set({ isLoading: false });
-          throw normalizeError(err);
-        }
+
+      logout: () => {
+        localStorage.removeItem(AUTH_TOKEN_KEY);
+        localStorage.removeItem(AUTH_USER_KEY);
+        set({ user: null, token: null, isAuthenticated: false });
       },
-      logout: () => set({ user: null, isAuthenticated: false }),
     }),
-    { name: 'vocab-vault-auth' }
+    {
+      name: 'vv-auth',
+      // Only persist user + isAuthenticated, not token (token is in its own localStorage key for axiosInstance)
+      partialize: (state) => ({
+        user: state.user,
+        isAuthenticated: state.isAuthenticated,
+        token: state.token,
+      }),
+    }
   )
 );

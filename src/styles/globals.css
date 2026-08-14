@@ -1,53 +1,238 @@
-@import "tailwindcss";
+/* ==========================================================================
+   Vocabulary Vault — Joyful Design System
+   globals.css — CSS custom properties, keyframes, base resets
+   ========================================================================== */
 
-@theme {
-  --color-bg: var(--bg);
-  --color-surface: var(--surface);
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-accent: var(--accent);
-  --color-mnemonic: var(--mnemonic);
-  --color-hairline: var(--hairline);
+/* --------------------------------------------------------------------------
+   Design Tokens — Light Mode (default)
+   -------------------------------------------------------------------------- */
+:root {
+  --cream: #FDF8F0;
+  --cream-card: #FFFFFF;
+  --ink: #211D17;
+  --ink-soft: #6B6255;
+  --line: rgba(33, 29, 23, 0.10);
 
-  --font-fraunces: "Fraunces", serif;
-  --font-inter: "Inter", sans-serif;
-  --font-mono: "IBM Plex Mono", monospace;
+  /* Brand / Tag Colors */
+  --gre: #5B7FDE;
+  --upsc: #E8734A;
+  --cat: #3FA66B;
+  --ssc: #D64B7C;
+  --cuet: #9B6FD9;
+
+  /* For elements that don't match specific tags, fallback to upsc orange as primary accent */
+  --accent: var(--upsc);
+  --accent-ink: #FFFFFF;
+
+  /* Motion easing */
+  --ease: cubic-bezier(0.34, 1.3, 0.4, 1);
+  --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* --------------------------------------------------------------------------
+   Design Tokens — Dark Mode
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] {
+  --cream: #1A1712;
+  --cream-card: #24201A;
+  --ink: #FDF8F0;
+  --ink-soft: #A79E8E;
+  --line: rgba(253, 248, 240, 0.10);
+}
+
+/* --------------------------------------------------------------------------
+   Keyframes
+   -------------------------------------------------------------------------- */
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes floaty {
+
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: 0 -9px;
+  }
+}
+
+@keyframes deal {
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes skeletonPulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toastOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 @layer base {
-  :root {
-    --ink-900: #14120F;
-    --ink-800: #1F1C17;
-    --paper-100: #F1EBDD;
-    --paper-050: #FAF6EC;
-    --paper-muted: #A69C87;
-    --brass-500: #C9A15A;
-    --brass-600: #A87F3E;
-    --oxblood-500: #7A2E2E;
-    --oxblood-400: #9C4A4A;
+
+  /* --------------------------------------------------------------------------
+     Reduced Motion
+     -------------------------------------------------------------------------- */
+  @media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
-  [data-theme="light"] {
-    --bg: var(--paper-050);
-    --surface: #F1EAD9;
-    --text-primary: #211D17;
-    --text-secondary: #6B6255;
-    --accent: var(--brass-600);
-    --mnemonic: var(--oxblood-500);
-    --hairline: rgba(33,29,23,0.12);
+  /* --------------------------------------------------------------------------
+     Base Resets & Body
+     -------------------------------------------------------------------------- */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
 
-  [data-theme="dark"], :root {
-    --bg: var(--ink-900);
-    --surface: var(--ink-800);
-    --text-primary: var(--paper-100);
-    --text-secondary: var(--paper-muted);
-    --accent: var(--brass-500);
-    --mnemonic: var(--oxblood-400);
-    --hairline: rgba(241,235,221,0.14);
+  html {
+    scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-bg text-text-primary font-inter min-h-screen transition-colors duration-200 ease-in-out;
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background 0.4s var(--ease-soft), color 0.4s var(--ease-soft);
+    overflow-x: hidden;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+  }
+
+  /* --------------------------------------------------------------------------
+     Focus-visible global rule (keyboard nav)
+     -------------------------------------------------------------------------- */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+
+  /* --------------------------------------------------------------------------
+     Scroll-reveal utility
+     -------------------------------------------------------------------------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s var(--ease-soft), transform 0.7s var(--ease-soft);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* --------------------------------------------------------------------------
+     Container
+     -------------------------------------------------------------------------- */
+  .vv-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* --------------------------------------------------------------------------
+     Skeleton shimmer
+     -------------------------------------------------------------------------- */
+  .skeleton {
+    background: var(--line);
+    border-radius: 6px;
+    animation: skeletonPulse 1.8s ease-in-out infinite;
   }
 }

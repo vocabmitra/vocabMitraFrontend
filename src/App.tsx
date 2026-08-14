@@ -1,18 +1,23 @@
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useThemeStore } from './store/useThemeStore';
+import { useUIStore } from './store/useUIStore';
 import { AppRouter } from './routes/AppRouter';
-import { PageShell } from './components/layout/PageShell';
-import { AuthModal } from './components/auth/AuthModal';
+import { ToastContainer } from './components/common/Toast';
 
-const App: React.FC = () => {
+function App() {
+  const { initTheme } = useThemeStore();
+  const { toasts, dismissToast } = useUIStore();
+
+  useEffect(() => {
+    initTheme();
+  }, [initTheme]);
+
   return (
-    <BrowserRouter>
-      <PageShell>
-        <AppRouter />
-      </PageShell>
-      <AuthModal />
-    </BrowserRouter>
+    <>
+      <AppRouter />
+      <ToastContainer toasts={toasts} onDismiss={dismissToast} />
+    </>
   );
-};
+}
 
 export default App;

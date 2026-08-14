@@ -1,21 +1,21 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuthStore } from '@/store/useAuthStore';
-import { useUIStore } from '@/store/useUIStore';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../store/useAuthStore';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated } = useAuthStore();
-  const { openAuthModal } = useUIStore();
+/**
+ * ProtectedRoute — redirects to /auth if the user is not authenticated.
+ * Stores the intended destination in location state so we can redirect back after login.
+ */
+export function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const location = useLocation();
 
   if (!isAuthenticated) {
-    // Defer state update to avoid updating UI store during render
-    setTimeout(() => openAuthModal('login'), 0);
-    return <Navigate to="/" replace />;
+    return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
   return <>{children}</>;
-};
+}

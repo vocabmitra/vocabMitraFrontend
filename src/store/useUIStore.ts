@@ -1,33 +1,47 @@
 import { create } from 'zustand';
+import type { ToastItem, ToastType } from '../components/common/Toast';
 
-export interface ToastMessage {
-  id: string;
-  message: string;
-  type: 'success' | 'error' | 'info';
-}
-
-interface UIState {
+interface UIStore {
+  // Auth modal state
   isAuthModalOpen: boolean;
-  authModalMode: 'login' | 'signup';
-  toasts: ToastMessage[];
-  openAuthModal: (mode?: 'login' | 'signup') => void;
+  authModalOnSuccess: (() => void) | null;
+
+  // Toast queue
+  toasts: ToastItem[];
+
+  // Auth modal actions
+  openAuthModal: (opts?: { onSuccess?: () => void }) => void;
   closeAuthModal: () => void;
-  addToast: (message: string, type?: 'success' | 'error' | 'info') => void;
-  removeToast: (id: string) => void;
+
+  // Toast actions
+  addToast: (message: string, type?: ToastType) => void;
+  dismissToast: (id: string) => void;
 }
 
-export const useUIStore = create<UIState>((set) => ({
+let toastIdCounter = 0;
+
+export const useUIStore = create<UIStore>()((set) => ({
   isAuthModalOpen: false,
-  authModalMode: 'login',
+  authModalOnSuccess: null,
   toasts: [],
-  openAuthModal: (mode = 'login') => set({ isAuthModalOpen: true, authModalMode: mode }),
-  closeAuthModal: () => set({ isAuthModalOpen: false }),
-  addToast: (message, type = 'info') => {
-    const id = Date.now().toString();
-    set((state) => ({ toasts: [...state.toasts, { id, message, type }] }));
-    setTimeout(() => {
-      set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) }));
-    }, 3000);
+
+  openAuthModal: (opts) => {
+    set({
+      isAuthModalOpen: true,
+      authModalOnSuccess: opts?.onSuccess ?? null,
+    });
   },
-  removeToast: (id) => set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) })),
+
+  closeAuthModal: () => {
+    set({ isAuthModalOpen: false, authModalOnSuccess: null });
+  },
+
+  addToast: (message, type = 'info') => {
+    const id = `toast-${++toastIdCounter}`;
+    set((state) => ({ toasts: [...state.toasts, { id, message, type }] }));
+  },
+
+  dismissToast: (id) => {
+    set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) }));
+  },
 }));

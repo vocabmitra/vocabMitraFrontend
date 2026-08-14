@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vocabulary Vault</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FDF8F0;
+      --cream-card: #FFFFFF;
+      --ink: #211D17;
+      --ink-soft: #6B6255;
+      --line: rgba(33, 29, 23, 0.10);
+
+      --gre: #5B7FDE;
+      --upsc: #E8734A;
+      --cat: #3FA66B;
+      --ssc: #D64B7C;
+      --cuet: #9B6FD9;
+
+      --ease: cubic-bezier(0.34, 1.3, 0.4, 1);
+      --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-theme="dark"] {
+      --cream: #1A1712;
+      --cream-card: #24201A;
+      --ink: #FDF8F0;
+      --ink-soft: #A79E8E;
+      --line: rgba(253, 248, 240, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      transition: background 0.4s var(--ease-soft), color 0.4s var(--ease-soft);
+      overflow-x: hidden;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s var(--ease-soft), transform 0.7s var(--ease-soft);
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ---------- Navbar ---------- */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 28px;
+      background: color-mix(in srgb, var(--cream) 90%, transparent);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--ink);
+    }
+
+    .wordmark {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 21px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .wordmark .dot {
+      color: var(--upsc);
+      font-size: 26px;
+      line-height: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-links a {
+      padding: 8px 16px;
+      border-radius: 999px;
+      color: var(--ink-soft);
+      transition: color 0.2s var(--ease-soft), background 0.2s var(--ease-soft);
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+      background: var(--line);
+    }
+
+    .nav-links a.active {
+      color: var(--cream);
+      background: var(--ink);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .theme-toggle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid var(--ink);
+      background: transparent;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.4s var(--ease), background 0.2s var(--ease-soft), color 0.2s var(--ease-soft);
+    }
+
+    .theme-toggle:hover {
+      background: var(--ink);
+      color: var(--cream);
+      transform: rotate(-15deg) scale(1.05);
+    }
+
+    .theme-toggle svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--upsc);
+      border: 2px solid var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      padding: 90px 0 60px;
+      position: relative;
+    }
+
+    .hero-inner {
+      max-width: 680px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: var(--cream-card);
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      padding: 6px 14px 6px 10px;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: popIn 0.6s var(--ease) 0.1s forwards;
+    }
+
+    .eyebrow .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cat);
+    }
+
+    .headline {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(42px, 6.4vw, 72px);
+      font-weight: 700;
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      margin-bottom: 22px;
+    }
+
+    .headline .card {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(24px) rotate(-6deg);
+      animation: deal 0.65s var(--ease) forwards;
+    }
+
+    .headline .hl {
+      color: var(--upsc);
+      position: relative;
+      display: inline-block;
+    }
+
+    .headline .hl svg {
+      position: absolute;
+      left: -4px;
+      right: -4px;
+      bottom: 2px;
+      width: calc(100% + 8px);
+      height: 14px;
+      z-index: -1;
+    }
+
+    @keyframes deal {
+      to {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+      }
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .subtext {
+      font-size: 18px;
+      line-height: 1.6;
+      color: var(--ink-soft);
+      max-width: 48ch;
+      margin-bottom: 36px;
+      opacity: 0;
+      animation: fadeUp 0.7s var(--ease-soft) 0.7s forwards;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .search-form {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 480px;
+      padding: 5px;
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      background: var(--cream-card);
+      opacity: 0;
+      animation: fadeUp 0.7s var(--ease-soft) 0.85s forwards;
+    }
+
+    .search-form svg {
+      width: 18px;
+      height: 18px;
+      color: var(--ink-soft);
+      margin-left: 14px;
+      flex-shrink: 0;
+    }
+
+    .search-form input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      padding: 12px 0;
+      font-weight: 500;
+    }
+
+    .search-form input::placeholder {
+      color: var(--ink-soft);
+    }
+
+    .search-form button {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      padding: 12px 22px;
+      border-radius: 999px;
+      transition: transform 0.2s var(--ease), background 0.2s var(--ease-soft);
+    }
+
+    .search-form button:hover {
+      transform: scale(1.04);
+      background: var(--upsc);
+    }
+
+    .confetti-tags {
+      position: absolute;
+      top: 30px;
+      right: 20px;
+      display: none;
+    }
+
+    @media (min-width: 950px) {
+      .confetti-tags {
+        display: block;
+      }
+    }
+
+    .confetti-tag {
+      position: absolute;
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 999px;
+      color: #fff;
+      opacity: 0;
+      white-space: nowrap;
+      animation: popIn 0.5s var(--ease) forwards, floaty 6s ease-in-out infinite;
+    }
+
+    .confetti-tag.t1 {
+      top: 10px;
+      right: 280px;
+      background: var(--gre);
+      animation-delay: 1.0s, 1.0s;
+      transform: rotate(-8deg);
+    }
+
+    .confetti-tag.t2 {
+      top: 90px;
+      right: 80px;
+      background: var(--cat);
+      animation-delay: 1.2s, 1.2s;
+      transform: rotate(6deg);
+    }
+
+    .confetti-tag.t3 {
+      top: 160px;
+      right: 230px;
+      background: var(--ssc);
+      animation-delay: 1.4s, 1.4s;
+      transform: rotate(-4deg);
+    }
+
+    .confetti-tag.t4 {
+      top: 220px;
+      right: 40px;
+      background: var(--cuet);
+      animation-delay: 1.6s, 1.6s;
+      transform: rotate(8deg);
+    }
+
+    @keyframes floaty {
+
+      0%,
+      100% {
+        translate: 0 0;
+      }
+
+      50% {
+        translate: 0 -9px;
+      }
+    }
+
+    /* ---------- Word of the Day ---------- */
+    .wod-section {
+      padding: 30px 0 90px;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 18px;
+    }
+
+    .wod-card-wrap {
+      perspective: 1200px;
+    }
+
+    .wod-entry {
+      border: 2px solid var(--ink);
+      border-radius: 20px;
+      padding: 42px 42px 36px;
+      background: var(--cream-card);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+      box-shadow: 8px 8px 0 var(--upsc);
+    }
+
+    .wod-entry:hover {
+      transform: translate(-4px, -4px) rotate(-0.6deg);
+      box-shadow: 12px 12px 0 var(--upsc);
+    }
+
+    .wod-entry:active {
+      transform: translate(0, 0) rotate(0);
+      box-shadow: 4px 4px 0 var(--upsc);
+    }
+
+    .punch-hole {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--cream);
+      border: 2px solid var(--ink);
+    }
+
+    .headword-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      margin-left: 32px;
+    }
+
+    .headword {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(36px, 5vw, 50px);
+      font-weight: 700;
+    }
+
+    .tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--upsc);
+      border-radius: 999px;
+      padding: 4px 12px;
+    }
+
+    .phonetic {
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      color: var(--ink-soft);
+      margin-bottom: 24px;
+      margin-left: 32px;
+    }
+
+    .meaning {
+      font-size: 19px;
+      font-weight: 500;
+      line-height: 1.6;
+      max-width: 48ch;
+      margin-bottom: 26px;
+      margin-left: 32px;
+    }
+
+    .marginnote {
+      margin: 0 0 24px 32px;
+      max-width: 50ch;
+      background: color-mix(in srgb, var(--cat) 12%, var(--cream-card));
+      border: 2px dashed var(--cat);
+      border-radius: 14px;
+      padding: 16px 20px;
+    }
+
+    .marginnote-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--cat);
+      margin-bottom: 6px;
+    }
+
+    .marginnote-text {
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    .citation {
+      margin-left: 32px;
+      border-left: 3px solid var(--ink);
+      padding-left: 16px;
+      font-size: 15px;
+      color: var(--ink-soft);
+      font-style: italic;
+      max-width: 50ch;
+    }
+
+    .citation span {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-style: normal;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-top: 8px;
+      opacity: 0.7;
+    }
+
+    .open-hint {
+      position: absolute;
+      top: 40px;
+      right: 40px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--cream);
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      padding: 6px 12px;
+      opacity: 0;
+      transform: translateY(-4px) rotate(4deg);
+      transition: opacity 0.3s var(--ease-soft), transform 0.3s var(--ease);
+    }
+
+    .wod-entry:hover .open-hint {
+      opacity: 1;
+      transform: translateY(0) rotate(0);
+    }
+
+    /* ---------- Preview Grid ---------- */
+    .preview-section {
+      padding: 0 0 100px;
+    }
+
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 24px;
+    }
+
+    .preview-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .catalog {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 760px) {
+      .catalog {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .catalog {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .catalog-card {
+      background: var(--cream-card);
+      border: 2px solid var(--ink);
+      border-radius: 16px;
+      padding: 22px 20px 20px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+      box-shadow: 5px 5px 0 var(--card-color, var(--ink));
+    }
+
+    .catalog-card:hover {
+      transform: translate(-3px, -3px) rotate(-1deg);
+      box-shadow: 8px 8px 0 var(--card-color, var(--ink));
+    }
+
+    .catalog-card .spine {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 7px;
+      background: var(--card-color, var(--ink));
+    }
+
+    .catalog-term {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 21px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      margin-left: 8px;
+    }
+
+    .catalog-meaning {
+      font-size: 13.5px;
+      color: var(--ink-soft);
+      margin-bottom: 12px;
+      line-height: 1.4;
+      margin-left: 8px;
+    }
+
+    .catalog-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 10.5px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--card-color, var(--ink));
+      display: inline-block;
+      border-radius: 999px;
+      padding: 3px 10px;
+      margin-left: 8px;
+    }
+
+    .cta-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
+    .cta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--cream);
+      background: var(--ink);
+      padding: 13px 24px;
+      border-radius: 999px;
+      transition: transform 0.2s var(--ease), background 0.2s var(--ease-soft);
+    }
+
+    .cta-link:hover {
+      transform: scale(1.04);
+      background: var(--upsc);
+    }
+
+    /* ---------- Footer ---------- */
+    .footer {
+      border-top: 2px solid var(--ink);
+      padding: 52px 0 36px;
+      margin-top: 20px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 44px;
+    }
+
+    @media (max-width: 700px) {
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .footer-brand .wordmark {
+      margin-bottom: 12px;
+    }
+
+    .footer-brand p {
+      font-size: 13.5px;
+      color: var(--ink-soft);
+      line-height: 1.6;
+      max-width: 32ch;
+    }
+
+    .footer-col h4 {
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 14px;
+    }
+
+    .footer-col a {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--ink);
+      opacity: 0.85;
+      margin-bottom: 10px;
+      transition: opacity 0.2s, color 0.2s;
+    }
+
+    .footer-col a:hover {
+      opacity: 1;
+      color: var(--upsc);
+    }
+
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 24px;
+      border-top: 2px solid var(--line);
+      font-family: 'Space Mono', monospace;
+      font-size: 11.5px;
+      color: var(--ink-soft);
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+      outline: 3px solid var(--upsc);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+
+<body data-theme="light">
+
+  <nav class="navbar">
+    <div class="wordmark">vocabulary vault<span class="dot">.</span></div>
+    <div class="nav-links">
+      <a href="#" class="active">Home</a>
+      <a href="#">Vocabulary</a>
+      <a href="#">Profile</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round" stroke-linejoin="round"></svg>
+      </button>
+      <div class="avatar">PS</div>
+    </div>
+  </nav>
+
+  <section class="hero container">
+    <div class="confetti-tags" aria-hidden="true">
+      <span class="confetti-tag t1">GRE</span>
+      <span class="confetti-tag t2">CAT</span>
+      <span class="confetti-tag t3">SSC</span>
+      <span class="confetti-tag t4">CUET</span>
+    </div>
+    <div class="hero-inner">
+      <div class="eyebrow"><span class="dot"></span> Vocabulary Vault</div>
+      <h1 class="headline" id="headline"></h1>
+      <p class="subtext">Every card comes with a memory hook, not just a definition. Shuffle through words for CAT,
+        UPSC, GRE and more — one card at a time.</p>
+      <form class="search-form" onsubmit="return false;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+        <input type="text" placeholder="Try &ldquo;Meticulous&rdquo;&hellip;" aria-label="Search vocabulary">
+        <button type="submit">Search</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="wod-section container">
+    <div class="section-label reveal">Card of the day &middot; UPSC</div>
+    <div class="wod-card-wrap reveal">
+      <div class="wod-entry" id="wodEntry" tabindex="0" role="button" aria-label="Open full entry for Alleviate">
+        <div class="punch-hole"></div>
+        <div class="open-hint">
+          flip card
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 17 17 7M7 7h10v10" />
+          </svg>
+        </div>
+        <div class="headword-row">
+          <div class="headword">Alleviate</div>
+          <div class="tag">UPSC</div>
+        </div>
+        <div class="phonetic">/&#601;&#712;li&#720;vie&#618;t/ &nbsp;&middot;&nbsp; verb</div>
+        <div class="meaning">To make suffering, deficiency, or a problem less severe.</div>
+        <div class="marginnote">
+          <div class="marginnote-label">Memory hook</div>
+          <div class="marginnote-text">&ldquo;Ali ne vaaty kr ke pain kam kr diya&rdquo; &mdash; Ali turns down the
+            valve, and the pain eases.</div>
+        </div>
+        <div class="citation">
+          &ldquo;The new policy is expected to alleviate congestion in the old quarter.&rdquo;
+          <span>Example usage</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="preview-section container">
+    <div class="preview-header reveal">
+      <div class="preview-title">From the deck</div>
+    </div>
+    <div class="catalog reveal" id="catalog"></div>
+    <div class="cta-row reveal">
+      <a href="#" class="cta-link">
+        See all words
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <footer class="footer container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="wordmark">vocabulary vault<span class="dot">.</span></div>
+        <p>A flashcard deck built for remembering, not just looking up &mdash; memory hooks and exam-tagged words for
+          CAT, UPSC, GRE and more.</p>
+      </div>
+      <div class="footer-col">
+        <h4>About</h4>
+        <a href="#">Our approach</a>
+        <a href="#">How it works</a>
+        <a href="#">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="#">Vocabulary</a>
+        <a href="#">Card of the Day</a>
+        <a href="#">Categories</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="#">Support</a>
+        <a href="#">Twitter</a>
+        <a href="#">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Vocabulary Vault</span>
+      <span>Made for word people</span>
+    </div>
+  </footer>
+
+  <script>
+    const sunPath = 'M12 3v1M12 20v1M4.2 4.2l.7.7M19.1 19.1l.7.7M3 12h1M20 12h1M4.2 19.8l.7-.7M19.1 4.9l.7-.7M12 8a4 4 0 100 8 4 4 0 000-8z';
+    const moonPath = 'M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z';
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const body = document.body;
+
+    function paintIcon(theme) {
+      themeIcon.innerHTML = '<path d="' + (theme === 'dark' ? sunPath : moonPath) + '"/>';
+    }
+    function setTheme(theme) {
+      body.setAttribute('data-theme', theme);
+      localStorage.setItem('vv-theme-2', theme);
+      paintIcon(theme);
+    }
+    setTheme(localStorage.getItem('vv-theme-2') || 'light');
+    themeToggle.addEventListener('click', () => {
+      setTheme(body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    const headlineEl = document.getElementById('headline');
+    const words = ['Words', 'you&rsquo;ll', 'actually', 'remember'];
+    headlineEl.innerHTML = words.map((w, i) => {
+      const isLast = i === words.length - 1;
+      const inner = isLast
+        ? `<span class="hl">${w}<svg viewBox="0 0 100 14" preserveAspectRatio="none"><path d="M2 10 Q50 2 98 10" stroke="var(--cat)" stroke-width="6" fill="none" stroke-linecap="round"/></svg></span>`
+        : w;
+      return `<span class="card" style="animation-delay:${0.12 + i * 0.09}s">${inner}</span>`;
+    }).join(' ');
+
+    const wodEntry = document.getElementById('wodEntry');
+    wodEntry.addEventListener('click', () => {
+      wodEntry.animate(
+        [{ transform: 'rotate(0deg) scale(1)' }, { transform: 'rotate(-1.5deg) scale(0.98)' }, { transform: 'rotate(0deg) scale(1)' }],
+        { duration: 320, easing: 'cubic-bezier(0.34,1.3,0.4,1)' }
+      );
+    });
+    wodEntry.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') wodEntry.click();
+    });
+
+    const colorMap = { GRE: 'var(--gre)', UPSC: 'var(--upsc)', CAT: 'var(--cat)', SSC: 'var(--ssc)', CUET: 'var(--cuet)' };
+    const previewWords = [
+      { term: 'Benevolent', meaning: 'Kind and generous', tag: 'UPSC' },
+      { term: 'Malevolent', meaning: 'Wishing harm to others', tag: 'CUET' },
+      { term: 'Scrutinize', meaning: 'Examine closely', tag: 'SSC' },
+      { term: 'Magnanimous', meaning: 'Generous and forgiving', tag: 'UPSC' },
+      { term: 'Audacious', meaning: 'Bold and fearless', tag: 'GRE' },
+      { term: 'Meticulous', meaning: 'Extremely careful and precise', tag: 'CAT' },
+    ];
+    const catalog = document.getElementById('catalog');
+    catalog.innerHTML = previewWords.map((w, i) => `
+    <div class="catalog-card" style="--card-color:${colorMap[w.tag]}; opacity:0; animation: fadeUp 0.55s var(--ease-soft) ${0.05 * i}s forwards;">
+      <div class="spine"></div>
+      <div class="catalog-term">${w.term}</div>
+      <div class="catalog-meaning">${w.meaning}</div>
+      <div class="catalog-tag">${w.tag}</div>
+    </div>
+  `).join('');
+
+    const revealEls = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(el => io.observe(el));
+  </script>
+</body>
+
+</html>
