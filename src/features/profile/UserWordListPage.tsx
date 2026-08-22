@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { Bookmark, BookOpen } from 'lucide-react';
 import { VocabCard } from '../../components/vocab/VocabCard';
 import { OpenVocabCard } from '../../components/vocab/OpenVocabCard';
 import { CategoryBadge } from '../../components/vocab/CategoryBadge';
-import { MOCK_VOCAB_CARDS } from '../../api/mock/fixtures/vocabFixtures';
+import { vocabApi } from '../../api/endpoints/vocab.api';
 import type { VocabCard as VocabCardType, UseCaseTag } from '../../types';
 import { parseUseCaseTags } from '../../types';
 
@@ -28,22 +29,29 @@ const MODE_META = {
   },
 };
 
-/**
- * Shared component for Bookmarked and Learned views.
- * Mode is passed as a prop — not two separate builds.
- * Static (non-interactive) bookmark/learned icon on cards.
- * Un-marking only happens inside OpenVocabCard, never from this list directly.
- */
 export default function UserWordListPage({ mode }: UserWordListPageProps) {
   const [openCard, setOpenCard] = useState<VocabCardType | null>(null);
   const [activeFilters, setActiveFilters] = useState<UseCaseTag[]>([]);
+  const [rawCards, setRawCards] = useState<VocabCardType[]>([]);
+  
   const meta = MODE_META[mode];
   const Icon = meta.icon;
 
-  // Filter from mock — replace with API call in production
-  let cards = mode === 'learned'
-    ? MOCK_VOCAB_CARDS.filter((c) => c.isLearned)
-    : MOCK_VOCAB_CARDS.filter((c) => c.isBookmarked);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = mode === 'learned' 
+          ? await vocabApi.getLearned() 
+          : await vocabApi.getBookmarked();
+        setRawCards(data);
+      } catch (err) {
+        console.error(`Failed to fetch ${mode} words`, err);
+      }
+    };
+    fetchData();
+  }, [mode, openCard]); // Re-fetch when modal closes in case status changed
+
+  let cards = rawCards;
 
   if (activeFilters.length > 0) {
     cards = cards.filter((c) =>
@@ -52,13 +60,11 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
   }
 
   // Collect all tags present in this list
-  const allTags = Array.from(
+  const allTags = useMemo(() => Array.from(
     new Set(
-      MOCK_VOCAB_CARDS
-        .filter((c) => mode === 'learned' ? c.isLearned : c.isBookmarked)
-        .flatMap((c) => parseUseCaseTags(c.vocab.useCaseTag))
+      rawCards.flatMap((c) => parseUseCaseTags(c.vocab.useCaseTag))
     )
-  ) as UseCaseTag[];
+  ) as UseCaseTag[], [rawCards]);
 
   const toggleFilter = (tag: UseCaseTag) => {
     setActiveFilters((prev) =>
@@ -110,9 +116,15 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
           <p className="font-bricolage text-lg font-semibold text-ink mb-2">
             {meta.emptyMessage}
           </p>
-          <p className="text-sm text-ink-soft max-w-[36ch] mx-auto m-0">
+          <p className="text-sm text-ink-soft max-w-[36ch] mx-auto mb-6">
             {meta.emptyHint}
           </p>
+          <Link
+            to="/vocabulary"
+            className="inline-flex items-center justify-center gap-2 font-inter font-semibold text-[15px] text-white bg-upsc hover:bg-upsc-dark transition-colors px-6 py-3 rounded-full shadow-[0_4px_0_var(--ink)] hover:translate-y-[2px] hover:shadow-[0_2px_0_var(--ink)] active:translate-y-[4px] active:shadow-none"
+          >
+            Explore Vocabulary
+          </Link>
         </div>
       ) : (
         <div

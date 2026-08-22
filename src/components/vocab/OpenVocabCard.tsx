@@ -5,6 +5,8 @@ import type { VocabCard as VocabCardType } from '../../types';
 import { parseUseCaseTags } from '../../types';
 import { MarkAsLearnedToggleButton } from './MarkAsLearnedToggleButton';
 import { BookmarkToggleButton } from './BookmarkToggleButton';
+import { AddToPracticeToggleButton } from './AddToPracticeToggleButton';
+import { CategoryBadge } from './CategoryBadge';
 
 interface OpenVocabCardProps {
   vocabCard: VocabCardType;
@@ -12,11 +14,20 @@ interface OpenVocabCardProps {
   onClose: () => void;
 }
 
+const TAG_GLOW: Record<string, string> = {
+  upsc: '249,115,22',
+  ssc: '99,102,241',
+  banking: '20,184,166',
+  cat: '168,85,247',
+  gre: '59,130,246',
+  cuet: '236,72,153',
+};
+
 export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps) {
   const { vocab } = vocabCard;
   const tags = parseUseCaseTags(vocab.useCaseTag);
-  const mainTag = tags[0]?.toLowerCase() || 'ink';
-  const cardColor = `var(--${mainTag}, var(--ink))`;
+  const mainTag = tags[0]?.toLowerCase() || 'upsc';
+  const rgb = TAG_GLOW[mainTag] || '249,115,22';
 
   // Close on ESC
   useEffect(() => {
@@ -40,71 +51,79 @@ export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[color-mix(in_srgb,var(--cream)_80%,rgba(0,0,0,0.4))] backdrop-blur-md"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       role="dialog"
       aria-modal="true"
       aria-label={`Dictionary entry for ${vocab.vocab}`}
-      style={{ '--card-color': cardColor } as React.CSSProperties}
     >
       <div
-        className="relative w-full max-w-[680px] max-h-[90vh] flex flex-col rounded-[20px] bg-cream-card border-2 border-solid border-ink shadow-[8px_8px_0_var(--card-color)] animate-modal-in pt-[42px] px-[42px] pb-[36px]"
+        className="relative w-full max-w-[680px] max-h-[90vh] flex flex-col rounded-2xl animate-modal-in"
+        style={{
+          background: 'rgba(18,18,18,0.85)',
+          backdropFilter: 'blur(32px)',
+          WebkitBackdropFilter: 'blur(32px)',
+          border: `1px solid rgba(${rgb},0.20)`,
+          boxShadow: `0 0 0 1px rgba(255,255,255,0.05), 0 40px 80px rgba(0,0,0,0.7), 0 0 60px rgba(${rgb},0.08)`,
+          paddingTop: '42px',
+          paddingLeft: '42px',
+          paddingRight: '42px',
+          paddingBottom: '36px',
+        }}
       >
-        {/* Punch hole */}
-        <div
-          className="absolute top-5 left-5 w-4 h-4 rounded-full bg-cream border-2 border-solid border-ink shrink-0"
-          aria-hidden="true"
-        />
 
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 z-10 font-space text-[11px] font-bold text-ink flex items-center gap-1.5 bg-cream border-2 border-solid border-ink rounded-full py-1.5 px-3 cursor-pointer transition-all duration-200 ease-[var(--ease)] hover:bg-line hover:-translate-y-0.5"
+          className="absolute top-4 right-4 z-10 flex items-center gap-1.5 font-inter text-[12px] font-medium text-neutral-400 cursor-pointer transition-all duration-200 hover:text-white rounded-lg py-1.5 px-3"
+          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}
           aria-label="Close entry"
           id="open-vocab-close"
         >
-          close
-          <X size={12} strokeWidth={2.4} />
+          Close
+          <X size={13} strokeWidth={2} />
         </button>
 
-        {/* Content wrapper with scroll if too tall */}
+        {/* Scrollable content */}
         <div className="overflow-y-auto flex-1 mt-2.5 pr-2 custom-scrollbar">
-          
+
           {/* Headword row */}
           <div className="flex items-center gap-3.5 flex-wrap mb-2.5 pl-8 pr-[60px]">
-            <h2 className="font-bricolage text-[clamp(36px,5vw,50px)] font-bold text-ink m-0">
+            <h2 className="font-bricolage text-[clamp(36px,5vw,50px)] font-bold text-white m-0">
               {vocab.vocab}
             </h2>
             {tags.map((tag) => (
-              <span
-                key={tag}
-                className="font-space text-[12px] font-bold text-white rounded-full py-1 px-3"
-                style={{ background: cardColor }}
-              >
-                {tag}
-              </span>
+              <CategoryBadge key={tag} tag={tag} active />
             ))}
           </div>
 
           {/* Type */}
-          <div className="font-space text-sm text-ink-soft mb-6 pl-8">
+          <div className="font-space text-sm text-neutral-600 mb-6 pl-8">
             / {vocab.vocabType} /
           </div>
 
           {/* Meaning */}
-          <div className="text-[19px] font-medium leading-[1.6] max-w-[48ch] mb-6 pl-8">
+          <div className="text-[19px] font-medium text-neutral-200 leading-[1.6] max-w-[48ch] mb-6 pl-8">
             {vocab.meaning}
           </div>
 
-          {/* Mnemonic (Margin note style) */}
+          {/* Mnemonic — glassmorphic amber box */}
           {vocab.trick && (
             <div
-              className="ml-8 mb-6 max-w-[50ch] bg-[color-mix(in_srgb,var(--card-color)_12%,var(--cream-card))] border-2 border-dashed border-[var(--card-color)] rounded-[14px] py-4 px-5"
+              className="ml-8 mb-6 max-w-[50ch] rounded-xl py-4 px-5"
+              style={{
+                background: `rgba(${rgb},0.07)`,
+                border: `1px solid rgba(${rgb},0.20)`,
+              }}
             >
-              <div className="font-space text-[11px] font-bold tracking-[0.05em] uppercase text-[var(--card-color)] mb-1.5">
+              <div
+                className="font-inter text-xs font-semibold tracking-wide uppercase mb-1.5"
+                style={{ color: `rgba(${rgb},0.9)` }}
+              >
                 Memory Hook
               </div>
-              <div className="font-inter font-semibold text-base text-ink leading-[1.5]">
+              <div className="font-inter font-medium text-[15px] text-neutral-200 leading-relaxed">
                 "{vocab.trick}"
               </div>
             </div>
@@ -112,16 +131,22 @@ export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps
 
           {/* Example */}
           {vocab.example && (
-            <div className="ml-8 border-l-4 border-solid border-ink pl-4 text-[15px] text-ink-soft italic max-w-[50ch] mb-9">
+            <div
+              className="ml-8 pl-4 text-[15px] text-neutral-500 italic max-w-[50ch] mb-9"
+              style={{ borderLeft: `3px solid rgba(${rgb},0.35)` }}
+            >
               "{vocab.example}"
-              <span className="block font-space not-italic text-[10.5px] font-bold tracking-[0.05em] uppercase mt-2 opacity-70">
+              <span className="block font-space not-italic text-[10.5px] font-bold tracking-[0.05em] uppercase mt-2 text-neutral-700">
                 Example usage
               </span>
             </div>
           )}
 
           {/* Divider */}
-          <div className="h-0.5 bg-ink ml-8 mb-6 opacity-10" />
+          <div
+            className="h-px ml-8 mb-6"
+            style={{ background: 'rgba(255,255,255,0.06)' }}
+          />
 
           {/* Actions */}
           <div className="flex items-center gap-2.5 flex-wrap ml-8">
@@ -133,12 +158,16 @@ export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps
               vocabId={vocab.id}
               isBookmarked={vocabCard.isBookmarked}
             />
+            <AddToPracticeToggleButton
+              vocabId={vocab.id}
+              addedToPractice={vocabCard.addedToPractice}
+            />
             <div className="ml-auto">
               <a
                 href={`https://www.merriam-webster.com/dictionary/${encodeURIComponent(vocab.vocab)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-[12px] font-bold text-ink-soft font-space transition-colors duration-150 no-underline hover:text-[var(--card-color)]"
+                className="inline-flex items-center gap-1.5 text-[12px] font-bold text-neutral-600 font-space transition-colors duration-150 no-underline hover:text-neutral-300"
               >
                 <ExternalLink size={12} strokeWidth={2.5} />
                 Merriam-Webster

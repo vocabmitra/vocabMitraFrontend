@@ -18,6 +18,12 @@
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
 
+  --color-green-card: var(--green-card);
+  --color-yellow-card: var(--yellow-card);
+  --color-blue-card: var(--blue-card);
+  --color-green-text: var(--green-text);
+  --color-yellow-text: var(--yellow-text);
+
   --font-bricolage: "Bricolage Grotesque", sans-serif;
   --font-inter: "Inter", sans-serif;
   --font-space: "Space Mono", monospace;

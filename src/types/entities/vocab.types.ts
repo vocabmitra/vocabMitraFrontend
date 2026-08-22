@@ -34,4 +34,5 @@ export interface VocabCard {
   vocab: Vocab;
   isLearned: boolean;
   isBookmarked: boolean;
+  addedToPractice?: boolean; // Optional for backward compatibility with existing mocks
 }

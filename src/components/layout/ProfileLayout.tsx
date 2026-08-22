@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Bookmark, CheckCircle, LogOut } from 'lucide-react';
+import { LayoutDashboard, Bookmark, CheckCircle, LogOut, Dumbbell } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
 import { authApi } from '../../api/endpoints/auth.api';
@@ -8,6 +8,7 @@ import { Footer } from './Footer';
 
 const NAV_ITEMS = [
   { to: '/profile', label: 'Dashboard', icon: LayoutDashboard, end: true },
+  { to: '/profile/practice-queue', label: 'Practice Queue', icon: Dumbbell, end: false },
   { to: '/profile/bookmarks', label: 'Bookmarked Vocabs', icon: Bookmark, end: false },
   { to: '/profile/learned', label: 'Learned Vocabs', icon: CheckCircle, end: false },
 ];

@@ -26,7 +26,15 @@ export function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-cream/90 backdrop-blur-md border-b-2 border-ink transition-colors duration-400 ease-[var(--ease)]">
+    <nav
+      className="sticky top-0 z-50 transition-colors duration-400"
+      style={{
+        background: theme === 'dark' ? 'rgba(18,18,18,0.65)' : 'rgba(244,250,255,0.85)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        borderBottom: theme === 'dark' ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(11,83,148,0.12)',
+      }}
+    >
       <div className="vv-container flex justify-between items-center py-4 sm:py-5">
         {/* Wordmark */}
         <NavLink
@@ -34,15 +42,17 @@ export function Navbar() {
           aria-label="Vocab Mitra home"
           className="no-underline"
         >
-          <div className="font-space text-lg font-bold flex items-center gap-0.5 text-ink">
-            <span className="text-upsc">[</span>
-            vocab mitra
-            <span className="text-upsc">]</span>
+          <div className="flex items-center">
+            <img 
+              src={theme === 'dark' ? "/vocab_mitra_logo.png" : "/vocab_mitra_logo_white.png"} 
+              alt="Vocab Mitra Logo" 
+              className="h-8 w-auto object-contain"
+            />
           </div>
         </NavLink>
 
         {/* Nav links */}
-        <div className="flex items-center gap-2 text-sm font-semibold">
+        <div className="flex items-center gap-1 text-sm font-semibold">
           {[
             { to: '/', label: 'Home' },
             { to: '/vocabulary', label: 'Vocabulary' },
@@ -53,10 +63,10 @@ export function Navbar() {
               to={to}
               end={to === '/'}
               className={({ isActive }) =>
-                `px-4 py-2 rounded-full font-inter transition-colors duration-200 ease-[var(--ease-soft)] no-underline ${
+                `px-4 py-2 rounded-full font-inter transition-colors duration-200 no-underline ${
                   isActive
-                    ? 'text-cream bg-ink'
-                    : 'text-ink-soft bg-transparent hover:bg-line hover:text-ink'
+                    ? 'text-orange-400 bg-orange-500/10'
+                    : 'text-ink-soft bg-transparent hover:bg-white/5 hover:text-ink'
                 }`
               }
             >
@@ -66,15 +76,15 @@ export function Navbar() {
         </div>
 
         {/* Nav right */}
-        <div className="flex items-center gap-3.5">
+        <div className="flex items-center gap-3">
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
             aria-label="Toggle light and dark mode"
             id="theme-toggle"
-            className="w-9 h-9 rounded-full border-2 border-ink bg-transparent text-ink flex items-center justify-center transition-all duration-400 ease-[var(--ease)] cursor-pointer hover:bg-ink hover:text-cream hover:scale-105 hover:-rotate-12"
+            className="w-9 h-9 rounded-full border border-line bg-transparent text-ink-soft flex items-center justify-center transition-all duration-300 cursor-pointer hover:bg-line hover:text-ink hover:border-line"
           >
-            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
 
           {/* Avatar / Login */}
@@ -85,7 +95,7 @@ export function Navbar() {
                 aria-label="Open account menu"
                 aria-expanded={avatarMenuOpen}
                 id="avatar-button"
-                className="w-9 h-9 rounded-full bg-upsc border-2 border-ink flex items-center justify-center font-space text-xs font-bold text-white cursor-pointer"
+                className="w-9 h-9 rounded-full bg-orange-500 flex items-center justify-center font-space text-xs font-bold text-white cursor-pointer ring-2 ring-orange-500/30 hover:ring-orange-500/60 transition-all"
               >
                 {initials}
               </button>
@@ -98,10 +108,11 @@ export function Navbar() {
                     aria-hidden="true"
                   />
                   <div
-                    className="absolute right-0 top-[calc(100%+8px)] bg-cream-card border-2 border-ink rounded-xl p-1.5 min-w-[180px] z-50 shadow-[4px_4px_0_var(--ink)] animate-[fadeUp_0.2s_var(--ease)_forwards]"
+                    className="absolute right-0 top-[calc(100%+8px)] rounded-xl p-1.5 min-w-[180px] z-50 shadow-2xl shadow-black/30 animate-[fadeUp_0.2s_var(--ease)_forwards]"
+                    style={{ background: 'var(--dropdown-bg)', border: '1px solid var(--dropdown-border)' }}
                     role="menu"
                   >
-                    <div className="px-3 pt-2 pb-2.5 border-b-2 border-line mb-1">
+                    <div className="px-3 pt-2 pb-2.5 border-b border-line mb-1">
                       <div className="font-bricolage font-semibold text-[15px] text-ink">
                         {user.firstName} {user.lastName}
                       </div>
@@ -111,7 +122,7 @@ export function Navbar() {
                     </div>
                     <button
                       onClick={() => { navigate('/profile'); setAvatarMenuOpen(false); }}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-ink text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-line"
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-ink text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-white/5"
                       role="menuitem"
                     >
                       <LayoutDashboard size={14} />
@@ -119,7 +130,7 @@ export function Navbar() {
                     </button>
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-upsc text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-line"
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-orange-400 text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-white/5"
                       role="menuitem"
                     >
                       <LogOut size={14} />
@@ -134,10 +145,10 @@ export function Navbar() {
               onClick={() => navigate('/auth')}
               aria-label="Log in"
               id="login-button"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border-2 border-ink bg-cream-card text-ink text-sm font-semibold font-inter transition-all duration-200 ease-[var(--ease)] cursor-pointer shadow-[2px_2px_0_var(--ink)] hover:-translate-x-[1px] hover:-translate-y-[1px] hover:shadow-[3px_3px_0_var(--ink)]"
+              className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-orange-500 text-white text-sm font-semibold font-inter transition-all duration-200 cursor-pointer hover:bg-orange-400 hover:shadow-[0_4px_20px_rgba(249,115,22,0.35)]"
             >
               <LogIn size={15} />
-              Log in
+              Get Started
             </button>
           )}
         </div>

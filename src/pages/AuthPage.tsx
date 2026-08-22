@@ -6,9 +6,9 @@ import { AuthForm } from '../components/auth/AuthForm';
  */
 export default function AuthPage() {
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-cream">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-transparent">
       {/* ─── Left panel: brand + ambient art ─── */}
-      <div className="relative bg-cream hidden md:flex flex-col justify-between p-10 md:p-12 border-r-2 border-solid border-ink overflow-hidden">
+      <div className="relative bg-transparent hidden md:flex flex-col justify-between p-10 md:p-12 border-r-2 border-solid border-ink overflow-hidden">
         {/* Ambient glow (kept for subtle accent but changed to cream theme) */}
         <div
           aria-hidden="true"

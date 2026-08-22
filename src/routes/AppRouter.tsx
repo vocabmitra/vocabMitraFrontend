@@ -10,6 +10,8 @@ const AuthPage = lazy(() => import('../pages/AuthPage'));
 const ProfileLayout = lazy(() => import('../components/layout/ProfileLayout'));
 const DashboardView = lazy(() => import('../pages/profile/DashboardView'));
 const UserWordListPage = lazy(() => import('../features/profile/UserWordListPage'));
+const PracticeSessionPage = lazy(() => import('../pages/PracticeSessionPage'));
+const PracticeTabView = lazy(() => import('../pages/profile/PracticeTabView').then(module => ({ default: module.PracticeTabView })));
 
 function LoadingFallback() {
   return (
@@ -64,9 +66,20 @@ export function AppRouter() {
             }
           >
             <Route index element={<DashboardView />} />
+            <Route path="practice-queue" element={<PracticeTabView />} />
             <Route path="bookmarks" element={<UserWordListPage mode="bookmarked" />} />
             <Route path="learned" element={<UserWordListPage mode="learned" />} />
           </Route>
+
+          {/* Protected route — Practice Session */}
+          <Route
+            path="/practice"
+            element={
+              <ProtectedRoute>
+                <PracticeSessionPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Catch-all */}
           <Route path="*" element={<Navigate to="/" replace />} />

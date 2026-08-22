@@ -1,18 +1,24 @@
 import { Link } from 'react-router-dom';
+import { useThemeStore } from '../../store/useThemeStore';
 
 export function Footer() {
   const year = new Date().getFullYear();
+  const { theme } = useThemeStore();
 
   return (
-    <footer className="border-t-2 border-ink pt-[52px] pb-[36px] mt-5 font-inter">
+    <footer className="border-t-2 border-ink pt-[52px] pb-[36px] font-inter">
       <div className="vv-container">
         {/* 4-column grid, collapses to 2 on mobile */}
         <div className="grid grid-cols-1 min-[481px]:grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10 mb-11">
           {/* Brand column */}
           <div>
-            <div className="font-bricolage text-[21px] font-bold flex items-center gap-1.5 mb-3 text-ink">
-              vocab mitra<span className="text-upsc text-[26px] leading-none">.</span>
-            </div>
+            <Link to="/" className="inline-block mb-3">
+              <img 
+                src={theme === 'dark' ? "/vocab_mitra_logo.png" : "/vocab_mitra_logo_white.png"} 
+                alt="Vocab Mitra Logo" 
+                className="h-9 w-auto object-contain"
+              />
+            </Link>
             <p className="text-[13.5px] text-ink-soft leading-[1.6] max-w-[32ch]">
               A flashcard deck built for remembering, not just looking up — memory hooks and exam-tagged words for CAT, UPSC, GRE and more.
             </p>

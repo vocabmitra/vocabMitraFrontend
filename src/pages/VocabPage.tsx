@@ -16,7 +16,7 @@ import { MOCK_VOCAB_CARDS } from '../api/mock/fixtures/vocabFixtures';
 export default function VocabPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [localSearch, setLocalSearch] = useState(() => searchParams.get('q') ?? '');
-  const [openCard, setOpenCard] = useState<VocabCardType | null>(null);
+  const [openCardId, setOpenCardId] = useState<number | null>(null);
   const debouncedSearch = useDebounce(localSearch, 400);
 
   const {
@@ -51,10 +51,8 @@ export default function VocabPage() {
     const wordId = searchParams.get('word');
     if (!wordId) return;
     const id = Number(wordId);
-    const found =
-      vocabList.find((vc) => vc.vocab.id === id) ??
-      MOCK_VOCAB_CARDS.find((vc) => vc.vocab.id === id);
-    if (found && !openCard) setOpenCard(found);
+    const found = vocabList.find((vc) => vc.vocab.id === id);
+    if (found && !openCardId) setOpenCardId(found.vocab.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vocabList]);
 
@@ -64,7 +62,7 @@ export default function VocabPage() {
     <>
       <Navbar />
 
-      <main className="min-h-[calc(100vh-80px)] bg-cream">
+      <main className="min-h-[calc(100vh-80px)] bg-transparent">
         <div className="vv-container pt-[52px] px-7 pb-20">
 
           {/* Page header */}
@@ -151,59 +149,36 @@ export default function VocabPage() {
               )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[18px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
               {vocabList.map((card) => (
                 <VocabCard
                   key={card.vocab.id}
                   vocabCard={card}
-                  onClick={() => setOpenCard(card)}
+                  onClick={() => setOpenCardId(card.vocab.id)}
                 />
               ))}
             </div>
           )}
 
-          {/* ── Numbered pagination ── */}
+          {/* ── Pagination ── */}
           {totalPages > 1 && (
-            <div
-              className="flex justify-center items-center gap-2 mt-14 flex-wrap"
-              role="navigation"
-              aria-label="Pagination"
-            >
-              {/* Prev */}
+            <div className="mt-12 flex justify-center items-center gap-4 font-space text-[13px] font-bold">
               <button
                 onClick={() => setPage(page - 1)}
                 disabled={page === 0}
-                className="py-2 px-4 rounded-full border-2 border-solid border-ink bg-cream-card text-ink text-[13px] font-bold font-space transition-colors duration-200 ease-[var(--ease)] hover:bg-line disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-cream-card cursor-pointer"
-                aria-label="Previous page"
+                className="font-space font-bold text-[12px] tracking-[0.05em] uppercase text-ink bg-transparent border-2 border-solid border-ink rounded-full py-2 px-[18px] cursor-pointer transition-colors duration-200 ease-[var(--ease)] disabled:opacity-30 disabled:cursor-not-allowed hover:not(:disabled):bg-ink hover:not(:disabled):text-cream"
               >
-                ← Prev
+                Previous
               </button>
-
-              {/* Page numbers */}
-              {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setPage(i)}
-                  className={`py-2 px-[14px] rounded-full border-2 border-solid font-space text-[13px] font-bold cursor-pointer transition-colors duration-200 ease-[var(--ease)] ${
-                    i === page
-                      ? 'border-ink bg-ink text-cream'
-                      : 'border-transparent bg-transparent text-ink hover:bg-line'
-                  }`}
-                  aria-label={`Page ${i + 1}`}
-                  aria-current={i === page ? 'page' : undefined}
-                >
-                  {i + 1}
-                </button>
-              ))}
-
-              {/* Next */}
+              <span className="text-ink-soft">
+                Page {page + 1} of {totalPages}
+              </span>
               <button
                 onClick={() => setPage(page + 1)}
                 disabled={page >= totalPages - 1}
-                className="py-2 px-4 rounded-full border-2 border-solid border-ink bg-cream-card text-ink text-[13px] font-bold font-space transition-colors duration-200 ease-[var(--ease)] hover:bg-line disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-cream-card cursor-pointer"
-                aria-label="Next page"
+                className="font-space font-bold text-[12px] tracking-[0.05em] uppercase text-ink bg-transparent border-2 border-solid border-ink rounded-full py-2 px-[18px] cursor-pointer transition-colors duration-200 ease-[var(--ease)] disabled:opacity-30 disabled:cursor-not-allowed hover:not(:disabled):bg-ink hover:not(:disabled):text-cream"
               >
-                Next →
+                Next
               </button>
             </div>
           )}
@@ -212,12 +187,15 @@ export default function VocabPage() {
 
       <Footer />
 
-      {/* OpenVocabCard modal */}
-      {openCard && (
+      {/* ── Modal ── */}
+      {openCardId && (
         <OpenVocabCard
-          vocabCard={openCard}
-          isOpen={!!openCard}
-          onClose={() => setOpenCard(null)}
+          vocabCard={vocabList.find(c => c.vocab.id === openCardId)!}
+          isOpen={!!openCardId}
+          onClose={() => {
+            setOpenCardId(null);
+            setSearchParams((prev) => { prev.delete('word'); return prev; }, { replace: true });
+          }}
         />
       )}
     </>

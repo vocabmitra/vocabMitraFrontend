@@ -25,7 +25,11 @@ interface VocabStore {
   clearFilters: () => void;
   setSearch: (q: string) => void;
   setPage: (page: number) => void;
-  updateVocabCard: (vocabId: number, patch: Partial<Pick<VocabCard, 'isLearned' | 'isBookmarked'>>) => void;
+  updateVocabCard: (vocabId: number, patch: Partial<Pick<VocabCard, 'isLearned' | 'isBookmarked' | 'addedToPractice'>>) => void;
+  toggleBookmark: (vocabId: number) => Promise<void>;
+  toggleLearned: (vocabId: number) => Promise<void>;
+  togglePractice: (vocabId: number) => Promise<void>;
+  upsertVocabCards: (cards: VocabCard[]) => void;
 }
 
 export const useVocabStore = create<VocabStore>()((set, get) => ({
@@ -40,6 +44,21 @@ export const useVocabStore = create<VocabStore>()((set, get) => ({
   pageSize: DEFAULT_PAGE_SIZE,
   totalCount: 0,
   totalPages: 0,
+
+  upsertVocabCards: (cards) => {
+    set((state) => {
+      const newList = [...state.vocabList];
+      cards.forEach(card => {
+        const idx = newList.findIndex(c => c.vocab.id === card.vocab.id);
+        if (idx !== -1) {
+          newList[idx] = { ...newList[idx], ...card };
+        } else {
+          newList.push(card);
+        }
+      });
+      return { vocabList: newList };
+    });
+  },
 
   fetchVocabs: async () => {
     const { page, pageSize, activeFilters, searchQuery } = get();
@@ -91,5 +110,53 @@ export const useVocabStore = create<VocabStore>()((set, get) => ({
         vc.vocab.id === vocabId ? { ...vc, ...patch } : vc
       ),
     }));
+  },
+
+  toggleBookmark: async (vocabId: number) => {
+    const { vocabList, updateVocabCard } = get();
+    const card = vocabList.find(c => c.vocab.id === vocabId);
+    if (!card) return;
+
+    // Optimistic update
+    updateVocabCard(vocabId, { isBookmarked: !card.isBookmarked });
+
+    try {
+      await vocabApi.toggleBookmark(vocabId);
+    } catch (err) {
+      // Revert on error
+      updateVocabCard(vocabId, { isBookmarked: card.isBookmarked });
+    }
+  },
+
+  toggleLearned: async (vocabId: number) => {
+    const { vocabList, updateVocabCard } = get();
+    const card = vocabList.find(c => c.vocab.id === vocabId);
+    if (!card) return;
+
+    // Optimistic update
+    updateVocabCard(vocabId, { isLearned: !card.isLearned });
+
+    try {
+      await vocabApi.toggleLearned(vocabId);
+    } catch (err) {
+      // Revert on error
+      updateVocabCard(vocabId, { isLearned: card.isLearned });
+    }
+  },
+
+  togglePractice: async (vocabId: number) => {
+    const { vocabList, updateVocabCard } = get();
+    const card = vocabList.find(c => c.vocab.id === vocabId);
+    if (!card) return;
+
+    // Optimistic update
+    updateVocabCard(vocabId, { addedToPractice: !card.addedToPractice });
+
+    try {
+      await vocabApi.togglePractice(vocabId);
+    } catch (err) {
+      // Revert on error
+      updateVocabCard(vocabId, { addedToPractice: card.addedToPractice });
+    }
   },
 }));

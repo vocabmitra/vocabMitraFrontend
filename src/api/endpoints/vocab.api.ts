@@ -76,4 +76,21 @@ export const vocabApi = {
     const res = await axiosInstance.get<ApiResponse<VocabCard[]>>(`${USER_BASE}/learned`);
     return res.data.data ?? (res.data as unknown as VocabCard[]);
   },
+
+  /**
+   * Toggle practice queue state for the authenticated user.
+   * POST /user/practice/:vocabId
+   */
+  togglePractice: async (vocabId: number): Promise<void> => {
+    await axiosInstance.post(`${USER_BASE}/practice/${vocabId}`);
+  },
+
+  /**
+   * Get the authenticated user's practice queue.
+   * GET /user/practice
+   */
+  getPracticeQueue: async (): Promise<VocabCard[]> => {
+    const res = await axiosInstance.get<ApiResponse<VocabCard[]>>(`${USER_BASE}/practice`);
+    return res.data.data ?? (res.data as unknown as VocabCard[]);
+  },
 };

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Bookmark, BookmarkCheck } from 'lucide-react';
 import { useAuthGate } from '../../hooks/useAuthGate';
 import { useVocabStore } from '../../store/useVocabStore';
@@ -11,24 +11,37 @@ interface BookmarkToggleButtonProps {
   isBookmarked: boolean;
 }
 
-export function BookmarkToggleButton({ vocabId, isBookmarked }: BookmarkToggleButtonProps) {
+export function BookmarkToggleButton({ vocabId, isBookmarked: initialIsBookmarked }: BookmarkToggleButtonProps) {
   const requireAuth = useAuthGate();
   const updateVocabCard = useVocabStore((s) => s.updateVocabCard);
   const addToast = useUIStore((s) => s.addToast);
+  
   const [loading, setLoading] = useState(false);
+  const [localBookmarked, setLocalBookmarked] = useState(initialIsBookmarked);
+
+  // Keep in sync with props if parent updates
+  useEffect(() => {
+    setLocalBookmarked(initialIsBookmarked);
+  }, [initialIsBookmarked]);
 
   const handleToggle = () => {
     requireAuth(async () => {
       setLoading(true);
+      const nextState = !localBookmarked;
+      // Optimistic local UI update
+      setLocalBookmarked(nextState);
+      
       try {
         await vocabApi.toggleBookmark(vocabId);
-        // Optimistic update
-        updateVocabCard(vocabId, { isBookmarked: !isBookmarked });
+        // Also update store
+        updateVocabCard(vocabId, { isBookmarked: nextState });
         addToast(
-          isBookmarked ? 'Bookmark removed.' : 'Word bookmarked! 🔖',
+          localBookmarked ? 'Bookmark removed.' : 'Word bookmarked! 🔖',
           'success'
         );
       } catch (err) {
+        // Revert on error
+        setLocalBookmarked(!nextState);
         addToast(normalizeError(err).message, 'error');
       } finally {
         setLoading(false);
@@ -41,16 +54,16 @@ export function BookmarkToggleButton({ vocabId, isBookmarked }: BookmarkToggleBu
       onClick={handleToggle}
       disabled={loading}
       className={`inline-flex items-center gap-2 px-4 py-2.5 font-inter font-bold text-sm rounded-full border-2 border-solid border-ink transition-all duration-200 ease-[var(--ease)] ${
-        isBookmarked
+        localBookmarked
           ? 'bg-ink text-cream'
           : 'bg-transparent text-ink hover:bg-line disabled:hover:bg-transparent'
       } ${loading ? 'opacity-70 cursor-wait' : 'cursor-pointer'}`}
-      aria-label={isBookmarked ? 'Remove bookmark' : 'Bookmark this word'}
-      aria-pressed={isBookmarked}
+      aria-label={localBookmarked ? 'Remove bookmark' : 'Bookmark this word'}
+      aria-pressed={localBookmarked}
       id="bookmark-toggle"
     >
-      {isBookmarked ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
-      {loading ? 'Saving…' : isBookmarked ? 'Bookmarked' : 'Bookmark'}
+      {localBookmarked ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
+      {loading ? 'Saving…' : localBookmarked ? 'Bookmarked' : 'Bookmark'}
     </button>
   );
 }

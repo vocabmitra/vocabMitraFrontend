@@ -14,6 +14,7 @@ export const MOCK_VOCAB_CARDS: VocabCard[] = [
     },
     isLearned: false,
     isBookmarked: false,
+    addedToPractice: true,
   },
   {
     vocab: {
@@ -28,6 +29,7 @@ export const MOCK_VOCAB_CARDS: VocabCard[] = [
     },
     isLearned: true,
     isBookmarked: false,
+    addedToPractice: true,
   },
   {
     vocab: {

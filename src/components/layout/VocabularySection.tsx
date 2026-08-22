@@ -1,4 +1,10 @@
+import { useRef } from 'react';
+import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
+
 export function VocabularySection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
   const words = [
     { word: 'Lassitude', next: 'Next practice in 2 days', progress: '20%' },
     { word: 'Obstinate', next: 'Next practice in 2 days', progress: '30%' },
@@ -6,13 +12,29 @@ export function VocabularySection() {
     { word: 'Candid', next: 'Next practice in 2 days', progress: '60%' },
   ];
 
+  useGSAP(() => {
+    gsap.utils.toArray('.vocab-progress').forEach((bar: any, index) => {
+      const targetWidth = bar.getAttribute('data-width');
+      gsap.to(bar, {
+        width: targetWidth,
+        duration: 1,
+        ease: 'power2.out',
+        delay: index * 0.1,
+        scrollTrigger: {
+          trigger: bar,
+          start: 'top 85%',
+        }
+      });
+    });
+  }, { scope: sectionRef });
+
   return (
-    <section className="w-full bg-cream py-24 border-b-2 border-ink overflow-hidden">
+    <section ref={sectionRef} className="w-full py-24 overflow-hidden" style={{ background: 'var(--section-bg-2)', borderTop: '1px solid var(--section-border)', borderBottom: '1px solid var(--section-border)' }}>
       <div className="vv-container flex flex-col items-center">
-        
+
         {/* Header Content */}
         <div className="max-w-[700px] w-full text-center mb-6">
-          <h3 className="font-space text-upsc text-sm font-bold tracking-[0.1em] uppercase mb-4">
+          <h3 className="font-space text-orange-500 text-sm font-bold tracking-[0.1em] uppercase mb-4">
             My Vocabulary
           </h3>
           <h2 className="font-bricolage text-[clamp(36px,5vw,52px)] font-extrabold text-ink leading-[1.1] tracking-[-0.03em] mb-6">
@@ -24,14 +46,14 @@ export function VocabularySection() {
         </div>
 
         {/* UI Mockup Container */}
-        <div className="w-full max-w-[700px] mx-auto mt-16 bg-cream-card rounded-[24px] border-2 border-ink shadow-[8px_8px_0_var(--ink)] sm:shadow-[16px_16px_0_var(--ink)] overflow-hidden transition-transform duration-300 hover:-translate-y-1">
-          
+        <div className="w-full max-w-[700px] mx-auto mt-16 bg-cream-card rounded-2xl border border-line shadow-2xl shadow-black/10 overflow-hidden transition-transform duration-300 hover:-translate-y-1">
+
           {/* Top Toggle */}
-          <div className="flex border-b-2 border-ink p-4 sm:p-5 bg-white gap-3">
-            <button className="flex-1 py-3 sm:py-3.5 text-center rounded-[12px] bg-upsc text-white font-bold text-[15px] border-2 border-ink shadow-[2px_2px_0_var(--ink)] hover:translate-y-px hover:shadow-[1px_1px_0_var(--ink)] transition-all active:translate-y-[2px] active:shadow-none">
+          <div className="flex border-b border-line p-4 sm:p-5 bg-cream gap-3">
+            <button className="flex-1 py-3 sm:py-3.5 text-center rounded-xl bg-orange-500 text-white font-bold text-[15px] shadow-[0_2px_12px_rgba(249,115,22,0.35)] hover:bg-orange-400 transition-all">
               Learning
             </button>
-            <button className="flex-1 py-3 sm:py-3.5 text-center rounded-[12px] bg-transparent text-ink-soft font-bold text-[15px] hover:text-ink hover:bg-ink/5 transition-colors">
+            <button className="flex-1 py-3 sm:py-3.5 text-center rounded-xl bg-transparent text-ink-soft font-bold text-[15px] hover:text-ink hover:bg-line transition-colors">
               Mastered
             </button>
           </div>
@@ -39,10 +61,10 @@ export function VocabularySection() {
           {/* List Area */}
           <div className="flex flex-col">
             {words.map((item, index) => (
-              <div 
+              <div
                 key={item.word}
-                className={`flex justify-between items-center p-6 sm:px-8 sm:py-7 hover:bg-white transition-colors cursor-pointer ${
-                  index !== words.length - 1 ? 'border-b-2 border-ink/20' : ''
+                className={`flex justify-between items-center p-6 sm:px-8 sm:py-7 hover:bg-line transition-colors cursor-pointer ${
+                  index !== words.length - 1 ? 'border-b border-line' : ''
                 }`}
               >
                 <div>
@@ -54,10 +76,11 @@ export function VocabularySection() {
                   </p>
                 </div>
 
-                <div className="w-[100px] sm:w-[140px] h-3 bg-ink/10 rounded-full border border-ink/20 overflow-hidden shadow-inner">
-                  <div 
-                    className="h-full bg-upsc rounded-full" 
-                    style={{ width: item.progress }} 
+                {/* Progress bar */}
+                <div className="w-[100px] sm:w-[140px] h-1.5 bg-line rounded-full overflow-hidden">
+                  <div
+                    className="vocab-progress h-full bg-orange-500 rounded-full w-0"
+                    data-width={item.progress}
                   />
                 </div>
               </div>
