@@ -148,7 +148,7 @@ export function Navbar() {
               className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-orange-500 text-white text-sm font-semibold font-inter transition-all duration-200 cursor-pointer hover:bg-orange-400 hover:shadow-[0_4px_20px_rgba(249,115,22,0.35)]"
             >
               <LogIn size={15} />
-              Get Started
+              Get started for free
             </button>
           )}
         </div>

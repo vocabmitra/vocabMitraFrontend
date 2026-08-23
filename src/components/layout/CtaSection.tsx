@@ -80,7 +80,7 @@ export function CtaSection() {
             ref={buttonRef}
             className="inline-flex items-center justify-center px-10 py-4 sm:py-5 bg-orange-500 text-white font-bold text-[18px] sm:text-[20px] rounded-full border-none cursor-pointer shadow-[0_8px_40px_rgba(249,115,22,0.45)] hover:bg-orange-400 hover:shadow-[0_12px_48px_rgba(249,115,22,0.55)] active:scale-[0.98] transition-all duration-200"
           >
-            Get Started
+            Get started for free
           </button>
         </div>
 

@@ -2,6 +2,7 @@ import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Bookmark, CheckCircle, LogOut, Dumbbell } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
+import { useThemeStore } from '../../store/useThemeStore';
 import { authApi } from '../../api/endpoints/auth.api';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
@@ -16,6 +17,7 @@ const NAV_ITEMS = [
 export default function ProfileLayout() {
   const { user, logout } = useAuthStore();
   const { addToast } = useUIStore();
+  const { theme } = useThemeStore();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -28,62 +30,64 @@ export default function ProfileLayout() {
   return (
     <>
       <Navbar />
-      <div className="bg-[var(--cream)]">
-        <div className="vv-container flex flex-col md:flex-row min-h-[calc(100vh-80px)]">
-          {/* ─── Desktop Sidebar ─── */}
-          <aside className="hidden md:flex w-[240px] shrink-0 border-r border-line py-8 pr-4 flex-col sticky top-[80px] h-[calc(100vh-80px)] overflow-y-auto">
-          {/* User mini-card */}
-          {user && (
-            <div className="px-3 pb-5 mb-2 border-b border-line">
-              <div className="w-11 h-11 rounded-xl bg-line/30 border border-line flex items-center justify-center font-space text-sm font-bold text-upsc mb-2.5">
-                {user.firstName[0]}{user.lastName[0]}
-              </div>
-              <div className="font-bricolage font-semibold text-[15px] text-ink">
-                {user.firstName} {user.lastName}
-              </div>
-              <div className="font-space text-[11.5px] text-ink-soft">
-                @{user.username}
-              </div>
-            </div>
-          )}
-
-          {/* Nav items */}
-          <nav className="flex-1 flex flex-col gap-0.5" aria-label="Profile navigation">
-            {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={end}
-                className={({ isActive }) =>
-                  `flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-inter transition-colors duration-200 ease-[var(--ease)] no-underline ${
-                    isActive
-                      ? 'font-semibold text-upsc bg-upsc/10'
-                      : 'font-medium text-ink-soft bg-transparent hover:bg-line/30 hover:text-ink'
-                  }`
-                }
-              >
-                <Icon size={16} />
-                {label}
-              </NavLink>
-            ))}
-          </nav>
-
-          {/* Logout at bottom */}
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-inter font-medium text-ink-soft bg-transparent border-none cursor-pointer transition-colors duration-200 ease-[var(--ease)] w-full hover:bg-line/30 hover:text-upsc"
-            aria-label="Log out"
-            id="profile-logout"
+      <div className="w-full">
+        <div className="w-full max-w-[1500px] mx-auto pr-4 sm:pr-6 md:pr-8 flex flex-col md:flex-row min-h-[calc(100vh-80px)]">
+          {/* Desktop Sidebar */}
+          <aside
+            className="hidden md:flex w-[260px] lg:w-[280px] shrink-0 border-r border-line py-8 pr-6 pl-4 sm:pl-6 md:pl-8 flex-col sticky top-[80px] h-[calc(100vh-80px)] overflow-y-auto rounded-lg"
+            style={{ backgroundColor: theme === 'light' ? 'var(--ink)' : 'var(--cream)' }}
           >
-            <LogOut size={16} />
-            Log out
-          </button>
-        </aside>
+            {/* Nav items */}
+            <nav className="flex-1 flex flex-col gap-1.5" aria-label="Profile navigation">
+              {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={end}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-3 py-3 rounded-[10px] text-[14px] font-inter transition-all duration-200 ease-[var(--ease)] no-underline group ${isActive
+                      ? 'font-semibold text-white bg-white/10'
+                      : 'font-medium text-white/70 bg-transparent hover:bg-white/5 hover:text-white'
+                    }`
+                  }
+                >
+                  <Icon size={18} className="opacity-80 group-hover:opacity-100 transition-opacity" />
+                  {label}
+                </NavLink>
+              ))}
 
-        {/* ─── Main content area ─── */}
-        <main className="flex-1 px-4 py-5 pb-20 md:p-10 overflow-y-auto min-w-0">
-          <Outlet />
-        </main>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-3 px-3 py-3 rounded-[10px] text-[14px] font-inter font-medium text-white/70 bg-transparent border-none cursor-pointer transition-colors duration-200 ease-[var(--ease)] w-full hover:bg-white/5 hover:text-red-400 text-left mt-2"
+                aria-label="Log out"
+                id="profile-logout"
+              >
+                <LogOut size={18} className="opacity-70" />
+                Log out
+              </button>
+            </nav>
+
+            {/* Motivational Mascot Widget */}
+            <div className="mt-8 bg-white/5 rounded-2xl p-4 border border-white/10 relative overflow-hidden flex flex-col justify-end min-h-[140px]">
+              <div className="relative z-10 w-[60%]">
+                <p className="font-inter text-[12px] font-medium text-white/80 leading-snug mb-1">
+                  Stay consistent, vocabulary grows with you.
+                </p>
+                <div className="text-orange-400 text-[18px]">✨</div>
+              </div>
+
+              <img
+                src="/images/fox_study.png"
+                alt="VocabMitra mascot reading a book"
+                className="absolute right-0 bottom-0 w-[90px] h-auto object-contain translate-x-3 translate-y-3 drop-shadow-md"
+              />
+            </div>
+          </aside>
+
+          {/* ─── Main content area ─── */}
+          <main className="flex-1 py-8 md:pl-8 overflow-y-auto min-w-0">
+            <Outlet />
+          </main>
         </div>
       </div>
 
@@ -107,10 +111,9 @@ function MobileTabBar({ onLogout }: { onLogout: () => void }) {
             to={to}
             end={end}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-1 py-3 px-4 text-[11px] font-inter no-underline whitespace-nowrap shrink-0 border-b-2 ${
-                isActive
-                  ? 'font-semibold text-upsc border-upsc'
-                  : 'font-normal text-ink-soft border-transparent'
+              `flex flex-col items-center gap-1 py-3 px-4 text-[11px] font-inter no-underline whitespace-nowrap shrink-0 border-b-2 ${isActive
+                ? 'font-semibold text-upsc border-upsc'
+                : 'font-normal text-ink-soft border-transparent'
               }`
             }
           >

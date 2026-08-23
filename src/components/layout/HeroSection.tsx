@@ -145,7 +145,7 @@ export function HeroSection() {
             onClick={() => navigate('/auth')}
             className="flex items-center justify-center whitespace-nowrap py-3.5 px-8 rounded-full bg-orange-500 text-white text-lg font-bold font-inter border-none cursor-pointer shadow-[0_8px_32px_rgba(249,115,22,0.35)] transition-all duration-200 ease-[var(--ease)] hover:-translate-y-0.5 hover:bg-orange-400 hover:shadow-[0_12px_40px_rgba(249,115,22,0.45)]"
           >
-            Get Started
+            Get started for free
           </button>
           <p className="text-[15px] font-medium text-ink-soft leading-snug max-w-[220px]">
             Built for SSC, Banking, CUET &amp; UPSC aspirants
