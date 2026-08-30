@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Bookmark, CheckCircle, LogOut, Dumbbell } from 'lucide-react';
+import { Home, Bookmark, CheckCircle, LogOut, Zap, BarChart2, Settings, HelpCircle, MessageSquare, ChevronDown, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
 import { useThemeStore } from '../../store/useThemeStore';
@@ -8,10 +8,12 @@ import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 
 const NAV_ITEMS = [
-  { to: '/profile', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/profile/practice-queue', label: 'Practice Queue', icon: Dumbbell, end: false },
-  { to: '/profile/bookmarks', label: 'Bookmarked Vocabs', icon: Bookmark, end: false },
-  { to: '/profile/learned', label: 'Learned Vocabs', icon: CheckCircle, end: false },
+  { to: '/profile', label: 'Home', icon: Home, end: true },
+  { to: '/profile/bookmarks', label: 'Vocabulary', icon: Bookmark, end: false },
+  { to: '/profile/practice-queue', label: 'Practice', icon: Zap, end: false },
+  { to: '/profile/learned', label: 'Progress', icon: BarChart2, end: false },
+  { to: '/profile/cuet-focus', label: 'CUET Focus', icon: Sparkles, end: false, special: true },
+  { to: '/profile/settings', label: 'Settings', icon: Settings, end: false },
 ];
 
 export default function ProfileLayout() {
@@ -31,56 +33,79 @@ export default function ProfileLayout() {
     <>
       <Navbar />
       <div className="w-full">
-        <div className="w-full max-w-[1500px] mx-auto pr-4 sm:pr-6 md:pr-8 flex flex-col md:flex-row min-h-[calc(100vh-80px)]">
+        <div className="w-full max-w-[1500px] mx-auto flex flex-col md:flex-row min-h-[calc(100vh-80px)]">
           {/* Desktop Sidebar */}
           <aside
-            className="hidden md:flex w-[260px] lg:w-[280px] shrink-0 border-r border-line py-8 pr-6 pl-4 sm:pl-6 md:pl-8 flex-col sticky top-[80px] h-[calc(100vh-80px)] overflow-y-auto rounded-lg"
-            style={{ backgroundColor: theme === 'light' ? 'var(--ink)' : 'var(--cream)' }}
+            className="hidden md:flex w-[260px] lg:w-[280px] shrink-0 border-none py-8 pr-6 pl-4 sm:pl-6 md:pl-8 flex-col sticky top-[80px] h-[calc(100vh-80px)] overflow-y-auto rounded-lg bg-[var(--sidebar-bg)]"
           >
             {/* Nav items */}
             <nav className="flex-1 flex flex-col gap-1.5" aria-label="Profile navigation">
-              {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
-                <NavLink
-                  key={to}
-                  to={to}
-                  end={end}
-                  className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-3 rounded-[10px] text-[14px] font-inter transition-all duration-200 ease-[var(--ease)] no-underline group ${isActive
-                      ? 'font-semibold text-white bg-white/10'
-                      : 'font-medium text-white/70 bg-transparent hover:bg-white/5 hover:text-white'
-                    }`
-                  }
-                >
-                  <Icon size={18} className="opacity-80 group-hover:opacity-100 transition-opacity" />
-                  {label}
-                </NavLink>
-              ))}
+              {NAV_ITEMS.map((item) => {
+                const { to, label, icon: Icon, end, special } = item as typeof NAV_ITEMS[0] & { special?: boolean };
+                return (
+                  <NavLink
+                    key={to}
+                    to={to}
+                    end={end}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 px-3 py-3 rounded-[10px] text-[14px] font-inter transition-all duration-200 ease-[var(--ease)] no-underline group ${
+                        special 
+                          ? isActive 
+                            ? 'font-bold text-orange-500 bg-orange-500/10 border border-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.15)]'
+                            : 'font-semibold text-orange-400 bg-transparent hover:bg-orange-500/5 hover:text-orange-500'
+                          : isActive
+                            ? 'font-semibold text-white bg-white/10'
+                            : 'font-medium text-white/70 bg-transparent hover:bg-white/5 hover:text-white'
+                      }`
+                    }
+                  >
+                    <Icon size={18} className={`transition-opacity ${special ? 'opacity-100' : 'opacity-80 group-hover:opacity-100'}`} />
+                    {label}
+                  </NavLink>
+                );
+              })}
 
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-3 px-3 py-3 rounded-[10px] text-[14px] font-inter font-medium text-white/70 bg-transparent border-none cursor-pointer transition-colors duration-200 ease-[var(--ease)] w-full hover:bg-white/5 hover:text-red-400 text-left mt-2"
-                aria-label="Log out"
-                id="profile-logout"
-              >
-                <LogOut size={18} className="opacity-70" />
-                Log out
-              </button>
             </nav>
 
-            {/* Motivational Mascot Widget */}
-            <div className="mt-8 bg-white/5 rounded-2xl p-4 border border-white/10 relative overflow-hidden flex flex-col justify-end min-h-[140px]">
-              <div className="relative z-10 w-[60%]">
-                <p className="font-inter text-[12px] font-medium text-white/80 leading-snug mb-1">
-                  Stay consistent, vocabulary grows with you.
-                </p>
-                <div className="text-orange-400 text-[18px]">✨</div>
+            {/* Bottom Sidebar Elements */}
+            <div className="mt-auto flex flex-col gap-4">
+              {/* Profile Dropdown Widget */}
+              <div className="bg-white/5 rounded-2xl p-3 border border-white/10 flex items-center justify-between cursor-pointer hover:bg-white/10 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-orange-500 text-white flex items-center justify-center font-inter font-bold text-lg">
+                    {user?.name?.[0]?.toUpperCase() || 'N'}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-inter font-semibold text-white text-[14px] leading-tight">
+                      {user?.name || 'Nikhil'}
+                    </span>
+                    <span className="font-inter font-medium text-white/60 text-[11px] leading-tight mt-1">
+                      Keep Learning!
+                    </span>
+                  </div>
+                </div>
+                <ChevronDown size={16} className="text-white/50" />
               </div>
 
-              <img
-                src="/images/fox_study.png"
-                alt="VocabMitra mascot reading a book"
-                className="absolute right-0 bottom-0 w-[90px] h-auto object-contain translate-x-3 translate-y-3 drop-shadow-md"
-              />
+              {/* Help & Feedback */}
+              <div className="flex flex-col gap-1">
+                <button className="flex items-center gap-3 px-3 py-2 rounded-[10px] text-[14px] font-inter font-medium text-white/70 bg-transparent border-none cursor-pointer hover:bg-white/5 hover:text-white text-left transition-colors">
+                  <HelpCircle size={18} className="opacity-80" />
+                  Help
+                </button>
+                <button className="flex items-center gap-3 px-3 py-2 rounded-[10px] text-[14px] font-inter font-medium text-white/70 bg-transparent border-none cursor-pointer hover:bg-white/5 hover:text-white text-left transition-colors">
+                  <MessageSquare size={18} className="opacity-80" />
+                  Feedback
+                </button>
+                {/* Keeping the logout functionality accessible here as an option */}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-3 px-3 py-2 rounded-[10px] text-[14px] font-inter font-medium text-white/70 bg-transparent border-none cursor-pointer hover:bg-white/5 hover:text-red-400 text-left transition-colors"
+                >
+                  <LogOut size={18} className="opacity-80" />
+                  Log out
+                </button>
+              </div>
             </div>
           </aside>
 

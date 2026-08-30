@@ -3,6 +3,7 @@ import { useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { WordReveal } from '../ui/WordReveal';
+import { useAuthStore } from '../../store/useAuthStore';
 
 // Floating vocabulary words — positions are % from top-left of section
 const FLOATING_WORDS = [
@@ -21,6 +22,8 @@ const FLOATING_WORDS = [
 export function HeroSection() {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLElement>(null);
+  const { user, isAuthenticated } = useAuthStore();
+  const isLoggedIn = isAuthenticated || Boolean(localStorage.getItem('vv-auth-token')) || Boolean(user);
 
   useGSAP(() => {
     const tl = gsap.timeline({ delay: 0.2 });
@@ -142,10 +145,10 @@ export function HeroSection() {
           className="hero-cta flex items-center flex-wrap gap-5 max-w-[500px] mb-8 opacity-0"
         >
           <button
-            onClick={() => navigate('/auth')}
+            onClick={() => navigate(isLoggedIn ? '/profile' : '/auth')}
             className="flex items-center justify-center whitespace-nowrap py-3.5 px-8 rounded-full bg-orange-500 text-white text-lg font-bold font-inter border-none cursor-pointer shadow-[0_8px_32px_rgba(249,115,22,0.35)] transition-all duration-200 ease-[var(--ease)] hover:-translate-y-0.5 hover:bg-orange-400 hover:shadow-[0_12px_40px_rgba(249,115,22,0.45)]"
           >
-            Get started for free
+            {isLoggedIn ? 'Go to Dashboard' : 'Get started for free'}
           </button>
           <p className="text-[15px] font-medium text-ink-soft leading-snug max-w-[220px]">
             Built for SSC, Banking, CUET &amp; UPSC aspirants

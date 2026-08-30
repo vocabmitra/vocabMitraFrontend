@@ -1,6 +1,7 @@
 import axiosInstance from '../axiosInstance';
-import type { VocabCard } from '../../types';
+import type { VocabCard, Vocab } from '../../types';
 import type { ApiResponse, PaginatedResponse } from '../../types';
+import { useAuthStore } from '../../store/useAuthStore';
 
 export interface VocabListParams {
   page?: number;         // 0-indexed (Spring pagination)
@@ -8,28 +9,67 @@ export interface VocabListParams {
   q?: string;            // search query
   tag?: string;          // comma-separated tags, e.g. "UPSC,GRE"
   type?: string;         // vocabType filter
+  userId?: number;       // logged in user ID
 }
 
-const VOCAB_BASE = '/vocab';
+const VOCAB_BASE = '/vocabs';
 const USER_BASE = '/user';
 
 export const vocabApi = {
   /**
-   * Get paginated vocab list with optional filters.
-   * GET /vocab?page=0&size=9&q=...&tag=...
-   * OPEN: confirm exact query param names with backend
+   * Get paginated vocab list.
+   * If logged in (userId available), uses GET /vocabs/private/all/user?userId={userId}
+   * If guest/not logged in, uses GET /vocabs/public/all
    */
   getVocabList: async (params: VocabListParams = {}): Promise<PaginatedResponse<VocabCard>> => {
-    const res = await axiosInstance.get<PaginatedResponse<VocabCard>>(VOCAB_BASE, {
+    const authState = useAuthStore.getState();
+    const token = localStorage.getItem('vv-auth-token');
+    const activeUserId = params.userId ?? (token && authState?.user?.id ? authState.user.id : undefined);
+
+    const isPrivate = Boolean(activeUserId);
+    const url = isPrivate ? `${VOCAB_BASE}/private/all/user` : `${VOCAB_BASE}/public/all`;
+
+    const res = await axiosInstance.get<PaginatedResponse<any>>(url, {
       params: {
         page: params.page ?? 0,
         size: params.size ?? 9,
+        ...(isPrivate && activeUserId ? { userId: activeUserId } : {}),
         ...(params.q ? { q: params.q } : {}),
         ...(params.tag ? { tag: params.tag } : {}),
         ...(params.type ? { type: params.type } : {}),
       },
     });
-    return res.data;
+
+    const rawData = res.data;
+    const content: VocabCard[] = (rawData.content || []).map((item: any) => {
+      // 1. Private User Response ({ vocabResponse: {...}, bookmarked: true/false, learned: true/false })
+      if (item && item.vocabResponse && typeof item.vocabResponse === 'object') {
+        return {
+          vocab: item.vocabResponse as Vocab,
+          isBookmarked: Boolean(item.bookmarked ?? item.isBookmarked),
+          isLearned: Boolean(item.learned ?? item.isLearned),
+        };
+      }
+      // 2. Wrapped VocabCard ({ vocab: {...}, isBookmarked, isLearned })
+      if (item && item.vocab && typeof item.vocab === 'object') {
+        return {
+          vocab: item.vocab as Vocab,
+          isBookmarked: Boolean(item.isBookmarked ?? item.bookmarked),
+          isLearned: Boolean(item.isLearned ?? item.learned),
+        };
+      }
+      // 3. Raw Vocab entity ({ id, vocab: "Bear in mind", ... })
+      return {
+        vocab: item as Vocab,
+        isBookmarked: Boolean(item?.isBookmarked ?? item?.bookmarked),
+        isLearned: Boolean(item?.isLearned ?? item?.learned),
+      };
+    });
+
+    return {
+      ...rawData,
+      content,
+    };
   },
 
   /**
@@ -64,8 +104,13 @@ export const vocabApi = {
    * GET /user/bookmarks
    */
   getBookmarked: async (): Promise<VocabCard[]> => {
-    const res = await axiosInstance.get<ApiResponse<VocabCard[]>>(`${USER_BASE}/bookmarks`);
-    return res.data.data ?? (res.data as unknown as VocabCard[]);
+    const res = await axiosInstance.get<any>(`${USER_BASE}/bookmarks`);
+    const rawList = Array.isArray(res.data?.data) ? res.data.data : Array.isArray(res.data) ? res.data : [];
+    return rawList.map((item: any) =>
+      item && item.vocab && typeof item.vocab === 'object'
+        ? item
+        : { vocab: item, isLearned: false, isBookmarked: true }
+    );
   },
 
   /**
@@ -73,8 +118,13 @@ export const vocabApi = {
    * GET /user/learned
    */
   getLearned: async (): Promise<VocabCard[]> => {
-    const res = await axiosInstance.get<ApiResponse<VocabCard[]>>(`${USER_BASE}/learned`);
-    return res.data.data ?? (res.data as unknown as VocabCard[]);
+    const res = await axiosInstance.get<any>(`${USER_BASE}/learned`);
+    const rawList = Array.isArray(res.data?.data) ? res.data.data : Array.isArray(res.data) ? res.data : [];
+    return rawList.map((item: any) =>
+      item && item.vocab && typeof item.vocab === 'object'
+        ? item
+        : { vocab: item, isLearned: true, isBookmarked: false }
+    );
   },
 
   /**
@@ -90,7 +140,12 @@ export const vocabApi = {
    * GET /user/practice
    */
   getPracticeQueue: async (): Promise<VocabCard[]> => {
-    const res = await axiosInstance.get<ApiResponse<VocabCard[]>>(`${USER_BASE}/practice`);
-    return res.data.data ?? (res.data as unknown as VocabCard[]);
+    const res = await axiosInstance.get<any>(`${USER_BASE}/practice`);
+    const rawList = Array.isArray(res.data?.data) ? res.data.data : Array.isArray(res.data) ? res.data : [];
+    return rawList.map((item: any) =>
+      item && item.vocab && typeof item.vocab === 'object'
+        ? item
+        : { vocab: item, isLearned: false, isBookmarked: false }
+    );
   },
 };

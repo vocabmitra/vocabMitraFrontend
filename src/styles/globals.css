@@ -8,13 +8,16 @@
    -------------------------------------------------------------------------- */
 :root {
   /* Page & card backgrounds */
-  --cream: #f4faff;             /* Cool blue-white — main page bg */
+  --cream: #e6eef5;             /* Slightly darker cool blue-gray — main page bg */
   --cream-card: #ffffff;        /* Card surfaces pure white */
 
   /* Text — NO black. Deep blue instead */
   --ink: #0b5394;               /* Deep blue — primary text */
   --ink-soft: #5a7fa8;          /* Muted blue — secondary / captions */
   --line: rgba(11, 83, 148, 0.12); /* Blue-tinted dividers */
+  
+  /* Sidebar */
+  --sidebar-bg: #063866;        /* Deeper navy than --ink */
 
   /* Section backgrounds — warm / cool alternating stripes */
   --section-bg-1: #eaf3ff;      /* Soft cool blue — clearly distinct from page bg */
@@ -82,13 +85,16 @@
    -------------------------------------------------------------------------- */
 [data-theme="dark"] {
   /* Backgrounds */
-  --cream: #121212;          /* Deep dark page background */
-  --cream-card: #1A1A1A;    /* Elevated card surface */
+  --cream: #161616;          /* Page background (slightly lighter than pure black) */
+  --cream-card: #1C1C1C;     /* Elevated card surface (very similar to background) */
 
   /* Text */
   --ink: #F5F5F5;            /* Primary text — neutral-100 */
   --ink-soft: #A3A3A3;       /* Secondary text — neutral-400 */
   --line: rgba(255, 255, 255, 0.08); /* Subtle dividers */
+  
+  /* Sidebar */
+  --sidebar-bg: #090909;     /* Pitch black for deeper separation */
 
   /* Extra surface tokens */
   --surface-2: #222222;      /* Nested card / input bg */

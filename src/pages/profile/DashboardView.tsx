@@ -1,13 +1,12 @@
-import { useState, useRef, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { 
-  Bell, ChevronDown, Sparkles, BookOpen, Clock, Flame, 
-  ChevronRight, Volume2, Lightbulb, Search, Bookmark
+import { useRef, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Bell, Flame, Search, BookOpen, Target, Bookmark,
+  Leaf, Zap, Volume2, Lightbulb, Star, MessageSquare,
+  PenTool, Link as LinkIcon, Globe, ArrowRight, Book
 } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
-import { vocabApi } from '../../api/endpoints/vocab.api';
 import { authApi } from '../../api/endpoints/auth.api';
-import type { VocabCard as VocabCardType } from '../../types';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -16,24 +15,15 @@ export default function DashboardView() {
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [recentLearned, setRecentLearned] = useState<VocabCardType[]>([]);
-  const [stats, setStats] = useState({ totalBookmarked: 0, totalLearned: 0, currentStreak: 12 });
+  const [stats, setStats] = useState({ currentStreak: 7 });
 
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [profileRes, learnedRes] = await Promise.all([
-          authApi.getProfile(),
-          vocabApi.getLearned()
-        ]);
-        
+        const profileRes = await authApi.getProfile();
         setStats({
-          totalBookmarked: profileRes.stats.totalBookmarks,
-          totalLearned: profileRes.stats.totalLearned,
-          currentStreak: profileRes.stats.currentStreak > 0 ? profileRes.stats.currentStreak : 12
+          currentStreak: profileRes.stats.currentStreak > 0 ? profileRes.stats.currentStreak : 7
         });
-        
-        setRecentLearned(learnedRes.slice(0, 4));
       } catch (err) {
         console.error('Failed to fetch dashboard data:', err);
       }
@@ -43,324 +33,284 @@ export default function DashboardView() {
 
   useGSAP(() => {
     const tl = gsap.timeline();
-    tl.fromTo('.dash-element', 
+    tl.fromTo('.dash-element',
       { opacity: 0, y: 15 },
       { opacity: 1, y: 0, duration: 0.8, stagger: 0.05, ease: 'expo.out' }
     );
   }, { scope: containerRef });
 
   return (
-    <div ref={containerRef} className="w-full flex flex-col gap-8 pb-10">
-      
+    <div ref={containerRef} className="w-full flex flex-col gap-6 pb-12 max-w-[1200px] mx-auto pr-4 sm:pr-6 md:pr-8">
+
       {/* ─── Global Top Header ─── */}
       <div className="dash-element flex flex-col sm:flex-row sm:items-center justify-between gap-6 w-full">
-        <div>
-          <h1 className="font-bricolage text-[28px] sm:text-[32px] font-bold text-ink mb-1 flex items-center gap-2">
-            Good morning, {user?.firstName || 'User'} <span className="text-[24px]">👋</span>
-          </h1>
-          <p className="font-inter text-[14px] text-ink-soft">
-            Let's make today a great day to learn.
-          </p>
+        {/* Search Bar */}
+        <div className="relative w-full max-w-[400px]">
+          <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-ink-soft opacity-70" />
+          <input
+            type="text"
+            placeholder="Search any word..."
+            className="w-full bg-cream-card rounded-2xl py-3 pl-12 pr-4 font-inter text-[14px] text-ink placeholder:text-ink-soft focus:outline-none focus:ring-1 focus:ring-orange-500/50 transition-all border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-sm dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+          />
         </div>
 
-        <div className="flex items-center gap-5 shrink-0">
-          {/* Global Streak */}
-          <div className="flex items-center gap-3">
-            <Flame className="text-orange-500 fill-orange-500" size={20} />
+        <div className="flex items-center gap-4 shrink-0">
+          {/* Streak Pill */}
+          <div className="flex items-center gap-3 bg-cream-card rounded-2xl px-4 py-2 border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-sm dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]">
+            <Flame className="text-orange-500 fill-orange-500" size={18} />
             <div className="flex flex-col">
-              <span className="font-bricolage font-bold text-ink leading-tight text-[15px]">{stats.currentStreak}</span>
-              <span className="font-inter text-[10px] text-ink-soft leading-tight">Day streak</span>
+              <span className="font-bricolage font-bold text-ink leading-none text-[15px]">{stats.currentStreak}</span>
+              <span className="font-inter text-[10px] text-ink-soft leading-tight mt-0.5">day streak</span>
             </div>
           </div>
 
-          <div className="w-[1px] h-8 bg-line" />
-
           {/* Notifications */}
-          <button className="w-10 h-10 rounded-full flex items-center justify-center text-ink-soft hover:bg-line/30 transition-colors border border-line cursor-pointer bg-transparent">
+          <button className="w-11 h-11 rounded-2xl flex items-center justify-center text-ink-soft hover:text-ink bg-cream-card cursor-pointer transition-colors border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-sm dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]">
             <Bell size={18} />
           </button>
 
-          {/* Profile Dropdown Trigger */}
-          <button className="flex items-center gap-2 py-1.5 pr-2 pl-1.5 rounded-full border border-line bg-cream-card hover:bg-line/30 transition-colors cursor-pointer">
-            <div className="w-7 h-7 rounded-full bg-ink text-cream flex items-center justify-center font-space text-[12px] font-bold">
-              {user ? user.firstName[0] : 'U'}
-            </div>
-            <span className="font-inter text-[13px] font-medium text-ink hidden sm:block">{user?.firstName}</span>
-            <ChevronDown size={14} className="text-ink-soft hidden sm:block" />
+          {/* Profile Avatar */}
+          <button className="w-11 h-11 rounded-full bg-orange-500 text-white flex items-center justify-center font-bricolage font-bold text-[16px] cursor-pointer shadow-[0_4px_10px_rgba(249,115,22,0.3)] hover:opacity-90 transition-opacity border-none">
+            {user ? user.firstName[0].toUpperCase() : 'N'}
           </button>
         </div>
       </div>
 
-      <div className="w-full flex flex-col xl:flex-row gap-8">
-        
-        {/* ─── MIDDLE COLUMN (Main Content) ─── */}
-        <div className="flex-1 flex flex-col min-w-0 gap-8">
-          
+      {/* ─── Row 1: Metrics ─── */}
+      <div className="dash-element grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
 
-
-          {/* Quick Action Grid */}
-          <div className="dash-element grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Card 1 */}
-            <div className="bg-cream-card border border-line rounded-2xl p-5 flex flex-col hover:border-orange-500/50 transition-colors cursor-pointer group">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-green-500/10 text-green-600 flex items-center justify-center shrink-0">
-                  <BookOpen size={20} />
-                </div>
-                <div>
-                  <div className="font-bricolage text-[20px] font-bold text-ink leading-tight">5</div>
-                  <div className="font-inter text-[12px] text-ink-soft">New words</div>
-                </div>
-              </div>
-              <div className="mt-auto font-inter text-[12px] font-semibold text-green-600 flex items-center gap-1 group-hover:gap-1.5 transition-all">
-                Start learning <ChevronRight size={14} />
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div className="bg-cream-card border border-line rounded-2xl p-5 flex flex-col hover:border-orange-500/50 transition-colors cursor-pointer group">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-600 flex items-center justify-center shrink-0">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-                </div>
-                <div>
-                  <div className="font-bricolage text-[20px] font-bold text-ink leading-tight">8</div>
-                  <div className="font-inter text-[12px] text-ink-soft">Words for practice</div>
-                </div>
-              </div>
-              <div className="mt-auto font-inter text-[12px] font-semibold text-orange-600 flex items-center gap-1 group-hover:gap-1.5 transition-all">
-                Practice now <ChevronRight size={14} />
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div className="bg-cream-card border border-line rounded-2xl p-5 flex flex-col hover:border-orange-500/50 transition-colors cursor-pointer group">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center shrink-0">
-                  <Clock size={20} />
-                </div>
-                <div>
-                  <div className="font-bricolage text-[20px] font-bold text-ink leading-tight flex items-baseline gap-1">10 <span className="text-[12px] font-medium text-ink-soft">min</span></div>
-                  <div className="font-inter text-[12px] text-ink-soft">Quick practice</div>
-                </div>
-              </div>
-              <div className="mt-auto font-inter text-[12px] font-semibold text-purple-600 flex items-center gap-1 group-hover:gap-1.5 transition-all">
-                Start timer <ChevronRight size={14} />
-              </div>
-            </div>
-
-            {/* Card 4 */}
-            <div className="bg-cream-card border border-line rounded-2xl p-5 flex flex-col hover:border-orange-500/50 transition-colors cursor-pointer group">
-              <div className="flex items-start gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center shrink-0">
-                  <Flame size={20} className="fill-red-600" />
-                </div>
-                <div>
-                  <div className="font-bricolage text-[20px] font-bold text-ink leading-tight">{stats.currentStreak}</div>
-                  <div className="font-inter text-[12px] text-ink-soft">Day streak</div>
-                </div>
-              </div>
-              <div className="mt-auto font-inter text-[12px] font-semibold text-red-600 flex items-center gap-1 group-hover:gap-1.5 transition-all">
-                Keep it up! <Flame size={14} className="fill-red-600 ml-0.5" />
-              </div>
-            </div>
+        {/* Metric 1 */}
+        <div className="bg-cream-card rounded-2xl p-5 flex items-center gap-4 border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)]">
+          <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0">
+            <Target size={22} className="stroke-[2.5]" />
           </div>
-
-          {/* Widgets Row */}
-          <div className="dash-element grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            {/* Continue Learning */}
-            <div className="bg-cream-card border border-line rounded-3xl p-6 relative overflow-hidden flex flex-col">
-              <div className="flex items-center gap-2 text-orange-600 font-inter font-semibold text-[13px] mb-5">
-                <Bookmark size={16} /> Continue learning
-              </div>
-              
-              <div className="flex items-center gap-2 mb-2">
-                <h3 className="font-bricolage text-[22px] font-bold text-orange-500 uppercase">LASSITUDE</h3>
-                <Volume2 size={16} className="text-ink-soft cursor-pointer hover:text-ink" />
-              </div>
-              <p className="font-inter text-[14px] text-ink-soft mb-5">Tiredness / lack of energy</p>
-              
-              <div className="font-inter text-[13px] text-ink font-medium max-w-[70%]">
-                <span className="font-bold">Mnemonic:</span> "Lassi pi ke nind aati hai."
-              </div>
-
-              {/* Decorative image */}
-              <div className="absolute right-6 top-1/2 -translate-y-1/2 mt-4">
-                <div className="text-[60px]">🥛</div>
-              </div>
-
-              <div className="mt-auto pt-8 flex items-center gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center justify-between font-inter text-[11px] font-medium text-ink-soft mb-2">
-                    <span>3 / 5 steps completed</span>
-                  </div>
-                  <div className="w-full h-1.5 bg-line rounded-full overflow-hidden">
-                    <div className="h-full bg-orange-500 rounded-full w-[60%]" />
-                  </div>
-                </div>
-                <button className="shrink-0 bg-orange-500 hover:bg-orange-400 text-white font-inter text-[13px] font-semibold px-5 py-2.5 rounded-xl transition-colors cursor-pointer flex items-center gap-2 border-none">
-                  Continue <ChevronRight size={14} />
-                </button>
-              </div>
-            </div>
-
-            {/* Your Next Practice */}
-            <div className="bg-cream-card border border-line rounded-3xl p-6 flex flex-col">
-              <div className="flex items-center gap-2 text-blue-600 font-inter font-semibold text-[13px] mb-5">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                Your next practice
-              </div>
-
-              <div className="flex flex-col gap-1 mb-6">
-                
-                {/* List Item 1 */}
-                <div className="flex items-center gap-4 py-2.5 px-3 rounded-xl hover:bg-line/30 transition-colors cursor-pointer group">
-                  <div className="w-8 h-8 rounded-full bg-green-500/10 text-green-600 flex items-center justify-center shrink-0">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-inter text-[13px] font-bold text-ink truncate">8 words you added</div>
-                    <div className="font-inter text-[11px] text-ink-soft truncate">Ready to practice</div>
-                  </div>
-                  <ChevronRight size={14} className="text-ink-soft opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-
-                {/* List Item 2 */}
-                <div className="flex items-center gap-4 py-2.5 px-3 rounded-xl hover:bg-line/30 transition-colors cursor-pointer group">
-                  <div className="w-8 h-8 rounded-full bg-green-500/10 text-green-600 flex items-center justify-center shrink-0">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-inter text-[13px] font-bold text-ink truncate">5 words marked for more practice</div>
-                    <div className="font-inter text-[11px] text-ink-soft truncate">We'll show these more often</div>
-                  </div>
-                  <ChevronRight size={14} className="text-ink-soft opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-
-                {/* List Item 3 */}
-                <div className="flex items-center gap-4 py-2.5 px-3 rounded-xl hover:bg-line/30 transition-colors cursor-pointer group">
-                  <div className="w-8 h-8 rounded-full bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
-                    <BookOpen size={14} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-inter text-[13px] font-bold text-ink truncate">Mixed flashcards</div>
-                    <div className="font-inter text-[11px] text-ink-soft truncate">Vocabulary · Idioms · OWS · Phrasal Verbs</div>
-                  </div>
-                  <ChevronRight size={14} className="text-ink-soft opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-
-              </div>
-
-              <button className="w-full bg-orange-500 hover:bg-orange-400 text-white font-inter text-[14px] font-bold py-3.5 rounded-xl border-none transition-colors cursor-pointer mt-auto flex justify-center items-center gap-2">
-                Start practice <ChevronRight size={16} />
-              </button>
-            </div>
+          <div className="flex flex-col">
+            <span className="font-inter text-[12px] font-medium text-purple-400 mb-1">Today's Target</span>
+            <span className="font-bricolage text-[24px] font-bold text-ink leading-none mb-1 flex items-baseline gap-1">
+              2 / 20 <span className="text-[14px] text-ink-soft font-medium font-inter">words</span>
+            </span>
+            <span className="font-inter text-[12px] text-ink-soft">Ready to practice</span>
           </div>
-
-          {/* Banner */}
-          <div className="dash-element bg-cream-card border border-line rounded-2xl py-6 px-8 relative overflow-hidden flex items-center mt-2">
-            <div className="font-bricolage text-[24px] text-green-500/50 absolute left-6 top-6">"</div>
-            <p className="font-inter text-[15px] font-medium text-ink pl-6 relative z-10 max-w-[60%]">
-              The more you practice, the easier it gets to remember.
-            </p>
-            <img 
-              src="/images/fox_study.png" 
-              alt="Mascot" 
-              className="absolute right-8 bottom-0 w-[80px] object-contain drop-shadow-md z-10"
-            />
-            <div className="absolute right-[140px] bottom-0 text-[40px] opacity-20 filter blur-[1px]">🌿</div>
-          </div>
-
-          <div className="dash-element font-inter italic text-[12px] text-ink-soft text-center mt-4 px-4 opacity-70">
-            "Words are, of course, the most powerful drug used by mankind." – Rudyard Kipling
-          </div>
-
         </div>
 
-        {/* ─── RIGHT COLUMN (Side Panel) ─── */}
-        <div className="w-full xl:w-[320px] shrink-0 flex flex-col gap-6">
-          
-          {/* Today's Goal */}
-          <div className="dash-element bg-cream-card border border-line rounded-3xl p-6">
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2 font-inter font-semibold text-[13px] text-ink">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-orange-500"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-                Today's goal
-              </div>
-              <button className="px-3 py-1.5 rounded-lg border border-line bg-transparent font-inter text-[11px] font-semibold text-ink hover:bg-line/30 transition-colors cursor-pointer">
-                Edit
-              </button>
-            </div>
+        {/* Metric 2 */}
+        <div className="bg-cream-card rounded-2xl p-5 flex items-center gap-4 border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)]">
+          <div className="w-12 h-12 rounded-xl bg-green-500/10 text-green-500 flex items-center justify-center shrink-0">
+            <Target size={22} className="stroke-[2.5]" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-inter text-[12px] font-medium text-green-500 mb-1">Sets Ready</span>
+            <span className="font-bricolage text-[24px] font-bold text-ink leading-none mb-1">5</span>
+            <span className="font-inter text-[12px] text-ink-soft">Ready to practice</span>
+          </div>
+        </div>
 
-            <div className="font-inter text-[13px] font-bold text-ink mb-3">
-              7 / 20 <span className="font-normal text-ink-soft">words practiced</span>
+        {/* Metric 3 */}
+        <div className="bg-cream-card rounded-2xl p-5 flex items-center gap-4 border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)]">
+          <div className="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0">
+            <Flame size={22} className="fill-orange-500/20" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-inter text-[12px] font-medium text-orange-500 mb-1">Streak Maintained</span>
+            <span className="font-bricolage text-[24px] font-bold text-ink leading-none mb-1 flex items-baseline gap-1">
+              5 <span className="text-[14px] text-ink-soft font-medium font-inter">days</span>
+            </span>
+            <span className="font-inter text-[12px] text-ink-soft">Keep it going!</span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ─── Row 2: Learning ─── */}
+      <div className="dash-element grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+        {/* Continue Learning */}
+        <div className="xl:col-span-7 bg-cream-card rounded-2xl p-6 flex flex-col border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)]">
+          <div className="flex flex-col gap-1 mb-6">
+            <div className="font-inter text-[14px] font-medium text-purple-500">
+              Continue from where you left
             </div>
-            
-            <div className="w-full h-2 bg-line rounded-full overflow-hidden">
-              <div className="h-full bg-orange-500 rounded-full w-[35%]" />
+            <div className="font-inter text-[13px] text-ink-soft">
+              [ Learning Words ]
             </div>
           </div>
-          
-          {/* Word of the Day */}
-          <div className="dash-element bg-cream-card border border-line rounded-3xl p-6 flex flex-col shadow-sm">
-            <div className="flex items-center gap-2 text-yellow-600 font-inter font-semibold text-[13px] mb-5">
-              <Lightbulb size={16} /> Word of the Day
-            </div>
 
-            <div className="flex items-center gap-2 mb-2">
-              <h3 className="font-bricolage text-[20px] font-bold text-ink uppercase tracking-wide">PERSPICACIOUS</h3>
-              <Volume2 size={16} className="text-ink-soft cursor-pointer hover:text-ink" />
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex flex-col gap-2">
+              <h2 className="font-bricolage text-[32px] font-bold text-ink leading-none uppercase">
+                LASSITUDE
+              </h2>
+              <p className="font-inter text-[14px] text-ink-soft mb-2">
+                Tiredness / lack of energy
+              </p>
+              <div className="flex items-center gap-2">
+                <Lightbulb size={16} className="text-orange-500" />
+                <span className="font-inter text-[14px] text-orange-500">Lassi pi ke nind aati hai.</span>
+              </div>
             </div>
-            
-            <div className="font-inter text-[13px] text-ink-soft mb-2">(Adjective)</div>
-            <p className="font-inter text-[14px] text-ink mb-6">Having a ready insight into things.</p>
-            
-            <div className="font-inter text-[13px] font-bold text-ink mb-2 flex items-center gap-1.5">
-              Mnemonic <Lightbulb size={14} className="text-yellow-500 fill-yellow-500" />
+            <div className="w-16 h-16 rounded-2xl bg-black/5 dark:bg-white/5 flex items-center justify-center shrink-0 border border-black/5 dark:border-white/5 shadow-inner">
+              <Book size={28} className="text-ink-soft opacity-80" />
             </div>
-            <p className="font-inter text-[13.5px] font-medium text-ink-soft italic leading-relaxed mb-6 relative">
-              <span className="relative z-10">"Person is cautious →<br/>sees things clearly."</span>
-              <span className="absolute right-0 top-0 text-[40px] drop-shadow-sm -translate-y-2 opacity-90">📚</span>
-            </p>
+          </div>
 
-            <button className="w-full bg-transparent border-2 border-orange-500/20 text-orange-500 font-inter font-bold text-[14px] py-3 rounded-xl hover:bg-orange-500 hover:text-white transition-colors cursor-pointer mt-auto">
-              Learn this word
+          <div className="mt-auto flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+            <div className="flex-1 w-full max-w-[300px]">
+              <div className="w-full h-2 bg-black/10 dark:bg-white/5 rounded-full overflow-hidden mb-3 shadow-inner">
+                <div className="h-full bg-purple-500 rounded-full w-[57%] shadow-[0_0_10px_rgba(168,85,247,0.4)]" />
+              </div>
+              <div className="font-inter text-[13px] text-ink-soft font-medium">
+                4 / 7 words completed
+              </div>
+            </div>
+            <button className="shrink-0 bg-transparent border border-purple-500/50 hover:border-purple-500 hover:bg-purple-500/5 text-purple-500 font-inter text-[13px] font-medium px-5 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2">
+              Continue <ArrowRight size={14} />
             </button>
           </div>
+        </div>
 
-          {/* Recently Practiced */}
-          <div className="dash-element bg-cream-card border border-line rounded-3xl p-6">
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2 font-inter font-semibold text-[13px] text-ink">
-                <Clock size={16} className="text-ink-soft" /> Recently practiced
+        {/* Today's Learning */}
+        <div className="xl:col-span-5 bg-cream-card rounded-2xl p-6 flex flex-col border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)]">
+          <div className="font-inter text-[11px] font-bold text-ink-soft tracking-[0.1em] mb-4 uppercase opacity-80">
+            Today's Learning
+          </div>
+
+          <div className="flex items-start justify-between mb-8">
+            <div className="flex flex-col">
+              <span className="font-bricolage text-[48px] font-bold text-ink leading-none mb-1">10</span>
+              <span className="font-inter text-[13px] text-ink-soft leading-tight max-w-[100px]">
+                new words met today
+              </span>
+            </div>
+            <div className="w-16 h-16 rounded-2xl bg-black/5 dark:bg-white/5 flex items-center justify-center shrink-0 border border-black/5 dark:border-white/5 shadow-inner">
+              <Leaf size={28} className="text-green-500 fill-green-500/10 opacity-90" />
+            </div>
+          </div>
+
+          <div className="mt-auto flex flex-wrap items-center gap-2">
+            {['ALACRITY', 'CANDID', 'OBSTINATE'].map((word) => (
+              <div key={word} className="px-4 py-2 rounded-full bg-black/5 dark:bg-white/5 font-inter text-[10px] font-bold text-ink-soft tracking-[0.1em] shadow-[inset_0_1px_2px_rgba(0,0,0,0.1)] border border-transparent dark:border-white/5">
+                {word}
               </div>
-              <button className="text-orange-500 font-inter font-semibold text-[12px] bg-transparent border-none cursor-pointer hover:underline">
-                View all
-              </button>
-            </div>
+            ))}
+          </div>
+        </div>
 
-            <div className="flex flex-col gap-4">
-              {[
-                { word: 'Obstinate', time: 'Yesterday', tag: 'Good', color: 'text-green-600 bg-green-500/10' },
-                { word: 'Ephemeral', time: 'Yesterday', tag: 'Needs practice', color: 'text-orange-600 bg-orange-500/10' },
-                { word: 'Zeal', time: '2 days ago', tag: 'Good', color: 'text-green-600 bg-green-500/10' },
-                { word: 'Mellifluous', time: '2 days ago', tag: 'Needs practice', color: 'text-orange-600 bg-orange-500/10' }
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between border-b border-line/50 pb-3 last:border-0 last:pb-0">
-                  <div>
-                    <div className="font-inter text-[14px] font-bold text-ink">{item.word}</div>
-                    <div className="font-inter text-[11px] text-ink-soft mt-0.5">{item.time}</div>
-                  </div>
-                  <div className={`px-2.5 py-1 rounded-md font-inter text-[11px] font-semibold ${item.color}`}>
-                    {item.tag}
-                  </div>
-                </div>
-              ))}
+      </div>
+
+      {/* ─── Row 3: Practice & Word of the Day ─── */}
+      <div className="dash-element grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+        {/* Practice */}
+        <div className="xl:col-span-5 bg-cream-card rounded-2xl p-6 flex flex-col border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)]">
+          <div className="font-inter text-[11px] font-bold text-purple-500 tracking-[0.1em] mb-4 uppercase">
+            Practice
+          </div>
+
+          <div className="flex items-start justify-between mb-8">
+            <div className="flex flex-col gap-2">
+              <h2 className="font-bricolage text-[32px] font-bold text-ink leading-none">
+                5 cards ready
+              </h2>
+              <p className="font-inter text-[14px] text-ink-soft">
+                Scheduled · 6 min
+              </p>
             </div>
+            <div className="w-16 h-16 rounded-2xl bg-black/5 dark:bg-white/5 flex items-center justify-center shrink-0 border border-black/5 dark:border-white/5 shadow-inner">
+              <Zap size={28} className="text-purple-500 fill-purple-500/10 opacity-90" />
+            </div>
+          </div>
+
+          <div className="mt-auto flex justify-start sm:justify-end">
+            <button className="w-full sm:w-auto bg-transparent border border-purple-500/50 hover:border-purple-500 text-purple-500 font-inter text-[13px] font-semibold px-5 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2">
+              Start Practice <ArrowRight size={14} />
+            </button>
+          </div>
+        </div>
+
+        {/* Word of the Day */}
+        <div className="xl:col-span-7 bg-cream-card rounded-2xl p-6 flex flex-col border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)]">
+          <div className="font-inter text-[11px] font-bold text-orange-500 tracking-[0.1em] mb-4 uppercase">
+            Word of the Day
+          </div>
+
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-4">
+                <h2 className="font-bricolage text-[36px] font-bold text-ink leading-none uppercase">
+                  EPHEMERAL
+                </h2>
+                <Volume2 size={24} className="text-ink-soft cursor-pointer hover:text-ink transition-colors" />
+              </div>
+              <p className="font-inter text-[15px] text-ink-soft">
+                Lasting for a very short time.
+              </p>
+            </div>
+            <div className="w-16 h-16 rounded-2xl bg-black/5 dark:bg-white/5 flex items-center justify-center shrink-0 border border-black/5 dark:border-white/5 shadow-inner">
+              <Star size={28} className="text-orange-500 fill-orange-500 opacity-90" />
+            </div>
+          </div>
+
+          <div className="mt-auto flex items-start gap-4 pt-6">
+            <Lightbulb size={20} className="text-orange-500 shrink-0 mt-0.5 opacity-80" />
+            <p className="font-inter text-[14px] font-medium text-ink-soft italic leading-relaxed">
+              "Ephemeral cheez, pal bhar ki mehmaan."
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ─── Row 4: CUET Focus ─── */}
+      <div className="dash-element w-full mt-2">
+        <div className="flex items-center justify-between mb-4 px-2">
+          <div className="flex items-center gap-2 font-inter text-[13px] font-bold text-orange-500 uppercase tracking-wider">
+            <span>✨</span> CUET FOCUS
+          </div>
+          <button className="bg-transparent border-none text-orange-500 font-inter text-[13px] font-semibold cursor-pointer flex items-center gap-1 hover:underline">
+            Explore all <ArrowRight size={14} />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 pb-4 pt-2 w-full">
+
+          <div className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] transition-all">
+            <div className="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0">
+              <BookOpen size={20} />
+            </div>
+            <span className="font-inter text-[13px] font-semibold text-ink leading-tight">Previous-Year<br />Words</span>
+          </div>
+
+          <div className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] transition-all">
+            <div className="w-11 h-11 rounded-xl bg-green-500/10 text-green-500 flex items-center justify-center shrink-0">
+              <MessageSquare size={20} />
+            </div>
+            <span className="font-inter text-[13px] font-semibold text-ink leading-tight">Idioms &<br />Phrases</span>
+          </div>
+
+          <div className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] transition-all">
+            <div className="w-11 h-11 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
+              <PenTool size={20} />
+            </div>
+            <span className="font-inter text-[13px] font-semibold text-ink leading-tight">One Word<br />Substitution</span>
+          </div>
+
+          <div className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] transition-all">
+            <div className="w-11 h-11 rounded-xl bg-teal-500/10 text-teal-500 flex items-center justify-center shrink-0">
+              <LinkIcon size={20} />
+            </div>
+            <span className="font-inter text-[13px] font-semibold text-ink leading-tight">Phrasal<br />Verbs</span>
+          </div>
+
+          <div className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] transition-all">
+            <div className="w-11 h-11 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0">
+              <Globe size={20} />
+            </div>
+            <span className="font-inter text-[13px] font-semibold text-ink leading-tight">Foreign<br />Words</span>
           </div>
 
         </div>
       </div>
+
     </div>
   );
 }

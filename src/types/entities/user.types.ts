@@ -1,7 +1,7 @@
 // user.types.ts
 // Do NOT rename fields — these mirror confirmed backend DTOs.
 
-export type RoleType = 'USER' | 'ADMIN'; // OPEN — placeholder
+export type RoleType = 'USER' | 'ADMIN' | 'SUBSCRIBED_USER'; // OPEN — placeholder
 
 export interface SignupRequest {
   firstName: string;
@@ -19,6 +19,21 @@ export interface SignupResponse {
   email: string;
   // password field intentionally excluded — confirmed removed from backend contract
   createdAt: string;
+  role: RoleType;
+}
+
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  jwt: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  username: string;
   role: RoleType;
 }
 

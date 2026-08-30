@@ -13,11 +13,22 @@ export interface ApiErrorPayload {
   message: string; // raw backend message — never render this directly; see errorHandler.ts
 }
 
-// Pagination envelope (assumed — confirm with backend)
+// Pagination envelope (Spring Data Page response matching /vocabs/public/all)
 export interface PaginatedResponse<T> {
   content: T[];
   totalElements: number;
   totalPages: number;
   size: number;
   number: number; // current page (0-indexed from Spring)
+  numberOfElements?: number;
+  first?: boolean;
+  last?: boolean;
+  empty?: boolean;
+  pageable?: {
+    offset: number;
+    pageNumber: number;
+    pageSize: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
 }

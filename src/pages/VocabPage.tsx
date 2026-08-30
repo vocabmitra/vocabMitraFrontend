@@ -63,7 +63,7 @@ export default function VocabPage() {
       <Navbar />
 
       <main className="min-h-[calc(100vh-80px)] bg-transparent">
-        <div className="vv-container pt-[52px] px-7 pb-20">
+        <div className="vv-container pt-5 px-7 pb-20">
 
           {/* Page header */}
           <div className="mb-9">
@@ -150,13 +150,16 @@ export default function VocabPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
-              {vocabList.map((card) => (
-                <VocabCard
-                  key={card.vocab.id}
-                  vocabCard={card}
-                  onClick={() => setOpenCardId(card.vocab.id)}
-                />
-              ))}
+              {vocabList.map((card, idx) => {
+                const cardId = card?.vocab?.id ?? (card as any)?.id ?? idx;
+                return (
+                  <VocabCard
+                    key={cardId}
+                    vocabCard={card}
+                    onClick={() => setOpenCardId(cardId)}
+                  />
+                );
+              })}
             </div>
           )}
 
@@ -190,7 +193,7 @@ export default function VocabPage() {
       {/* ── Modal ── */}
       {openCardId && (
         <OpenVocabCard
-          vocabCard={vocabList.find(c => c.vocab.id === openCardId)!}
+          vocabCard={vocabList.find(c => (c?.vocab?.id ?? (c as any)?.id) === openCardId)!}
           isOpen={!!openCardId}
           onClose={() => {
             setOpenCardId(null);

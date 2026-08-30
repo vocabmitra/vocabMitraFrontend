@@ -15,7 +15,6 @@ function App() {
 
   return (
     <>
-      <AnimatedBackground />
       <AppRouter />
       <ToastContainer toasts={toasts} onDismiss={dismissToast} />
     </>

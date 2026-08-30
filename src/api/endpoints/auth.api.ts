@@ -1,16 +1,6 @@
 import axiosInstance from '../axiosInstance';
-import type { SignupRequest, SignupResponse, AuthUser, ProfileResponse } from '../../types';
+import type { SignupRequest, SignupResponse, AuthUser, ProfileResponse, LoginRequest, LoginResponse } from '../../types';
 import type { ApiResponse } from '../../types';
-
-export interface LoginRequest {
-  username: string; 
-  password: string;
-}
-
-export interface LoginResponse {
-  token: string;
-  user: AuthUser;
-}
 
 const AUTH_BASE = '/auth';
 const USER_BASE = '/user';
@@ -21,7 +11,7 @@ export const authApi = {
    * POST /auth/signup
    */
   signup: async (data: SignupRequest): Promise<SignupResponse> => {
-    const res = await axiosInstance.post<SignupResponse>(`${AUTH_BASE}/signup`, data);
+    const res = await axiosInstance.post<SignupResponse>(`${AUTH_BASE}/signUp`, data);
     return res.data;
   },
 

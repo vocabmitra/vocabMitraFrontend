@@ -24,8 +24,12 @@ const TAG_GLOW: Record<string, string> = {
 };
 
 export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps) {
-  const { vocab } = vocabCard;
-  const tags = parseUseCaseTags(vocab.useCaseTag);
+  const vocab = (vocabCard && (vocabCard as any).vocabResponse
+    ? (vocabCard as any).vocabResponse
+    : vocabCard && typeof (vocabCard as any).vocab === 'object'
+    ? (vocabCard as any).vocab
+    : vocabCard) as any;
+  const tags = parseUseCaseTags(vocab?.useCaseTag || '');
   const mainTag = tags[0]?.toLowerCase() || 'upsc';
   const rgb = TAG_GLOW[mainTag] || '249,115,22';
 

@@ -12,6 +12,7 @@ const DashboardView = lazy(() => import('../pages/profile/DashboardView'));
 const UserWordListPage = lazy(() => import('../features/profile/UserWordListPage'));
 const PracticeSessionPage = lazy(() => import('../pages/PracticeSessionPage'));
 const PracticeTabView = lazy(() => import('../pages/profile/PracticeTabView').then(module => ({ default: module.PracticeTabView })));
+const CuetFocusPage = lazy(() => import('../pages/profile/CuetFocusPage'));
 
 function LoadingFallback() {
   return (
@@ -37,9 +38,22 @@ function AuthRedirect({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+import { useLocation } from 'react-router-dom';
+import { AnimatedBackground } from '../components/ui/AnimatedBackground';
+
+function BackgroundManager() {
+  const location = useLocation();
+  // Only hide the animated background glow on profile/dashboard and practice routes
+  if (location.pathname.startsWith('/profile') || location.pathname.startsWith('/practice')) {
+    return null;
+  }
+  return <AnimatedBackground />;
+}
+
 export function AppRouter() {
   return (
     <BrowserRouter>
+      <BackgroundManager />
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
           {/* Public routes */}
@@ -69,6 +83,7 @@ export function AppRouter() {
             <Route path="practice-queue" element={<PracticeTabView />} />
             <Route path="bookmarks" element={<UserWordListPage mode="bookmarked" />} />
             <Route path="learned" element={<UserWordListPage mode="learned" />} />
+            <Route path="cuet-focus" element={<CuetFocusPage />} />
           </Route>
 
           {/* Protected route — Practice Session */}

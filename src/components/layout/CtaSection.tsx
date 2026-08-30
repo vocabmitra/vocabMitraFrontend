@@ -1,11 +1,16 @@
 import { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { WordReveal } from '../ui/WordReveal';
+import { useAuthStore } from '../../store/useAuthStore';
 
 export function CtaSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuthStore();
+  const isLoggedIn = isAuthenticated || Boolean(localStorage.getItem('vv-auth-token')) || Boolean(user);
 
   useGSAP(() => {
     const tl = gsap.timeline({
@@ -78,9 +83,10 @@ export function CtaSection() {
           </p>
           <button
             ref={buttonRef}
+            onClick={() => navigate(isLoggedIn ? '/profile' : '/auth')}
             className="inline-flex items-center justify-center px-10 py-4 sm:py-5 bg-orange-500 text-white font-bold text-[18px] sm:text-[20px] rounded-full border-none cursor-pointer shadow-[0_8px_40px_rgba(249,115,22,0.45)] hover:bg-orange-400 hover:shadow-[0_12px_48px_rgba(249,115,22,0.55)] active:scale-[0.98] transition-all duration-200"
           >
-            Get started for free
+            {isLoggedIn ? 'Go to Dashboard' : 'Get started for free'}
           </button>
         </div>
 

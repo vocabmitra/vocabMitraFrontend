@@ -13,9 +13,26 @@ export function Navbar() {
   const navigate = useNavigate();
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
 
+  const hasToken = Boolean(localStorage.getItem('vv-auth-token'));
+  const isLoggedIn = isAuthenticated || hasToken || Boolean(user);
+
+  const displayName = user
+    ? user.firstName && user.lastName 
+      ? `${user.firstName} ${user.lastName}` 
+      : (user as any).name || user.username || 'User'
+    : 'User';
+
+  const displayUsername = user?.username ? `@${user.username}` : '@learner';
+
   const initials = user
-    ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
-    : '';
+    ? user.firstName && user.lastName
+      ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
+      : (user as any).name
+      ? (user as any).name[0].toUpperCase()
+      : user.username
+      ? user.username[0].toUpperCase()
+      : 'U'
+    : 'U';
 
   const handleLogout = async () => {
     await authApi.logout();
@@ -88,7 +105,7 @@ export function Navbar() {
           </button>
 
           {/* Avatar / Login */}
-          {isAuthenticated && user ? (
+          {isLoggedIn ? (
             <div className="relative">
               <button
                 onClick={() => setAvatarMenuOpen((v) => !v)}
@@ -114,10 +131,10 @@ export function Navbar() {
                   >
                     <div className="px-3 pt-2 pb-2.5 border-b border-line mb-1">
                       <div className="font-bricolage font-semibold text-[15px] text-ink">
-                        {user.firstName} {user.lastName}
+                        {displayName}
                       </div>
                       <div className="font-space text-[11px] text-ink-soft">
-                        @{user.username}
+                        {displayUsername}
                       </div>
                     </div>
                     <button
