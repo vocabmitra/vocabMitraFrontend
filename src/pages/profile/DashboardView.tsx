@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Bell, Flame, Search, BookOpen, Target, Bookmark,
+  Bell, Flame, Search, BookOpen, Bookmark,
   Leaf, Zap, Volume2, Lightbulb, Star, MessageSquare,
   PenTool, Link as LinkIcon, Globe, ArrowRight, Book, Award
 } from 'lucide-react';

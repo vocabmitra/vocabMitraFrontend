@@ -3,7 +3,6 @@ import { useThemeStore } from './store/useThemeStore';
 import { useUIStore } from './store/useUIStore';
 import { AppRouter } from './routes/AppRouter';
 import { ToastContainer } from './components/common/Toast';
-import { AnimatedBackground } from './components/ui/AnimatedBackground';
 
 function App() {
   const { initTheme } = useThemeStore();

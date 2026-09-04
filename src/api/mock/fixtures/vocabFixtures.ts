@@ -5,7 +5,7 @@ export const MOCK_VOCAB_CARDS: VocabCard[] = [
     vocab: {
       id: 1,
       vocab: 'Alleviate',
-      vocabType: 'word',
+      vocabType: 'WORD',
       useCaseTag: 'UPSC, GRE',
       trick: '"Ali ne vaaty kr ke pain kam kr diya" — Ali turns down the valve, and the pain eases.',
       meaning: 'To make suffering, deficiency, or a problem less severe.',
@@ -20,7 +20,7 @@ export const MOCK_VOCAB_CARDS: VocabCard[] = [
     vocab: {
       id: 2,
       vocab: 'Benevolent',
-      vocabType: 'word',
+      vocabType: 'WORD',
       useCaseTag: 'UPSC',
       trick: '"Bene" (good) + "volent" (wish) — someone who wishes good things for others.',
       meaning: 'Well meaning and kindly; given to charitable acts.',
@@ -35,7 +35,7 @@ export const MOCK_VOCAB_CARDS: VocabCard[] = [
     vocab: {
       id: 3,
       vocab: 'Malevolent',
-      vocabType: 'word',
+      vocabType: 'WORD',
       useCaseTag: 'UPSC',
       trick: '"Male" (bad) + "volent" (wish) — opposite of benevolent.',
       meaning: 'Having or showing a wish to do evil to others.',
@@ -49,7 +49,7 @@ export const MOCK_VOCAB_CARDS: VocabCard[] = [
     vocab: {
       id: 4,
       vocab: 'Scrutinize',
-      vocabType: 'word',
+      vocabType: 'WORD',
       useCaseTag: 'SSC, CAT',
       trick: '"Scrutiny" like CCTV — you watch everything very closely.',
       meaning: 'Examine or inspect closely and thoroughly.',
@@ -63,7 +63,7 @@ export const MOCK_VOCAB_CARDS: VocabCard[] = [
     vocab: {
       id: 5,
       vocab: 'Magnanimous',
-      vocabType: 'word',
+      vocabType: 'WORD',
       useCaseTag: 'UPSC, GRE',
       trick: '"Magna" (great) + "animus" (spirit) — a great-spirited person is generous.',
       meaning: 'Very generous or forgiving, especially toward a rival.',
@@ -77,7 +77,7 @@ export const MOCK_VOCAB_CARDS: VocabCard[] = [
     vocab: {
       id: 6,
       vocab: 'Audacious',
-      vocabType: 'word',
+      vocabType: 'WORD',
       useCaseTag: 'GRE',
       trick: '"Audio" + "us" — someone who dares to shout even when the room is silent.',
       meaning: 'Showing a willingness to take surprisingly bold risks.',
@@ -91,7 +91,7 @@ export const MOCK_VOCAB_CARDS: VocabCard[] = [
     vocab: {
       id: 7,
       vocab: 'Meticulous',
-      vocabType: 'word',
+      vocabType: 'WORD',
       useCaseTag: 'CAT',
       trick: '"Meti" sounds like "metre" — someone who measures everything down to the millimetre.',
       meaning: 'Showing great attention to detail; very careful and precise.',
@@ -105,7 +105,7 @@ export const MOCK_VOCAB_CARDS: VocabCard[] = [
     vocab: {
       id: 8,
       vocab: 'Ephemeral',
-      vocabType: 'word',
+      vocabType: 'WORD',
       useCaseTag: 'GRE, UPSC',
       trick: '"E-fame-ral" — internet fame is ephemeral, here today gone tomorrow.',
       meaning: 'Lasting for a very short time.',
@@ -119,7 +119,7 @@ export const MOCK_VOCAB_CARDS: VocabCard[] = [
     vocab: {
       id: 9,
       vocab: 'Loquacious',
-      vocabType: 'word',
+      vocabType: 'WORD',
       useCaseTag: 'GRE',
       trick: '"Loqua" sounds like "loquat" — and that fruit has a lot to say.',
       meaning: 'Tending to talk a great deal; talkative.',
@@ -133,7 +133,7 @@ export const MOCK_VOCAB_CARDS: VocabCard[] = [
     vocab: {
       id: 10,
       vocab: 'Pernicious',
-      vocabType: 'word',
+      vocabType: 'WORD',
       useCaseTag: 'UPSC, GRE',
       trick: '"Per-nicious" — it\'s per-nasty, slowly creeping and deeply harmful.',
       meaning: 'Having a harmful effect, especially in a gradual or subtle way.',

@@ -1,6 +1,4 @@
 import type { VocabCard as VocabCardType } from '../../types';
-import { parseUseCaseTags } from '../../types';
-import { BookOpen } from 'lucide-react';
 import { BookmarkToggleButton } from './BookmarkToggleButton';
 import { MarkAsLearnedToggleButton } from './MarkAsLearnedToggleButton';
 

@@ -133,31 +133,6 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Handlers for Taxonomy Management
-  const handleAddVocabType = async (name: string, description: string) => {
-    await adminApi.addVocabType(name, description);
-    addToast(`Added Vocab Type "${name}"`, 'success');
-    loadData();
-  };
-
-  const handleDeleteVocabType = async (id: string) => {
-    await adminApi.deleteVocabType(id);
-    addToast('Vocab Type removed.', 'info');
-    loadData();
-  };
-
-  const handleAddUseCaseTag = async (name: string, description: string) => {
-    await adminApi.addUseCaseTag(name, description);
-    addToast(`Added Use Case Tag "${name}"`, 'success');
-    loadData();
-  };
-
-  const handleDeleteUseCaseTag = async (id: string) => {
-    await adminApi.deleteUseCaseTag(id);
-    addToast('Use Case Tag removed.', 'info');
-    loadData();
-  };
-
   return (
     <>
       <Navbar />
@@ -528,8 +503,6 @@ export default function AdminDashboardPage() {
             <CategoryTagManager
               vocabTypes={vocabTypes}
               useCaseTags={useCaseTags}
-              onAddUseCaseTag={handleAddUseCaseTag}
-              onDeleteUseCaseTag={handleDeleteUseCaseTag}
             />
           )}
         </div>

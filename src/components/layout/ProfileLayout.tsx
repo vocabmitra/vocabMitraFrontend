@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { Home, Bookmark, CheckCircle, LogOut, BarChart2, Settings, HelpCircle, MessageSquare, ChevronDown, Sparkles } from 'lucide-react';
+import { Home, Bookmark, LogOut, BarChart2, Settings, HelpCircle, MessageSquare, ChevronDown, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
-import { useThemeStore } from '../../store/useThemeStore';
 import { authApi } from '../../api/endpoints/auth.api';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
@@ -19,7 +18,6 @@ const NAV_ITEMS = [
 export default function ProfileLayout() {
   const { user, profile, setProfile, logout } = useAuthStore();
   const { addToast } = useUIStore();
-  const { theme } = useThemeStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -132,13 +130,13 @@ export default function ProfileLayout() {
       </div>
 
       {/* Mobile tab bar */}
-      <MobileTabBar onLogout={handleLogout} />
+      <MobileTabBar />
       <Footer />
     </>
   );
 }
 
-function MobileTabBar({ onLogout }: { onLogout: () => void }) {
+function MobileTabBar() {
   return (
     <nav
       className="md:hidden sticky top-[72px] z-40 bg-[color-mix(in_srgb,var(--cream)_90%,transparent)] backdrop-blur-md border-b border-line px-4"

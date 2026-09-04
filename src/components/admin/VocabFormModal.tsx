@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Sparkles, AlertCircle, Plus, Check } from 'lucide-react';
+import { X, Sparkles, AlertCircle, Check } from 'lucide-react';
 import type { VocabInput, AdminCategoryItem } from '../../api/endpoints/admin.api';
 import { VOCAB_TYPES, USE_CASE_TAGS } from '../../types/entities/vocab.types';
 

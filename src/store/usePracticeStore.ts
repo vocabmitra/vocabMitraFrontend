@@ -34,7 +34,7 @@ const EMPTY_META: PracticeSessionMeta = {
   endTime: null,
 };
 
-export const usePracticeStore = create<PracticeStore>((set, get) => ({
+export const usePracticeStore = create<PracticeStore>((set) => ({
   session: {
     isActive: false,
     cards: [],

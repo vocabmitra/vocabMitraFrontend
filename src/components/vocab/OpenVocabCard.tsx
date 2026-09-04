@@ -13,15 +13,6 @@ interface OpenVocabCardProps {
   onClose: () => void;
 }
 
-const TAG_GLOW: Record<string, string> = {
-  upsc: '249,115,22',
-  ssc: '99,102,241',
-  banking: '20,184,166',
-  cat: '168,85,247',
-  gre: '59,130,246',
-  cuet: '236,72,153',
-};
-
 export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps) {
   const vocab = (vocabCard && (vocabCard as any).vocabResponse
     ? (vocabCard as any).vocabResponse
@@ -29,8 +20,6 @@ export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps
     ? (vocabCard as any).vocab
     : vocabCard) as any;
   const tags = parseUseCaseTags(vocab?.useCaseTag || '');
-  const mainTag = tags[0]?.toLowerCase() || 'upsc';
-  const rgb = TAG_GLOW[mainTag] || '249,115,22';
 
   // Close on ESC
   useEffect(() => {

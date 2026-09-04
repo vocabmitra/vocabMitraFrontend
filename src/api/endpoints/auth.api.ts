@@ -1,5 +1,5 @@
 import axiosInstance from '../axiosInstance';
-import type { SignupRequest, SignupResponse, AuthUser, ProfileResponse, LoginRequest, LoginResponse } from '../../types';
+import type { SignupRequest, SignupResponse, ProfileResponse, LoginRequest, LoginResponse } from '../../types';
 import { AUTH_USER_KEY } from '../../utils/constants';
 import { useAuthStore } from '../../store/useAuthStore';
 

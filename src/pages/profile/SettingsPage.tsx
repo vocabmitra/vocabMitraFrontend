@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import { User, Mail, AtSign, Check, Shield, Sun, Moon, Sparkles, Key, Save } from 'lucide-react';
+import { User, Mail, AtSign, Shield, Sun, Moon, Sparkles, Save } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
 import { useThemeStore } from '../../store/useThemeStore';
-import { Input } from '../../components/common/Input';
-import { Button } from '../../components/common/Button';
 
 import { authApi } from '../../api/endpoints/auth.api';
 import { normalizeError } from '../../utils/errorHandler';

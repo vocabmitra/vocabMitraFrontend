@@ -11,7 +11,7 @@ import { PracticeSessionLauncher } from '../components/vocab/PracticeSessionLaun
 import { useVocabList } from '../features/vocab/useVocabList';
 import { useAuthStore } from '../store/useAuthStore';
 import { USE_CASE_TAGS } from '../types';
-import type { VocabCard as VocabCardType, UseCaseTag } from '../types';
+import type { UseCaseTag } from '../types';
 import { useDebounce } from '../hooks/useDebounce';
 
 export default function VocabPage() {

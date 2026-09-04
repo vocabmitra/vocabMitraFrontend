@@ -15,8 +15,6 @@ export function NumberCounter({ end, duration = 1500, className = '' }: NumberCo
       (entries) => {
         if (entries[0].isIntersecting) {
           let startTime: number;
-          let animationFrame: number;
-
           const updateCounter = (timestamp: number) => {
             if (!startTime) startTime = timestamp;
             const progress = timestamp - startTime;
@@ -25,13 +23,13 @@ export function NumberCounter({ end, duration = 1500, className = '' }: NumberCo
               // Easing out function
               const easeOut = 1 - Math.pow(1 - progress / duration, 3);
               setCount(Math.floor(easeOut * end));
-              animationFrame = requestAnimationFrame(updateCounter);
+              requestAnimationFrame(updateCounter);
             } else {
               setCount(end);
             }
           };
 
-          animationFrame = requestAnimationFrame(updateCounter);
+          requestAnimationFrame(updateCounter);
           observer.disconnect();
         }
       },

@@ -7,7 +7,9 @@ import type { VocabCard } from '../../types';
 
 export function PracticeTabView() {
   const navigate = useNavigate();
-  const { settings, updateSettings, startSession } = usePracticeStore();
+  const { startSession } = usePracticeStore();
+  const [isTimed, setIsTimed] = useState(false);
+  const [timeLimitSeconds, setTimeLimitSeconds] = useState(15);
   const [practiceCards, setPracticeCards] = useState<VocabCard[]>([]);
 
   useEffect(() => {
@@ -174,25 +176,25 @@ export function PracticeTabView() {
               <input 
                 type="checkbox" 
                 className="peer opacity-0 w-0 h-0" 
-                checked={settings.isTimed}
-                onChange={(e) => updateSettings({ isTimed: e.target.checked })}
+                checked={isTimed}
+                onChange={(e) => setIsTimed(e.target.checked)}
               />
-              <span className={`absolute cursor-pointer top-1 left-1 bottom-1 w-4 bg-white rounded-full transition-transform duration-200 peer-checked:translate-x-6 shadow-sm ${settings.isTimed ? 'bg-upsc' : 'bg-ink-soft'}`} />
+              <span className={`absolute cursor-pointer top-1 left-1 bottom-1 w-4 bg-white rounded-full transition-transform duration-200 peer-checked:translate-x-6 shadow-sm ${isTimed ? 'bg-upsc' : 'bg-ink-soft'}`} />
             </div>
           </label>
 
-          <div className={`transition-opacity duration-200 ${settings.isTimed ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+          <div className={`transition-opacity duration-200 ${isTimed ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
             <div className="flex justify-between items-end mb-2">
               <span className="font-inter text-[14px] font-medium text-ink-soft">Time limit per card</span>
-              <span className="font-space font-bold text-[14px] text-ink">{settings.timeLimitSeconds}s</span>
+              <span className="font-space font-bold text-[14px] text-ink">{timeLimitSeconds}s</span>
             </div>
             <input 
               type="range" 
               min="5" 
               max="30" 
               step="1"
-              value={settings.timeLimitSeconds}
-              onChange={(e) => updateSettings({ timeLimitSeconds: Number(e.target.value) })}
+              value={timeLimitSeconds}
+              onChange={(e) => setTimeLimitSeconds(Number(e.target.value))}
               className="w-full accent-upsc"
             />
             <div className="flex justify-between mt-2 font-space text-[11px] font-bold text-ink/40">

@@ -3,7 +3,6 @@ import { Sun, Moon, LogIn, LogOut, LayoutDashboard, Shield } from 'lucide-react'
 import { useState } from 'react';
 import { useThemeStore } from '../../store/useThemeStore';
 import { useAuthStore } from '../../store/useAuthStore';
-import { authApi } from '../../api/endpoints/auth.api';
 import { useUIStore } from '../../store/useUIStore';
 
 export function Navbar() {

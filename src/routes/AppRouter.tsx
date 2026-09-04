@@ -13,7 +13,6 @@ const ProfileLayout = lazy(() => import('../components/layout/ProfileLayout'));
 const DashboardView = lazy(() => import('../pages/profile/DashboardView'));
 const UserWordListPage = lazy(() => import('../features/profile/UserWordListPage'));
 const PracticeSessionPage = lazy(() => import('../pages/PracticeSessionPage'));
-const PracticeTabView = lazy(() => import('../pages/profile/PracticeTabView').then(module => ({ default: module.PracticeTabView })));
 const CuetFocusPage = lazy(() => import('../pages/profile/CuetFocusPage'));
 const SettingsPage = lazy(() => import('../pages/profile/SettingsPage'));
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage'));
