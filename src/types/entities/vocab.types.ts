@@ -1,7 +1,7 @@
 // vocab.types.ts
 // Do NOT rename fields — these mirror confirmed backend DTOs.
 
-export const VOCAB_TYPES = ['word', 'phrase', 'idiom'] as const;
+export const VOCAB_TYPES = ['WORD', 'PHRASE', 'IDIOM'] as const;
 export type VocabType = (typeof VOCAB_TYPES)[number]; // OPEN — placeholder until backend confirms
 
 export const USE_CASE_TAGS = ['CAT', 'CUET', 'GRE', 'SSC', 'UPSC'] as const;
@@ -27,6 +27,7 @@ export interface Vocab {
   trick: string;        // backend's name for the mnemonic — UI copy can say "Mnemonic"
   meaning: string;
   example: string;
+  message?: string | null; // Optional message / context note from backend DTO
   updatedAt: string;    // ISO string; this is last-EDITED, not created-at
 }
 

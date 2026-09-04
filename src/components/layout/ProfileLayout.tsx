@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { Home, Bookmark, CheckCircle, LogOut, Zap, BarChart2, Settings, HelpCircle, MessageSquare, ChevronDown, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -17,10 +18,27 @@ const NAV_ITEMS = [
 ];
 
 export default function ProfileLayout() {
-  const { user, logout } = useAuthStore();
+  const { user, profile, setProfile, logout } = useAuthStore();
   const { addToast } = useUIStore();
   const { theme } = useThemeStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadProfile = async () => {
+      try {
+        console.log('[ProfileLayout] Fetching profile from backend...');
+        const res = await authApi.getProfile();
+        if (res && isMounted) {
+          setProfile(res);
+        }
+      } catch (err) {
+        console.error('Failed to fetch profile:', err);
+      }
+    };
+    loadProfile();
+    return () => { isMounted = false; };
+  }, [setProfile]);
 
   const handleLogout = async () => {
     await authApi.logout();
@@ -72,19 +90,19 @@ export default function ProfileLayout() {
               {/* Profile Dropdown Widget */}
               <div className="bg-white/5 rounded-2xl p-3 border border-white/10 flex items-center justify-between cursor-pointer hover:bg-white/10 transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-orange-500 text-white flex items-center justify-center font-inter font-bold text-lg">
-                    {user?.name?.[0]?.toUpperCase() || 'N'}
+                  <div className="w-10 h-10 rounded-full bg-orange-500 text-white flex items-center justify-center font-inter font-bold text-lg shrink-0">
+                    {(profile?.firstName?.[0] || user?.firstName?.[0] || (user as any)?.name?.[0] || 'N').toUpperCase()}
                   </div>
-                  <div className="flex flex-col">
-                    <span className="font-inter font-semibold text-white text-[14px] leading-tight">
-                      {user?.name || 'Nikhil'}
+                  <div className="flex flex-col overflow-hidden">
+                    <span className="font-inter font-semibold text-white text-[14px] leading-tight truncate">
+                      {profile?.firstName ? `${profile.firstName} ${profile.lastName || ''}`.trim() : (user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : (user as any)?.name || 'Nikhil')}
                     </span>
-                    <span className="font-inter font-medium text-white/60 text-[11px] leading-tight mt-1">
-                      Keep Learning!
+                    <span className="font-inter font-medium text-white/60 text-[11px] leading-tight mt-1 truncate">
+                      {profile?.email || user?.email || 'Keep Learning!'}
                     </span>
                   </div>
                 </div>
-                <ChevronDown size={16} className="text-white/50" />
+                <ChevronDown size={16} className="text-white/50 shrink-0" />
               </div>
 
               {/* Help & Feedback */}

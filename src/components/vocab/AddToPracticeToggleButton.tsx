@@ -48,15 +48,11 @@ export function AddToPracticeToggleButton({ vocabId, addedToPractice: initialAdd
     <button
       onClick={handleToggle}
       disabled={loading}
-      className={`
-        flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 font-inter text-[14px] font-bold transition-all duration-200 active:scale-95
-        ${
-          localAdded
-            ? 'bg-ink text-white border-ink shadow-[2px_2px_0_var(--ink)]'
-            : 'bg-white text-ink border-ink/20 shadow-none hover:border-ink hover:shadow-[4px_4px_0_var(--ink)]'
-        }
-        ${loading ? 'opacity-70 cursor-wait' : 'cursor-pointer'}
-      `}
+      className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full border font-inter text-sm font-bold transition-all duration-200 ${
+        localAdded
+          ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm hover:bg-indigo-700 dark:bg-indigo-600 dark:text-white dark:border-indigo-600 dark:shadow-[0_0_15px_rgba(99,102,241,0.3)]'
+          : 'bg-black/5 text-ink border-black/10 hover:bg-black/10 hover:border-black/20 dark:bg-white/5 dark:text-white dark:border-white/10 dark:hover:bg-white/10 dark:hover:border-white/20'
+      } ${loading ? 'opacity-70 cursor-wait' : 'cursor-pointer'}`}
       aria-label={localAdded ? 'Remove from practice' : 'Add to practice'}
       aria-pressed={localAdded}
     >

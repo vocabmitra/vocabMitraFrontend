@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Sun, Moon, LogIn, LogOut, LayoutDashboard } from 'lucide-react';
+import { Sun, Moon, LogIn, LogOut, LayoutDashboard, Shield } from 'lucide-react';
 import { useState } from 'react';
 import { useThemeStore } from '../../store/useThemeStore';
 import { useAuthStore } from '../../store/useAuthStore';
@@ -17,8 +17,8 @@ export function Navbar() {
   const isLoggedIn = isAuthenticated || hasToken || Boolean(user);
 
   const displayName = user
-    ? user.firstName && user.lastName 
-      ? `${user.firstName} ${user.lastName}` 
+    ? user.firstName && user.lastName
+      ? `${user.firstName} ${user.lastName}`
       : (user as any).name || user.username || 'User'
     : 'User';
 
@@ -28,11 +28,14 @@ export function Navbar() {
     ? user.firstName && user.lastName
       ? `${user.firstName[0]}${user.lastName[0]}`.toUpperCase()
       : (user as any).name
-      ? (user as any).name[0].toUpperCase()
-      : user.username
-      ? user.username[0].toUpperCase()
-      : 'U'
+        ? (user as any).name[0].toUpperCase()
+        : user.username
+          ? user.username[0].toUpperCase()
+          : 'U'
     : 'U';
+
+  const userRole = user?.role ? String(user.role).toUpperCase() : '';
+  const isAdmin = userRole === 'ADMIN' || userRole === 'ROLE_ADMIN';
 
   const handleLogout = async () => {
     await authApi.logout();
@@ -60,9 +63,9 @@ export function Navbar() {
           className="no-underline"
         >
           <div className="flex items-center">
-            <img 
-              src={theme === 'dark' ? "/vocab_mitra_logo.png" : "/vocab_mitra_logo_white.png"} 
-              alt="Vocab Mitra Logo" 
+            <img
+              src={theme === 'dark' ? "/vocab_mitra_logo.png" : "/vocab_mitra_logo_white.png"}
+              alt="Vocab Mitra Logo"
               className="h-8 w-auto object-contain"
             />
           </div>
@@ -73,17 +76,16 @@ export function Navbar() {
           {[
             { to: '/', label: 'Home' },
             { to: '/vocabulary', label: 'Vocabulary' },
-            { to: '/profile', label: 'Profile' },
+            ...(!isAdmin ? [{ to: '/profile', label: 'Profile' }] : []),
           ].map(({ to, label }) => (
             <NavLink
               key={to}
               to={to}
               end={to === '/'}
               className={({ isActive }) =>
-                `px-4 py-2 rounded-full font-inter transition-colors duration-200 no-underline ${
-                  isActive
-                    ? 'text-orange-400 bg-orange-500/10'
-                    : 'text-ink-soft bg-transparent hover:bg-white/5 hover:text-ink'
+                `px-4 py-2 rounded-full font-inter transition-colors duration-200 no-underline ${isActive
+                  ? 'text-orange-400 bg-orange-500/10'
+                  : 'text-ink-soft bg-transparent hover:bg-white/5 hover:text-ink'
                 }`
               }
             >
@@ -137,14 +139,26 @@ export function Navbar() {
                         {displayUsername}
                       </div>
                     </div>
-                    <button
-                      onClick={() => { navigate('/profile'); setAvatarMenuOpen(false); }}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-ink text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-white/5"
-                      role="menuitem"
-                    >
-                      <LayoutDashboard size={14} />
-                      Dashboard
-                    </button>
+                    {!isAdmin && (
+                      <button
+                        onClick={() => { navigate('/profile'); setAvatarMenuOpen(false); }}
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-ink text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-white/5"
+                        role="menuitem"
+                      >
+                        <LayoutDashboard size={14} />
+                        Dashboard
+                      </button>
+                    )}
+                    {isAdmin && (
+                      <button
+                        onClick={() => { navigate('/admin'); setAvatarMenuOpen(false); }}
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-ink text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-white/5"
+                        role="menuitem"
+                      >
+                        <Shield size={14} className="text-orange-500" />
+                        Admin Console
+                      </button>
+                    )}
                     <button
                       onClick={handleLogout}
                       className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-orange-400 text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-white/5"

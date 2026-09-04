@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_BASE_URL, AUTH_TOKEN_KEY, API_TIMEOUT } from '../utils/constants';
+import { useAuthStore } from '../store/useAuthStore';
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -12,8 +13,26 @@ const axiosInstance = axios.create({
 // Request interceptor — attach Bearer token if present
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem(AUTH_TOKEN_KEY);
-    if (token) {
+    let token = localStorage.getItem(AUTH_TOKEN_KEY) || localStorage.getItem('vv-auth-token');
+    
+    if (!token || token === 'null' || token === 'undefined') {
+      try {
+        const storeToken = useAuthStore.getState()?.token;
+        if (storeToken) token = storeToken;
+      } catch (e) { /* ignore */ }
+    }
+
+    if (!token || token === 'null' || token === 'undefined') {
+      try {
+        const persisted = localStorage.getItem('vv-auth');
+        if (persisted) {
+          const parsed = JSON.parse(persisted);
+          if (parsed?.state?.token) token = parsed.state.token;
+        }
+      } catch (e) { /* ignore */ }
+    }
+
+    if (token && token.trim() !== '' && token !== 'null' && token !== 'undefined') {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

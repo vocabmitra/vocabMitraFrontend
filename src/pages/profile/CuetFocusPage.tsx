@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react';
-import { BookOpen, MessageSquare, PenTool, Link as LinkIcon, Globe, Sparkles, Search } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { BookOpen, MessageSquare, PenTool, Link as LinkIcon, Globe, Sparkles, Search, RefreshCw } from 'lucide-react';
 import { VocabCard } from '../../components/vocab/VocabCard';
 import { OpenVocabCard } from '../../components/vocab/OpenVocabCard';
 import type { VocabCard as VocabCardType } from '../../types';
+import { vocabApi } from '../../api/endpoints/vocab.api';
 
 const TABS = [
+  { id: 'all', title: 'All CUET Words', icon: BookOpen, color: 'text-orange-500' },
   { id: 'previous-year-words', title: 'Previous-Year Words', icon: BookOpen, color: 'text-purple-500' },
   { id: 'idioms-and-phrases', title: 'Idioms & Phrases', icon: MessageSquare, color: 'text-green-500' },
   { id: 'one-word-substitution', title: 'One Word Substitution', icon: PenTool, color: 'text-blue-500' },
@@ -12,78 +14,62 @@ const TABS = [
   { id: 'foreign-words', title: 'Foreign Words', icon: Globe, color: 'text-orange-500' },
 ];
 
-const MOCK_WORDS_BY_CATEGORY: Record<string, { vocab: string; meaning: string; trick?: string; vocabType?: 'word' | 'phrase' | 'idiom' }[]> = {
-  'previous-year-words': [
-    { vocab: 'ALACRITY', meaning: 'Brisk and cheerful readiness; eager willingness', trick: 'A-LACK-RITY', vocabType: 'word' },
-    { vocab: 'CANDID', meaning: 'Truthful and straightforward; frank and honest', trick: 'CAN-DID', vocabType: 'word' },
-    { vocab: 'OBSTINATE', meaning: 'Stubbornly refusing to change one\'s opinion or chosen course', trick: 'OB-STIN-ATE', vocabType: 'word' },
-    { vocab: 'EPHEMERAL', meaning: 'Lasting for a very short time; fleeting and transient', trick: 'E-PHEM-ERAL', vocabType: 'word' },
-    { vocab: 'LACONIC', meaning: 'Using very few words; concise to the point of seeming rude', trick: 'LACK-ONIC', vocabType: 'word' },
-    { vocab: 'UBIQUITOUS', meaning: 'Present, appearing, or found everywhere at once', trick: 'YOU-BIQUITOUS', vocabType: 'word' },
-    { vocab: 'PERSPICACIOUS', meaning: 'Having a ready insight into and understanding of things', trick: 'PER-SPICE', vocabType: 'word' },
-    { vocab: 'MAGNANIMOUS', meaning: 'Generous or forgiving, especially toward a rival or less powerful person', trick: 'BIG-HEART', vocabType: 'word' },
-  ],
-  'idioms-and-phrases': [
-    { vocab: 'BURN THE MIDNIGHT OIL', meaning: 'To work or study late into the night', trick: 'NIGHT OIL', vocabType: 'idiom' },
-    { vocab: 'BITE THE BULLET', meaning: 'To face a difficult situation with courage and fortitude', trick: 'COURAGE', vocabType: 'idiom' },
-    { vocab: 'BREAK THE ICE', meaning: 'To make people feel more comfortable in a social setting', trick: 'SOCIAL ICE', vocabType: 'idiom' },
-    { vocab: 'BLESSING IN DISGUISE', meaning: 'A good thing that initially seemed bad or unfortunate', trick: 'DISGUISE', vocabType: 'idiom' },
-  ],
-  'one-word-substitution': [
-    { vocab: 'ALTRUIST', meaning: 'A person unselfishly concerned for or devoted to the welfare of others', trick: 'ALL-TRUE', vocabType: 'word' },
-    { vocab: 'OMNIPRESENT', meaning: 'Widely or constantly encountered; present everywhere', trick: 'EVERYWHERE', vocabType: 'word' },
-    { vocab: 'POLYGLOT', meaning: 'A person who knows and is able to use several languages', trick: 'MANY-LANGS', vocabType: 'word' },
-    { vocab: 'SOLILOQUY', meaning: 'An act of speaking one\'s thoughts aloud when by oneself', trick: 'SOLO-TALK', vocabType: 'word' },
-  ],
-  'phrasal-verbs': [
-    { vocab: 'CALL OFF', meaning: 'To cancel an event, agreement, or planned activity', trick: 'CANCEL', vocabType: 'phrase' },
-    { vocab: 'LOOK INTO', meaning: 'To investigate or examine the facts about a situation', trick: 'INVESTIGATE', vocabType: 'phrase' },
-    { vocab: 'CARRY ON', meaning: 'To continue an activity or task despite difficulties', trick: 'CONTINUE', vocabType: 'phrase' },
-    { vocab: 'GIVE UP', meaning: 'To stop making an effort; surrender or abandon hope', trick: 'SURRENDER', vocabType: 'phrase' },
-  ],
-  'foreign-words': [
-    { vocab: 'BON VOYAGE', meaning: 'Used to express good wishes to someone about to set off on a journey', trick: 'GOOD TRIP', vocabType: 'phrase' },
-    { vocab: 'STATUS QUO', meaning: 'The existing state of affairs, especially regarding social or political issues', trick: 'CURRENT STATE', vocabType: 'phrase' },
-    { vocab: 'DE FACTO', meaning: 'In fact, whether by right or not; existing in reality', trick: 'IN REALITY', vocabType: 'phrase' },
-    { vocab: 'AD HOC', meaning: 'Created or done for a particular purpose only as necessary', trick: 'PURPOSEFUL', vocabType: 'phrase' },
-  ]
-};
-
-// Helper to generate mock data matching backend DTO
-const generateMockWords = (category: string): VocabCardType[] => {
-  const items = MOCK_WORDS_BY_CATEGORY[category] || MOCK_WORDS_BY_CATEGORY['previous-year-words'];
-  return items.map((item, i) => ({
-    vocab: {
-      id: i + 1,
-      vocab: item.vocab,
-      vocabType: item.vocabType || 'word',
-      useCaseTag: category,
-      trick: item.trick || 'MNEMONIC',
-      meaning: item.meaning,
-      example: `Example sentence for ${item.vocab}.`,
-      updatedAt: new Date().toISOString()
-    },
-    isLearned: i % 3 === 0,
-    isBookmarked: i % 2 === 0
-  }));
-};
-
 export default function CuetFocusPage() {
+  const [cards, setCards] = useState<VocabCardType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(TABS[0].id);
   const [searchQuery, setSearchQuery] = useState('');
   const [openCard, setOpenCard] = useState<VocabCardType | null>(null);
 
-  // Generate mock data based on the active tab
-  const mockCards = useMemo(() => generateMockWords(activeTab), [activeTab]);
+  // Pagination states
+  const [page, setPage] = useState(0);
+  const [pageSize] = useState(12);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
 
-  // Filter cards by search query
+  const loadCuetVocabs = async (targetPage = page) => {
+    setIsLoading(true);
+    try {
+      const response = await vocabApi.filterVocabByUseCaseTag('CUET', targetPage, pageSize, 'id');
+      setCards(response.content || []);
+      setTotalPages(response.totalPages || 1);
+      setTotalElements(response.totalElements || 0);
+      setPage(response.number ?? targetPage);
+    } catch (error) {
+      console.error('[CuetFocusPage] Failed to fetch CUET vocabs:', error);
+      setCards([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadCuetVocabs(page);
+  }, [page]);
+
+  // Filter cards by search query & sub-tab
   const filteredCards = useMemo(() => {
-    if (!searchQuery.trim()) return mockCards;
-    const q = searchQuery.toLowerCase();
-    return mockCards.filter(
-      (c) => c.vocab.vocab.toLowerCase().includes(q) || c.vocab.meaning.toLowerCase().includes(q)
-    );
-  }, [mockCards, searchQuery]);
+    return cards.filter((card) => {
+      const q = searchQuery.toLowerCase().trim();
+      const matchesSearch =
+        !q ||
+        card.vocab.vocab.toLowerCase().includes(q) ||
+        card.vocab.meaning.toLowerCase().includes(q) ||
+        (card.vocab.trick && card.vocab.trick.toLowerCase().includes(q));
+
+      if (!matchesSearch) return false;
+
+      if (activeTab === 'all' || activeTab === 'previous-year-words') return true;
+
+      const typeUpper = (card.vocab.vocabType || '').toUpperCase();
+      if (activeTab === 'idioms-and-phrases') return typeUpper === 'IDIOM' || typeUpper === 'PHRASE';
+      if (activeTab === 'one-word-substitution') return typeUpper === 'WORD';
+      if (activeTab === 'phrasal-verbs') return typeUpper === 'PHRASE';
+      if (activeTab === 'foreign-words') return typeUpper === 'PHRASE' || typeUpper === 'FOREIGN';
+
+      return true;
+    });
+  }, [cards, searchQuery, activeTab]);
 
   return (
     <div className="w-full flex flex-col gap-6 pb-12 max-w-[1200px] mx-auto pr-4 sm:pr-6 md:pr-8">
@@ -99,7 +85,7 @@ export default function CuetFocusPage() {
               CUET Focus Hub
             </h1>
             <p className="font-inter text-[13px] text-ink-soft">
-              Master the exact vocabulary you need for the CUET exam.
+              Master the exact vocabulary you need for the CUET exam ({totalElements} entries).
             </p>
           </div>
         </div>
@@ -127,29 +113,41 @@ export default function CuetFocusPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-2xl font-inter text-[14px] font-semibold transition-all cursor-pointer border ${isActive
+                className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-2xl font-inter text-[14px] font-semibold transition-all cursor-pointer border ${
+                  isActive
                     ? 'bg-orange-500/10 border-orange-500/30 text-orange-600 dark:text-orange-400 shadow-[0_4px_12px_rgba(249,115,22,0.15)]'
                     : 'bg-cream-card border-black/5 dark:border-white/5 dark:border-t-white/10 text-ink-soft hover:text-ink hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]'
-                  }`}
+                }`}
               >
                 <Icon size={16} className={isActive ? 'text-orange-500' : 'text-ink-soft opacity-70'} />
                 {tab.title}
               </button>
-            )
+            );
           })}
         </div>
       </div>
 
-      {/* ─── Grid ─── */}
-      {filteredCards.length === 0 ? (
+      {/* ─── Content Loading / Empty / Grid ─── */}
+      {isLoading ? (
+        <div className="dash-element w-full bg-cream-card rounded-2xl p-16 text-center border border-black/5 dark:border-white/5 shadow-sm flex flex-col items-center justify-center gap-3">
+          <RefreshCw size={24} className="animate-spin text-orange-500" />
+          <p className="font-inter text-xs text-ink-soft">Loading CUET vocabulary entries...</p>
+        </div>
+      ) : filteredCards.length === 0 ? (
         <div className="dash-element w-full bg-cream-card rounded-2xl p-12 text-center border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-sm">
-          <p className="font-inter text-ink-soft mb-2">No CUET words found matching "{searchQuery}".</p>
-          <button
-            onClick={() => setSearchQuery('')}
-            className="text-orange-500 font-inter text-[13px] font-semibold hover:underline bg-transparent border-none cursor-pointer"
-          >
-            Clear Search
-          </button>
+          <p className="font-inter text-ink-soft mb-2">
+            {searchQuery.trim()
+              ? `No CUET words found matching "${searchQuery}".`
+              : 'No vocabulary entries found for CUET exam.'}
+          </p>
+          {searchQuery.trim() && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="text-orange-500 font-inter text-[13px] font-semibold hover:underline bg-transparent border-none cursor-pointer"
+            >
+              Clear Search
+            </button>
+          )}
         </div>
       ) : (
         <div className="dash-element grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-2">
@@ -160,6 +158,29 @@ export default function CuetFocusPage() {
               onClick={() => setOpenCard(card)}
             />
           ))}
+        </div>
+      )}
+
+      {/* ─── Pagination Controls ─── */}
+      {totalPages > 1 && (
+        <div className="dash-element mt-6 flex justify-center items-center gap-4 font-inter text-[13px] font-bold">
+          <button
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+            disabled={page === 0 || isLoading}
+            className="font-inter font-bold text-[13px] text-ink bg-cream-card border border-black/10 dark:border-white/10 rounded-xl py-2.5 px-5 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:not(:disabled):bg-orange-500 hover:not(:disabled):text-white hover:not(:disabled):border-orange-500 shadow-sm"
+          >
+            Previous
+          </button>
+          <span className="text-ink-soft px-2">
+            Page {page + 1} of {totalPages}
+          </span>
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+            disabled={page >= totalPages - 1 || isLoading}
+            className="font-inter font-bold text-[13px] text-ink bg-cream-card border border-black/10 dark:border-white/10 rounded-xl py-2.5 px-5 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:not(:disabled):bg-orange-500 hover:not(:disabled):text-white hover:not(:disabled):border-orange-500 shadow-sm"
+          >
+            Next
+          </button>
         </div>
       )}
 

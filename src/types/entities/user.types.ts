@@ -28,13 +28,17 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  jwt: string;
-  userId: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  username: string;
-  role: RoleType;
+  jwt?: string;
+  token?: string;
+  accessToken?: string;
+  userId?: string | number;
+  id?: string | number;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  username?: string;
+  role?: RoleType;
+  user?: AuthUser;
 }
 
 export interface ProfileResponse {
@@ -42,9 +46,15 @@ export interface ProfileResponse {
   lastName: string;
   username: string;
   email: string;
+
+  // Lightweight statistics
   totalBookmarked: number;
   totalLearned: number;
-  // currentStreak: number;  // BLOCKED — not yet in backend DTO, stub as 0 until added
+
+  // Daily Streak fields
+  currentStreak: number;
+  maxStreak: number;
+  isStreakActiveToday: boolean;
 }
 
 export interface AuthUser {
@@ -55,6 +65,49 @@ export interface AuthUser {
   email: string;
   role: RoleType;
   createdAt: string;
+}
+
+/**
+ * Robustly extract JWT token and AuthUser from any backend response shape
+ */
+export function extractAuthPayload(res: any, fallbackUsername: string = 'User'): { token: string; user: AuthUser } {
+  const rawData = res?.data ?? res;
+
+  // Extract JWT Token
+  const token: string = String(
+    rawData?.jwt ||
+    rawData?.token ||
+    rawData?.accessToken ||
+    rawData?.bearerToken ||
+    ''
+  ).trim();
+
+  // Extract AuthUser object
+  let user: AuthUser;
+  if (rawData?.user && typeof rawData.user === 'object') {
+    user = {
+      id: Number(rawData.user.id ?? rawData.user.userId ?? rawData.userId ?? 1),
+      username: rawData.user.username || rawData.username || fallbackUsername,
+      email: rawData.user.email || rawData.email || `${fallbackUsername}@vocabmitra.com`,
+      firstName: rawData.user.firstName || rawData.user.name || rawData.firstName || fallbackUsername,
+      lastName: rawData.user.lastName || rawData.lastName || '',
+      role: (rawData.user.role || rawData.role || 'USER') as RoleType,
+      createdAt: rawData.user.createdAt || rawData.createdAt || new Date().toISOString(),
+    };
+  } else {
+    const rawId = rawData?.userId ?? rawData?.id ?? 1;
+    user = {
+      id: Number(rawId),
+      username: rawData?.username || fallbackUsername,
+      email: rawData?.email || `${fallbackUsername}@vocabmitra.com`,
+      firstName: rawData?.firstName || rawData?.name || fallbackUsername,
+      lastName: rawData?.lastName || '',
+      role: (rawData?.role || 'USER') as RoleType,
+      createdAt: rawData?.createdAt || new Date().toISOString(),
+    };
+  }
+
+  return { token, user };
 }
 
 export function toAuthUser(res: SignupResponse): AuthUser {

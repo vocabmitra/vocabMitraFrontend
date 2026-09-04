@@ -12,11 +12,14 @@ import { useAuthStore } from '../store/useAuthStore';
  * Only bookmark and mark-as-learned go through requireAuth.
  */
 export function useAuthGate() {
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const navigate = useNavigate();
 
   return function requireAuth(action: () => void) {
-    if (isAuthenticated) {
+    const token = localStorage.getItem('vv-auth-token') || localStorage.getItem('AUTH_TOKEN_KEY');
+    const authState = useAuthStore.getState();
+    const isLoggedIn = Boolean((token && token !== 'null' && token !== 'undefined') || authState.isAuthenticated || authState.user);
+
+    if (isLoggedIn) {
       action();
     } else {
       navigate('/auth');

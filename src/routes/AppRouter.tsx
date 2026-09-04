@@ -1,7 +1,9 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ProtectedRoute } from './ProtectedRoute';
+import { AdminRoute } from './AdminRoute';
 import { useAuthStore } from '../store/useAuthStore';
+import { AnimatedBackground } from '../components/ui/AnimatedBackground';
 
 // Lazy load pages for code splitting
 const HomePage = lazy(() => import('../pages/HomePage'));
@@ -13,6 +15,8 @@ const UserWordListPage = lazy(() => import('../features/profile/UserWordListPage
 const PracticeSessionPage = lazy(() => import('../pages/PracticeSessionPage'));
 const PracticeTabView = lazy(() => import('../pages/profile/PracticeTabView').then(module => ({ default: module.PracticeTabView })));
 const CuetFocusPage = lazy(() => import('../pages/profile/CuetFocusPage'));
+const SettingsPage = lazy(() => import('../pages/profile/SettingsPage'));
+const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage'));
 
 function LoadingFallback() {
   return (
@@ -34,17 +38,20 @@ function LoadingFallback() {
 
 function AuthRedirect({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-  if (isAuthenticated) return <Navigate to="/profile" replace />;
+  const user = useAuthStore((s) => s.user);
+  const roleUpper = user?.role ? String(user.role).toUpperCase() : '';
+  const isAdmin = roleUpper === 'ADMIN' || roleUpper === 'ROLE_ADMIN';
+
+  if (isAuthenticated) {
+    return <Navigate to={isAdmin ? '/admin' : '/profile'} replace />;
+  }
   return <>{children}</>;
 }
-
-import { useLocation } from 'react-router-dom';
-import { AnimatedBackground } from '../components/ui/AnimatedBackground';
 
 function BackgroundManager() {
   const location = useLocation();
   // Only hide the animated background glow on profile/dashboard and practice routes
-  if (location.pathname.startsWith('/profile') || location.pathname.startsWith('/practice')) {
+  if (location.pathname.startsWith('/profile') || location.pathname.startsWith('/practice') || location.pathname.startsWith('/admin')) {
     return null;
   }
   return <AnimatedBackground />;
@@ -84,6 +91,7 @@ export function AppRouter() {
             <Route path="bookmarks" element={<UserWordListPage mode="bookmarked" />} />
             <Route path="learned" element={<UserWordListPage mode="learned" />} />
             <Route path="cuet-focus" element={<CuetFocusPage />} />
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
 
           {/* Protected route — Practice Session */}
@@ -93,6 +101,16 @@ export function AppRouter() {
               <ProtectedRoute>
                 <PracticeSessionPage />
               </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Route — Admin Console */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboardPage />
+              </AdminRoute>
             }
           />
 

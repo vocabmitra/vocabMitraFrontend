@@ -33,30 +33,55 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
   const [activeFilters, setActiveFilters] = useState<UseCaseTag[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [rawCards, setRawCards] = useState<VocabCardType[]>([]);
+  const [page, setPage] = useState(0);
+  const [pageSize] = useState(9);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalElements, setTotalElements] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   
   const meta = MODE_META[mode];
   const Icon = meta.icon;
 
   useEffect(() => {
+    setPage(0);
+  }, [mode]);
+
+  useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
-        const data = mode === 'learned' 
-          ? await vocabApi.getLearned() 
-          : await vocabApi.getBookmarked();
-        setRawCards(data);
+        if (mode === 'learned') {
+          // Fetch paginated learned vocabs from GET /user/private/learnedVocabs?page=&size=
+          const res = await vocabApi.getLearnedVocabs(page, pageSize);
+          setRawCards(res.content);
+          setTotalPages(res.totalPages);
+          setTotalElements(res.totalElements);
+        } else {
+          // Fetch paginated bookmarked vocabs from GET /user/private/bookmarkedVocabs?page=&size=
+          const res = await vocabApi.getBookmarkedVocabs(page, pageSize);
+          setRawCards(res.content);
+          setTotalPages(res.totalPages);
+          setTotalElements(res.totalElements);
+        }
       } catch (err) {
         console.error(`Failed to fetch ${mode} words`, err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
-  }, [mode, openCard]);
+  }, [mode, page, pageSize, openCard]);
 
   // Filtering Logic
   let cards = rawCards;
 
   if (searchQuery.trim()) {
     const q = searchQuery.toLowerCase();
-    cards = cards.filter(c => c.vocab.word.toLowerCase().includes(q) || c.vocab.meaning.toLowerCase().includes(q));
+    cards = cards.filter(
+      (c) =>
+        (c.vocab.vocab || (c.vocab as any).word || '').toLowerCase().includes(q) ||
+        (c.vocab.meaning || '').toLowerCase().includes(q)
+    );
   }
 
   if (activeFilters.length > 0) {
@@ -118,7 +143,7 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
           </div>
           <div className="flex flex-col">
             <span className="font-inter text-[12px] font-medium text-blue-500 mb-1">Total {mode === 'learned' ? 'Learned' : 'Saved'}</span>
-            <span className="font-bricolage text-[24px] font-bold text-ink leading-none">{rawCards.length}</span>
+            <span className="font-bricolage text-[24px] font-bold text-ink leading-none">{totalElements || rawCards.length}</span>
           </div>
         </div>
 
@@ -146,33 +171,6 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
           </div>
         </div>
       </div>
-
-      {/* ─── Practice Banner (only if words exist) ─── */}
-      {rawCards.length > 0 && (
-        <div className="dash-element w-full bg-cream-card rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)] relative overflow-hidden">
-          {/* Decorative background element */}
-          <div className="absolute right-0 top-0 w-64 h-64 bg-orange-500/5 dark:bg-orange-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-          
-          <div className="flex items-start md:items-center gap-4 relative z-10">
-            <div className="w-14 h-14 rounded-2xl bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-[0_4px_20px_rgba(249,115,22,0.4)]">
-              <Zap size={28} className="fill-white" />
-            </div>
-            <div className="flex flex-col">
-              <h3 className="font-bricolage text-[20px] font-bold text-ink mb-1">Ready to test your memory?</h3>
-              <p className="font-inter text-[14px] text-ink-soft max-w-[400px]">
-                Start a quick practice session using only your {mode === 'learned' ? 'learned' : 'bookmarked'} words to keep them fresh in your mind.
-              </p>
-            </div>
-          </div>
-          
-          <Link 
-            to="/practice"
-            className="relative z-10 shrink-0 bg-orange-500 hover:bg-orange-600 text-white font-inter text-[14px] font-bold px-6 py-3 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(249,115,22,0.3)] hover:shadow-[0_6px_20px_rgba(249,115,22,0.4)] hover:-translate-y-0.5"
-          >
-            Start Quick Quiz <ArrowRight size={16} />
-          </Link>
-        </div>
-      )}
 
       {/* ─── Category Filters ─── */}
       {rawCards.length > 0 && allTags.length > 0 && (
@@ -252,6 +250,29 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
               onClick={() => setOpenCard(card)}
             />
           ))}
+        </div>
+      )}
+
+      {/* ─── Pagination Controls ─── */}
+      {totalPages > 1 && (
+        <div className="dash-element mt-6 flex justify-center items-center gap-4 font-inter text-[13px] font-bold">
+          <button
+            onClick={() => setPage((p) => Math.max(0, p - 1))}
+            disabled={page === 0 || isLoading}
+            className="font-inter font-bold text-[13px] text-ink bg-cream-card border border-black/10 dark:border-white/10 rounded-xl py-2.5 px-5 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:not(:disabled):bg-orange-500 hover:not(:disabled):text-white hover:not(:disabled):border-orange-500 shadow-sm"
+          >
+            Previous
+          </button>
+          <span className="text-ink-soft px-2">
+            Page {page + 1} of {totalPages}
+          </span>
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+            disabled={page >= totalPages - 1 || isLoading}
+            className="font-inter font-bold text-[13px] text-ink bg-cream-card border border-black/10 dark:border-white/10 rounded-xl py-2.5 px-5 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:not(:disabled):bg-orange-500 hover:not(:disabled):text-white hover:not(:disabled):border-orange-500 shadow-sm"
+          >
+            Next
+          </button>
         </div>
       )}
 

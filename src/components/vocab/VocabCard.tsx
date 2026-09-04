@@ -1,6 +1,8 @@
 import type { VocabCard as VocabCardType } from '../../types';
 import { parseUseCaseTags } from '../../types';
 import { BookOpen } from 'lucide-react';
+import { BookmarkToggleButton } from './BookmarkToggleButton';
+import { MarkAsLearnedToggleButton } from './MarkAsLearnedToggleButton';
 
 interface VocabCardProps {
   vocabCard: VocabCardType;
@@ -20,6 +22,9 @@ export function VocabCard({ vocabCard, onClick }: VocabCardProps) {
   const typeText = vocabObj?.vocabType || 'WORD';
   const trickText = vocabObj?.trick || vocabObj?.mnemonics;
 
+  const isBookmarked = Boolean(vocabCard?.isBookmarked ?? (vocabCard as any)?.bookmarked);
+  const isLearned = Boolean(vocabCard?.isLearned ?? (vocabCard as any)?.learned);
+
   return (
     <div
       className="group relative flex flex-col justify-between rounded-2xl cursor-pointer bg-cream-card border border-black/5 dark:border-white/5 dark:border-t-white/10 p-6 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)] transition-all duration-200 hover:-translate-y-1"
@@ -29,15 +34,20 @@ export function VocabCard({ vocabCard, onClick }: VocabCardProps) {
       role="button"
       aria-label={`Open entry for ${wordTitle}`}
     >
-      {/* Top Section: Big Title (Left) and Recessed Icon Box (Right) */}
+      {/* Top Section: Big Title (Left) and Interactive Action Icons (Right) */}
       <div className="flex items-center justify-between gap-4 mb-3">
         <h3 className="font-bricolage text-[28px] font-bold text-ink leading-none tracking-tight uppercase">
           {wordTitle}
         </h3>
 
-        {/* Recessed Icon Container */}
-        <div className="w-14 h-14 rounded-2xl bg-black/5 dark:bg-white/5 flex items-center justify-center shrink-0 border border-black/5 dark:border-white/10 shadow-inner group-hover:border-orange-500/30 transition-colors">
-          <BookOpen size={24} className="text-orange-500 opacity-90" />
+        {/* Action icons: Learned + Bookmark */}
+        <div className="flex items-center gap-2 shrink-0">
+          {vocabObj?.id && (
+            <>
+              <MarkAsLearnedToggleButton vocabId={vocabObj.id} isLearned={isLearned} variant="icon" />
+              <BookmarkToggleButton vocabId={vocabObj.id} isBookmarked={isBookmarked} variant="icon" />
+            </>
+          )}
         </div>
       </div>
 

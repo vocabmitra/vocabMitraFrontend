@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { X, ExternalLink } from 'lucide-react';
+import { X, ExternalLink, Info } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import type { VocabCard as VocabCardType } from '../../types';
 import { parseUseCaseTags } from '../../types';
@@ -55,46 +55,33 @@ export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40 dark:bg-black/80 backdrop-blur-md transition-all duration-300"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       role="dialog"
       aria-modal="true"
       aria-label={`Dictionary entry for ${vocab.vocab}`}
     >
       <div
-        className="relative w-full max-w-[680px] max-h-[90vh] flex flex-col rounded-2xl animate-modal-in"
-        style={{
-          background: 'rgba(18,18,18,0.85)',
-          backdropFilter: 'blur(32px)',
-          WebkitBackdropFilter: 'blur(32px)',
-          border: `1px solid rgba(${rgb},0.20)`,
-          boxShadow: `0 0 0 1px rgba(255,255,255,0.05), 0 40px 80px rgba(0,0,0,0.7), 0 0 60px rgba(${rgb},0.08)`,
-          paddingTop: '42px',
-          paddingLeft: '42px',
-          paddingRight: '42px',
-          paddingBottom: '36px',
-        }}
+        className="relative w-full max-w-[680px] max-h-[90vh] flex flex-col rounded-3xl p-7 sm:p-10 bg-cream-card dark:bg-[#121212] text-ink dark:text-white border border-black/10 dark:border-white/10 shadow-2xl dark:shadow-[0_25px_60px_rgba(0,0,0,0.85)] animate-modal-in overflow-hidden"
       >
 
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 flex items-center gap-1.5 font-inter text-[12px] font-medium text-neutral-400 cursor-pointer transition-all duration-200 hover:text-white rounded-lg py-1.5 px-3"
-          style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.10)' }}
+          className="absolute top-5 right-5 z-10 flex items-center gap-1.5 font-inter text-[12.5px] font-semibold text-ink-soft dark:text-neutral-300 bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/10 rounded-full py-1.5 px-3.5 transition-all cursor-pointer"
           aria-label="Close entry"
           id="open-vocab-close"
         >
           Close
-          <X size={13} strokeWidth={2} />
+          <X size={14} strokeWidth={2.5} />
         </button>
 
         {/* Scrollable content */}
-        <div className="overflow-y-auto flex-1 mt-2.5 pr-2 custom-scrollbar">
+        <div className="overflow-y-auto flex-1 mt-1 pr-2 custom-scrollbar">
 
           {/* Headword row */}
-          <div className="flex items-center gap-3.5 flex-wrap mb-2.5 pl-8 pr-[60px]">
-            <h2 className="font-bricolage text-[clamp(36px,5vw,50px)] font-bold text-white m-0">
+          <div className="flex items-center gap-3.5 flex-wrap mb-2.5 sm:pr-[60px]">
+            <h2 className="font-bricolage text-[clamp(32px,5vw,48px)] font-extrabold text-ink dark:text-white m-0 tracking-tight uppercase">
               {vocab.vocab}
             </h2>
             {tags.map((tag) => (
@@ -103,31 +90,26 @@ export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps
           </div>
 
           {/* Type */}
-          <div className="font-space text-sm text-neutral-600 mb-6 pl-8">
+          <div className="font-space text-sm font-semibold text-ink-soft dark:text-neutral-400 mb-5">
             / {vocab.vocabType} /
           </div>
 
           {/* Meaning */}
-          <div className="text-[19px] font-medium text-neutral-200 leading-[1.6] max-w-[48ch] mb-6 pl-8">
+          <div className="text-[18px] sm:text-[20px] font-medium text-ink dark:text-neutral-200 leading-[1.6] max-w-[50ch] mb-6">
             {vocab.meaning}
           </div>
 
-          {/* Mnemonic — glassmorphic amber box */}
+          {/* Mnemonic — Memory Hook box */}
           {vocab.trick && (
             <div
-              className="ml-8 mb-6 max-w-[50ch] rounded-xl py-4 px-5"
-              style={{
-                background: `rgba(${rgb},0.07)`,
-                border: `1px solid rgba(${rgb},0.20)`,
-              }}
+              className="mb-6 max-w-[50ch] rounded-2xl p-5 bg-orange-500/10 dark:bg-orange-500/15 border border-orange-500/25 dark:border-orange-500/30"
             >
               <div
-                className="font-inter text-xs font-semibold tracking-wide uppercase mb-1.5"
-                style={{ color: `rgba(${rgb},0.9)` }}
+                className="font-inter text-xs font-bold tracking-wider uppercase mb-1.5 text-orange-600 dark:text-orange-400"
               >
                 Memory Hook
               </div>
-              <div className="font-inter font-medium text-[15px] text-neutral-200 leading-relaxed">
+              <div className="font-inter font-semibold text-[15px] text-ink dark:text-white leading-relaxed">
                 "{vocab.trick}"
               </div>
             </div>
@@ -136,31 +118,41 @@ export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps
           {/* Example */}
           {vocab.example && (
             <div
-              className="ml-8 pl-4 text-[15px] text-neutral-500 italic max-w-[50ch] mb-9"
-              style={{ borderLeft: `3px solid rgba(${rgb},0.35)` }}
+              className="pl-4 text-[15px] text-ink-soft dark:text-neutral-400 italic max-w-[50ch] mb-6 border-l-4 border-orange-500/40"
             >
               "{vocab.example}"
-              <span className="block font-space not-italic text-[10.5px] font-bold tracking-[0.05em] uppercase mt-2 text-neutral-700">
+              <span className="block font-space not-italic text-[11px] font-bold tracking-wider uppercase mt-2 text-ink-soft/70 dark:text-neutral-500">
                 Example usage
               </span>
             </div>
           )}
 
+          {/* Usage Note / Message */}
+          {vocab.message && (
+            <div className="mb-6 max-w-[50ch] rounded-2xl p-4 bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/25 dark:border-blue-500/30">
+              <div className="font-inter text-xs font-bold tracking-wider uppercase mb-1 text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
+                <Info size={14} /> Usage Note / Context
+              </div>
+              <div className="font-inter font-medium text-[14px] text-ink dark:text-neutral-200 leading-relaxed">
+                {vocab.message}
+              </div>
+            </div>
+          )}
+
           {/* Divider */}
           <div
-            className="h-px ml-8 mb-6"
-            style={{ background: 'rgba(255,255,255,0.06)' }}
+            className="h-px mb-6 bg-black/10 dark:bg-white/10"
           />
 
           {/* Actions */}
-          <div className="flex items-center gap-2.5 flex-wrap ml-8">
+          <div className="flex items-center gap-3 flex-wrap">
             <MarkAsLearnedToggleButton
               vocabId={vocab.id}
-              isLearned={vocabCard.isLearned}
+              isLearned={Boolean(vocabCard?.isLearned ?? (vocabCard as any)?.learned)}
             />
             <BookmarkToggleButton
               vocabId={vocab.id}
-              isBookmarked={vocabCard.isBookmarked}
+              isBookmarked={Boolean(vocabCard?.isBookmarked ?? (vocabCard as any)?.bookmarked)}
             />
             <AddToPracticeToggleButton
               vocabId={vocab.id}
@@ -171,9 +163,9 @@ export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps
                 href={`https://www.merriam-webster.com/dictionary/${encodeURIComponent(vocab.vocab)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-[12px] font-bold text-neutral-600 font-space transition-colors duration-150 no-underline hover:text-neutral-300"
+                className="inline-flex items-center gap-1.5 text-[12px] font-bold text-ink-soft hover:text-ink dark:text-neutral-400 dark:hover:text-white font-space transition-colors no-underline"
               >
-                <ExternalLink size={12} strokeWidth={2.5} />
+                <ExternalLink size={13} strokeWidth={2.5} />
                 Merriam-Webster
               </a>
             </div>

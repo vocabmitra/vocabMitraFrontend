@@ -9,7 +9,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
 import { authApi } from '../../api/endpoints/auth.api';
 import { normalizeError } from '../../utils/errorHandler';
-import { toAuthUser } from '../../types';
+import { toAuthUser, extractAuthPayload } from '../../types';
 
 /* ─── Validation schemas ─── */
 const loginSchema = z.object({
@@ -67,9 +67,21 @@ export function AuthForm({ defaultTab = 'signin', onSuccess }: AuthFormProps) {
     setSubmitError(null);
     try {
       const res = await authApi.login({ username: data.username, password: data.password });
-      login(res.user, res.token);
-      addToast(`Welcome back, ${res.user.firstName}!`, 'success');
-      onSuccess ? onSuccess() : navigate(from, { replace: true });
+      const { token, user } = extractAuthPayload(res, data.username);
+
+      console.log('[AuthForm] Login successful, payload extracted:', { token, user });
+
+      login(user, token);
+      addToast(`Welcome back, ${user.firstName || user.username}!`, 'success');
+
+      const roleUpper = user?.role ? String(user.role).toUpperCase() : '';
+      const isAdmin = roleUpper === 'ADMIN' || roleUpper === 'ROLE_ADMIN';
+
+      if (isAdmin) {
+        navigate('/admin', { replace: true });
+      } else {
+        onSuccess ? onSuccess() : navigate(from, { replace: true });
+      }
     } catch (err) {
       setSubmitError(normalizeError(err).message);
     }
