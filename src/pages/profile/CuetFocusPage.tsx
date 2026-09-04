@@ -1,7 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { BookOpen, MessageSquare, PenTool, Link as LinkIcon, Globe, Sparkles, Search, RefreshCw } from 'lucide-react';
 import { VocabCard } from '../../components/vocab/VocabCard';
 import { OpenVocabCard } from '../../components/vocab/OpenVocabCard';
+import { PracticeSessionLauncher } from '../../components/vocab/PracticeSessionLauncher';
 import type { VocabCard as VocabCardType } from '../../types';
 import { vocabApi } from '../../api/endpoints/vocab.api';
 
@@ -15,9 +17,39 @@ const TABS = [
 ];
 
 export default function CuetFocusPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [cards, setCards] = useState<VocabCardType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState(TABS[0].id);
+
+  const initialTab = useMemo(() => {
+    const t = searchParams.get('tab');
+    return TABS.some((tab) => tab.id === t) ? t! : TABS[0].id;
+  }, [searchParams]);
+
+  const [activeTab, setActiveTab] = useState(initialTab);
+
+  useEffect(() => {
+    const t = searchParams.get('tab');
+    if (t && TABS.some((tab) => tab.id === t)) {
+      setActiveTab(t);
+    }
+  }, [searchParams]);
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    setSearchParams(
+      (prev) => {
+        if (tabId === 'all') {
+          prev.delete('tab');
+        } else {
+          prev.set('tab', tabId);
+        }
+        return prev;
+      },
+      { replace: true }
+    );
+  };
+
   const [searchQuery, setSearchQuery] = useState('');
   const [openCard, setOpenCard] = useState<VocabCardType | null>(null);
 
@@ -90,15 +122,21 @@ export default function CuetFocusPage() {
           </div>
         </div>
 
-        {/* Local Search Bar */}
-        <div className="relative w-full max-w-[320px]">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-soft opacity-70" />
-          <input 
-            type="text" 
-            placeholder="Search CUET words..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-cream-card rounded-xl py-2.5 pl-10 pr-4 font-inter text-[13px] text-ink placeholder:text-ink-soft focus:outline-none focus:ring-1 focus:ring-orange-500/50 transition-all border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-sm dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+        {/* Local Search Bar + Practice CTA */}
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="relative w-full max-w-[260px]">
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-soft opacity-70" />
+            <input 
+              type="text" 
+              placeholder="Search CUET words..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-cream-card rounded-xl py-2.5 pl-10 pr-4 font-inter text-[13px] text-ink placeholder:text-ink-soft focus:outline-none focus:ring-1 focus:ring-orange-500/50 transition-all border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-sm dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+            />
+          </div>
+          <PracticeSessionLauncher
+            cards={filteredCards}
+            label={searchQuery.trim() || activeTab !== 'all' ? 'Filtered Words' : 'CUET Words'}
           />
         </div>
       </div>
@@ -112,7 +150,7 @@ export default function CuetFocusPage() {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => handleTabChange(tab.id)}
                 className={`flex-shrink-0 flex items-center gap-2 px-5 py-3 rounded-2xl font-inter text-[14px] font-semibold transition-all cursor-pointer border ${
                   isActive
                     ? 'bg-orange-500/10 border-orange-500/30 text-orange-600 dark:text-orange-400 shadow-[0_4px_12px_rgba(249,115,22,0.15)]'

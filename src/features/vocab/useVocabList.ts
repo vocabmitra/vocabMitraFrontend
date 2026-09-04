@@ -28,5 +28,6 @@ export function useVocabList() {
     clearFilters: store.clearFilters,
     setSearch: store.setSearch,
     setPage: store.setPage,
+    setPageSize: store.setPageSize,
   };
 }

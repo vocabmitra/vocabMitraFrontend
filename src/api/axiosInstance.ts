@@ -40,15 +40,30 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor — let errors propagate; normalizeError handles them in hooks
+// Response interceptor — handle global errors such as 403 Forbidden
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    // 401 — clear stale auth data to prevent infinite re-auth loops
-    if (error.response?.status === 401) {
+    const status = error.response?.status;
+
+    // 403 Forbidden — immediately logout from anywhere and redirect to login page (/auth)
+    if (status === 403) {
+      try {
+        useAuthStore.getState().logout();
+      } catch (e) {
+        localStorage.removeItem(AUTH_TOKEN_KEY);
+        localStorage.removeItem('vv-auth-token');
+        localStorage.removeItem('vv-auth-user');
+      }
+      if (typeof window !== 'undefined' && window.location.pathname !== '/auth') {
+        window.location.href = '/auth';
+      }
+    } else if (status === 401) {
+      // 401 Unauthorized — clear stale auth token
       localStorage.removeItem(AUTH_TOKEN_KEY);
-      // Note: do NOT redirect here — let the auth store / ProtectedRoute handle navigation
+      localStorage.removeItem('vv-auth-token');
     }
+
     return Promise.reject(error);
   }
 );

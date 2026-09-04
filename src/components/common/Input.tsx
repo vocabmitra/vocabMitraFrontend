@@ -19,7 +19,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={id}
-            className="text-[13px] font-bold text-ink font-space"
+            className="text-[12px] font-bold text-ink-soft uppercase tracking-wider font-inter"
           >
             {label}
           </label>
@@ -34,8 +34,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={id}
             type={inputType}
-            className={`w-full bg-cream-card text-ink border-2 border-solid rounded-xl py-3 text-[15px] font-inter font-medium outline-none transition-shadow duration-200 ease-[var(--ease)] focus:shadow-[0_0_0_4px_color-mix(in_srgb,var(--ink)_15%,transparent)] ${
-              error ? 'border-[#FF5A5F]' : 'border-ink'
+            className={`w-full bg-cream text-ink border border-black/10 dark:border-white/10 rounded-xl py-3 text-[14px] font-inter font-medium outline-none transition-all focus:ring-2 focus:ring-orange-500/40 ${
+              error ? 'border-red-500' : ''
             } ${icon ? 'pl-[40px]' : 'pl-4'} ${isPassword ? 'pr-[40px]' : 'pr-4'}`}
             {...props}
           />

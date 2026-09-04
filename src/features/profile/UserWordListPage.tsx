@@ -1,8 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Bookmark, BookOpen, Search, Target, Flame, ArrowRight, Zap } from 'lucide-react';
+import { Bookmark, BookOpen, Search, Target, Flame, ArrowRight } from 'lucide-react';
 import { VocabCard } from '../../components/vocab/VocabCard';
 import { OpenVocabCard } from '../../components/vocab/OpenVocabCard';
+import { PracticeSessionLauncher } from '../../components/vocab/PracticeSessionLauncher';
 import { vocabApi } from '../../api/endpoints/vocab.api';
 import type { VocabCard as VocabCardType, UseCaseTag } from '../../types';
 import { parseUseCaseTags } from '../../types';
@@ -122,15 +123,21 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
           </div>
         </div>
 
-        {/* Local Search Bar */}
-        <div className="relative w-full max-w-[320px]">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-soft opacity-70" />
-          <input 
-            type="text" 
-            placeholder="Search saved words..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-cream-card rounded-xl py-2.5 pl-10 pr-4 font-inter text-[13px] text-ink placeholder:text-ink-soft focus:outline-none focus:ring-1 focus:ring-orange-500/50 transition-all border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-sm dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+        {/* Local Search Bar + Practice CTA */}
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="relative w-full max-w-[280px]">
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-soft opacity-70" />
+            <input 
+              type="text" 
+              placeholder="Search saved words..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-cream-card rounded-xl py-2.5 pl-10 pr-4 font-inter text-[13px] text-ink placeholder:text-ink-soft focus:outline-none focus:ring-1 focus:ring-orange-500/50 transition-all border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-sm dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+            />
+          </div>
+          <PracticeSessionLauncher
+            cards={cards}
+            label={activeFilters.length > 0 || searchQuery.trim() ? 'Filtered Words' : (mode === 'bookmarked' ? 'Bookmarked Words' : 'Learned Words')}
           />
         </div>
       </div>

@@ -5,7 +5,6 @@ import type { VocabCard as VocabCardType } from '../../types';
 import { parseUseCaseTags } from '../../types';
 import { MarkAsLearnedToggleButton } from './MarkAsLearnedToggleButton';
 import { BookmarkToggleButton } from './BookmarkToggleButton';
-import { AddToPracticeToggleButton } from './AddToPracticeToggleButton';
 import { CategoryBadge } from './CategoryBadge';
 
 interface OpenVocabCardProps {
@@ -153,10 +152,6 @@ export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps
             <BookmarkToggleButton
               vocabId={vocab.id}
               isBookmarked={Boolean(vocabCard?.isBookmarked ?? (vocabCard as any)?.bookmarked)}
-            />
-            <AddToPracticeToggleButton
-              vocabId={vocab.id}
-              addedToPractice={vocabCard.addedToPractice}
             />
             <div className="ml-auto">
               <a

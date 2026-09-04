@@ -37,8 +37,7 @@ export function Navbar() {
   const userRole = user?.role ? String(user.role).toUpperCase() : '';
   const isAdmin = userRole === 'ADMIN' || userRole === 'ROLE_ADMIN';
 
-  const handleLogout = async () => {
-    await authApi.logout();
+  const handleLogout = () => {
     logout();
     addToast('Signed out. See you soon!', 'info');
     navigate('/');
@@ -73,11 +72,17 @@ export function Navbar() {
 
         {/* Nav links */}
         <div className="flex items-center gap-1 text-sm font-semibold">
-          {[
-            { to: '/', label: 'Home' },
-            { to: '/vocabulary', label: 'Vocabulary' },
-            ...(!isAdmin ? [{ to: '/profile', label: 'Profile' }] : []),
-          ].map(({ to, label }) => (
+          {(isAdmin
+            ? [
+                { to: '/', label: 'Home' },
+                { to: '/admin', label: 'Admin Console' },
+              ]
+            : [
+                { to: '/', label: 'Home' },
+                { to: '/vocabulary', label: 'Vocabulary' },
+                ...(isLoggedIn ? [{ to: '/profile', label: 'Profile' }] : []),
+              ]
+          ).map(({ to, label }) => (
             <NavLink
               key={to}
               to={to}

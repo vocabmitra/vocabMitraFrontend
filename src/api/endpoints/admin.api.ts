@@ -124,7 +124,6 @@ export const adminApi = {
     const sizeNum = typeof size === 'number' && !isNaN(size) ? size : 10;
 
     try {
-      console.log(`[adminApi] Requesting GET /admin/allVocabs?page=${pageNum}&size=${sizeNum}&sort=${sort}`);
       const res = await axiosInstance.get<any>('/admin/allVocabs', {
         params: { page: pageNum, size: sizeNum, sort },
       });
@@ -206,7 +205,6 @@ export const adminApi = {
     };
 
     try {
-      console.log('[adminApi] Requesting POST /admin/addVocab with payload:', payload);
       const res = await axiosInstance.post<any>('/admin/addVocab', payload);
       const created = res.data?.data ?? res.data;
       if (created && (created.id !== undefined || created.vocab)) {
@@ -256,7 +254,6 @@ export const adminApi = {
     };
 
     try {
-      console.log(`[adminApi] Requesting PATCH /admin/update?id=${id} with payload:`, payload);
       const res = await axiosInstance.patch<any>('/admin/update', payload, {
         params: { id },
       });

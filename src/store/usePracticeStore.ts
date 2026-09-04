@@ -1,92 +1,117 @@
 import { create } from 'zustand';
 import type { VocabCard } from '../types';
 
-export interface PracticeSettings {
-  isTimed: boolean;
-  timeLimitSeconds: number;
+// ── Session metadata tracked purely in frontend ──────────────────────────────
+export interface PracticeSessionMeta {
+  rememberedIds: number[];  // vocab IDs marked as Remembered
+  forgotIds: number[];      // vocab IDs marked as Forgot
+  startTime: number | null; // Date.now() when session started
+  endTime: number | null;   // Date.now() when session ended
 }
 
 interface PracticeSessionState {
   isActive: boolean;
   cards: VocabCard[];
   currentIndex: number;
+  meta: PracticeSessionMeta;
 }
 
 interface PracticeStore {
-  // Practice Queue (selected in the dashboard)
-  practiceQueue: VocabCard[];
-  setPracticeQueue: (cards: VocabCard[]) => void;
-  
-  // Settings
-  settings: PracticeSettings;
-  updateSettings: (settings: Partial<PracticeSettings>) => void;
-  
   // Session State
   session: PracticeSessionState;
   startSession: (cards: VocabCard[]) => void;
+  restartSession: () => void;
   endSession: () => void;
   nextCard: () => void;
-  moveCardToBack: () => void;
+  recordRemembered: (vocabId: number) => void;
+  recordForgot: (vocabId: number) => void;
 }
 
-export const usePracticeStore = create<PracticeStore>((set) => ({
-  practiceQueue: [],
-  setPracticeQueue: (cards) => set({ practiceQueue: cards }),
-  
-  settings: {
-    isTimed: true,
-    timeLimitSeconds: 10,
-  },
-  updateSettings: (newSettings) => 
-    set((state) => ({ settings: { ...state.settings, ...newSettings } })),
-    
+const EMPTY_META: PracticeSessionMeta = {
+  rememberedIds: [],
+  forgotIds: [],
+  startTime: null,
+  endTime: null,
+};
+
+export const usePracticeStore = create<PracticeStore>((set, get) => ({
   session: {
     isActive: false,
     cards: [],
     currentIndex: 0,
+    meta: { ...EMPTY_META },
   },
-  
-  startSession: (cards) => set({
-    session: {
-      isActive: true,
-      cards: [...cards], // Clone to avoid mutating the original queue reference
-      currentIndex: 0,
-    }
-  }),
-  
-  endSession: () => set({
-    session: {
-      isActive: false,
-      cards: [],
-      currentIndex: 0,
-    }
-  }),
-  
-  nextCard: () => set((state) => ({
-    session: {
-      ...state.session,
-      currentIndex: state.session.currentIndex + 1,
-    }
-  })),
-  
-  // "Again" logic: Move current card to the end of the array, but don't increment index
-  moveCardToBack: () => set((state) => {
-    const { cards, currentIndex } = state.session;
-    const currentCard = cards[currentIndex];
-    
-    // Create new array: everything up to current (already processed), 
-    // current (being skipped for now), rest of cards, and then current appended at the end.
-    // Wait, simpler: just push the current card to the end of the array.
-    // We also need to move the index forward so we show the next card.
-    const newCards = [...cards];
-    newCards.push(currentCard);
-    
-    return {
+
+  startSession: (cards) =>
+    set({
+      session: {
+        isActive: true,
+        cards: [...cards],
+        currentIndex: 0,
+        meta: {
+          ...EMPTY_META,
+          startTime: Date.now(),
+        },
+      },
+    }),
+
+  // Restart the exact same card set from index 0, resetting all meta
+  restartSession: () =>
+    set((state) => ({
       session: {
         ...state.session,
-        cards: newCards,
-        currentIndex: currentIndex + 1,
-      }
-    };
-  }),
+        isActive: true,
+        currentIndex: 0,
+        meta: {
+          ...EMPTY_META,
+          startTime: Date.now(),
+        },
+      },
+    })),
+
+  endSession: () =>
+    set((state) => ({
+      session: {
+        ...state.session,
+        isActive: false,
+        meta: {
+          ...state.session.meta,
+          endTime: Date.now(),
+        },
+      },
+    })),
+
+  nextCard: () =>
+    set((state) => ({
+      session: {
+        ...state.session,
+        currentIndex: state.session.currentIndex + 1,
+      },
+    })),
+
+  recordRemembered: (vocabId) =>
+    set((state) => ({
+      session: {
+        ...state.session,
+        meta: {
+          ...state.session.meta,
+          rememberedIds: [...state.session.meta.rememberedIds.filter((id) => id !== vocabId), vocabId],
+          // Remove from forgot list if it was there
+          forgotIds: state.session.meta.forgotIds.filter((id) => id !== vocabId),
+        },
+      },
+    })),
+
+  recordForgot: (vocabId) =>
+    set((state) => ({
+      session: {
+        ...state.session,
+        meta: {
+          ...state.session.meta,
+          forgotIds: [...state.session.meta.forgotIds.filter((id) => id !== vocabId), vocabId],
+          // Remove from remembered list if it was there
+          rememberedIds: state.session.meta.rememberedIds.filter((id) => id !== vocabId),
+        },
+      },
+    })),
 }));

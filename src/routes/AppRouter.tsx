@@ -57,6 +57,18 @@ function BackgroundManager() {
   return <AnimatedBackground />;
 }
 
+function NonAdminRoute({ children }: { children: React.ReactNode }) {
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const user = useAuthStore((s) => s.user);
+  const roleUpper = user?.role ? String(user.role).toUpperCase() : '';
+  const isAdmin = isAuthenticated && (roleUpper === 'ADMIN' || roleUpper === 'ROLE_ADMIN');
+
+  if (isAdmin) {
+    return <Navigate to="/admin" replace />;
+  }
+  return <>{children}</>;
+}
+
 export function AppRouter() {
   return (
     <BrowserRouter>
@@ -65,7 +77,14 @@ export function AppRouter() {
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/vocabulary" element={<VocabPage />} />
+          <Route
+            path="/vocabulary"
+            element={
+              <NonAdminRoute>
+                <VocabPage />
+              </NonAdminRoute>
+            }
+          />
 
           {/* Auth — redirect away if already logged in */}
           <Route
@@ -87,7 +106,6 @@ export function AppRouter() {
             }
           >
             <Route index element={<DashboardView />} />
-            <Route path="practice-queue" element={<PracticeTabView />} />
             <Route path="bookmarks" element={<UserWordListPage mode="bookmarked" />} />
             <Route path="learned" element={<UserWordListPage mode="learned" />} />
             <Route path="cuet-focus" element={<CuetFocusPage />} />

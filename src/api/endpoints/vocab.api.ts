@@ -59,8 +59,6 @@ export const vocabApi = {
     const isLoggedIn = isUserLoggedIn();
     const url = isLoggedIn ? `${VOCAB_BASE}/private/all/user` : `${VOCAB_BASE}/public/all`;
 
-    console.log(`[vocabApi] Fetching vocabs from ${url} (isLoggedIn: ${isLoggedIn}, hasToken: ${Boolean(token)})`);
-
     const res = await axiosInstance.get<PaginatedResponse<any>>(url, {
       params: {
         page: params.page ?? 0,
@@ -145,7 +143,6 @@ export const vocabApi = {
     size: number = 10
   ): Promise<PaginatedResponse<VocabCard>> => {
     const token = getAuthToken();
-    console.log(`[vocabApi] Fetching bookmarked vocabs from ${USER_BASE}/private/bookmarkedVocabs?page=${page}&size=${size}`);
 
     const res = await axiosInstance.get<PaginatedResponse<any> | any>(`${USER_BASE}/private/bookmarkedVocabs`, {
       params: { page, size },
@@ -219,7 +216,6 @@ export const vocabApi = {
     size: number = 10
   ): Promise<PaginatedResponse<VocabCard>> => {
     const token = getAuthToken();
-    console.log(`[vocabApi] Fetching learned vocabs from ${USER_BASE}/private/learnedVocabs?page=${page}&size=${size}`);
 
     const res = await axiosInstance.get<PaginatedResponse<any> | any>(`${USER_BASE}/private/learnedVocabs`, {
       params: { page, size },
@@ -316,7 +312,6 @@ export const vocabApi = {
     sortBy: string = 'id'
   ): Promise<PaginatedResponse<VocabCard>> => {
     const token = getAuthToken();
-    console.log(`[vocabApi] Fetching filtered vocabs for tag "${useCaseTag}" (page=${page}, size=${size})`);
 
     const res = await axiosInstance.get<PaginatedResponse<any> | any>(`${USER_BASE}/private/filterVocab`, {
       params: {

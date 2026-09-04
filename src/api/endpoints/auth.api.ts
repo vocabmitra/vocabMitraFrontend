@@ -47,7 +47,6 @@ export const authApi = {
    */
   getProfile: async (userId?: number | string): Promise<ProfileResponse> => {
     const activeUserId = userId ?? getAuthUserId();
-    console.log(`[authApi] Requesting GET /user/profile with userId:`, activeUserId);
     const res = await axiosInstance.get<any>(`${USER_BASE}/profile`, {
       params: activeUserId ? { userId: activeUserId } : {},
     });
@@ -61,18 +60,16 @@ export const authApi = {
   updateProfile: async (
     updates: { firstName?: string; lastName?: string; email?: string }
   ): Promise<ProfileResponse> => {
-    console.log('[authApi] Requesting PATCH /user/update with payload:', updates);
     const res = await axiosInstance.patch<any>(`${USER_BASE}/update`, updates);
     return res.data?.data ?? res.data;
   },
 
   /**
-   * Server-side logout
-   * POST /auth/logout
+   * Frontend logout cleanup.
+   * No backend request is executed.
    */
   logout: async (): Promise<void> => {
-    await axiosInstance.post(`${AUTH_BASE}/logout`).catch(() => {
-      // Swallow errors — local logout proceeds regardless
-    });
+    // Pure frontend logout — state cleanup is handled via useAuthStore
+    return Promise.resolve();
   },
 };

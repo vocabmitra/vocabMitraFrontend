@@ -318,42 +318,60 @@ export default function DashboardView() {
           <div className="flex items-center gap-2 font-inter text-[13px] font-bold text-orange-500 uppercase tracking-wider">
             <span>✨</span> CUET FOCUS
           </div>
-          <button className="bg-transparent border-none text-orange-500 font-inter text-[13px] font-semibold cursor-pointer flex items-center gap-1 hover:underline">
+          <button
+            onClick={() => navigate('/profile/cuet-focus')}
+            className="bg-transparent border-none text-orange-500 font-inter text-[13px] font-semibold cursor-pointer flex items-center gap-1 hover:underline"
+          >
             Explore all <ArrowRight size={14} />
           </button>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 pb-4 pt-2 w-full">
 
-          <div className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] transition-all">
+          <div
+            onClick={() => navigate('/profile/cuet-focus?tab=previous-year-words')}
+            className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] hover:-translate-y-0.5 transition-all"
+          >
             <div className="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0">
               <BookOpen size={20} />
             </div>
             <span className="font-inter text-[13px] font-semibold text-ink leading-tight">Previous-Year<br />Words</span>
           </div>
 
-          <div className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] transition-all">
+          <div
+            onClick={() => navigate('/profile/cuet-focus?tab=idioms-and-phrases')}
+            className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] hover:-translate-y-0.5 transition-all"
+          >
             <div className="w-11 h-11 rounded-xl bg-green-500/10 text-green-500 flex items-center justify-center shrink-0">
               <MessageSquare size={20} />
             </div>
             <span className="font-inter text-[13px] font-semibold text-ink leading-tight">Idioms &<br />Phrases</span>
           </div>
 
-          <div className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] transition-all">
+          <div
+            onClick={() => navigate('/profile/cuet-focus?tab=one-word-substitution')}
+            className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] hover:-translate-y-0.5 transition-all"
+          >
             <div className="w-11 h-11 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
               <PenTool size={20} />
             </div>
             <span className="font-inter text-[13px] font-semibold text-ink leading-tight">One Word<br />Substitution</span>
           </div>
 
-          <div className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] transition-all">
+          <div
+            onClick={() => navigate('/profile/cuet-focus?tab=phrasal-verbs')}
+            className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] hover:-translate-y-0.5 transition-all"
+          >
             <div className="w-11 h-11 rounded-xl bg-teal-500/10 text-teal-500 flex items-center justify-center shrink-0">
               <LinkIcon size={20} />
             </div>
             <span className="font-inter text-[13px] font-semibold text-ink leading-tight">Phrasal<br />Verbs</span>
           </div>
 
-          <div className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] transition-all">
+          <div
+            onClick={() => navigate('/profile/cuet-focus?tab=foreign-words')}
+            className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] hover:-translate-y-0.5 transition-all"
+          >
             <div className="w-11 h-11 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0">
               <Globe size={20} />
             </div>

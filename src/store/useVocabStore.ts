@@ -25,6 +25,7 @@ interface VocabStore {
   clearFilters: () => void;
   setSearch: (q: string) => void;
   setPage: (page: number) => void;
+  setPageSize: (size: number) => void;
   updateVocabCard: (vocabId: number, patch: Partial<Pick<VocabCard, 'isLearned' | 'isBookmarked' | 'addedToPractice'>>) => void;
   toggleBookmark: (vocabId: number) => Promise<void>;
   toggleLearned: (vocabId: number) => Promise<void>;
@@ -71,8 +72,31 @@ export const useVocabStore = create<VocabStore>()((set, get) => ({
         q: searchQuery || undefined,
         tag: activeFilters.length > 0 ? activeFilters.join(',') : undefined,
       });
+
+      let content = res.content || [];
+      // Enhanced multi-field search filtering across word, meaning, trick, example, tags, and type
+      if (searchQuery && searchQuery.trim().length > 0) {
+        const queryLower = searchQuery.trim().toLowerCase();
+        const matches = content.filter((item) => {
+          const v = item.vocab;
+          if (!v) return false;
+          return (
+            String(v.vocab || '').toLowerCase().includes(queryLower) ||
+            String(v.meaning || '').toLowerCase().includes(queryLower) ||
+            String(v.trick || '').toLowerCase().includes(queryLower) ||
+            String(v.example || '').toLowerCase().includes(queryLower) ||
+            String(v.useCaseTag || '').toLowerCase().includes(queryLower) ||
+            String(v.vocabType || '').toLowerCase().includes(queryLower)
+          );
+        });
+        // Use matches if found within the returned set
+        if (matches.length > 0) {
+          content = matches;
+        }
+      }
+
       set({
-        vocabList: res.content,
+        vocabList: content,
         totalCount: res.totalElements,
         totalPages: res.totalPages,
         isLoading: false,
@@ -101,6 +125,10 @@ export const useVocabStore = create<VocabStore>()((set, get) => ({
 
   setPage: (page) => {
     set({ page });
+  },
+
+  setPageSize: (size: number) => {
+    set({ pageSize: size, page: 0 });
   },
 
   /** Optimistic local update after bookmark/learned toggle */

@@ -43,7 +43,13 @@ export function VocabFormModal({
         .split(',')
         .map((t) => t.trim())
         .filter(Boolean);
-      setSelectedTags(parsedTags);
+      
+      const presetList = USE_CASE_TAGS as readonly string[];
+      const presetFound = parsedTags.filter((t) => presetList.includes(t.toUpperCase()));
+      const customFound = parsedTags.filter((t) => !presetList.includes(t.toUpperCase()));
+
+      setSelectedTags(presetFound);
+      setCustomTagInput(customFound.join(', '));
       setMeaning(initialData.meaning || '');
       setTrick(initialData.trick || '');
       setExample(initialData.example || '');
@@ -52,6 +58,7 @@ export function VocabFormModal({
       setVocab('');
       setVocabType('WORD');
       setSelectedTags(['CAT']);
+      setCustomTagInput('');
       setMeaning('');
       setTrick('');
       setExample('');
@@ -68,15 +75,6 @@ export function VocabFormModal({
     );
   };
 
-  const handleAddCustomTag = () => {
-    if (!customTagInput.trim()) return;
-    const formatted = customTagInput.trim().toUpperCase();
-    if (!selectedTags.includes(formatted)) {
-      setSelectedTags((prev) => [...prev, formatted]);
-    }
-    setCustomTagInput('');
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!vocab.trim()) {
@@ -88,6 +86,17 @@ export function VocabFormModal({
       return;
     }
 
+    const manualTags = customTagInput
+      .split(',')
+      .map((t) => t.trim().toUpperCase())
+      .filter(Boolean);
+    const combinedTags = Array.from(new Set([...selectedTags, ...manualTags]));
+
+    if (combinedTags.length === 0) {
+      setError('At least one Use Case Tag / Exam Category is required.');
+      return;
+    }
+
     setIsSubmitting(true);
     setError(null);
 
@@ -96,7 +105,7 @@ export function VocabFormModal({
         ...(initialData?.id ? { id: initialData.id } : {}),
         vocab: vocab.trim(),
         vocabType: vocabType.toUpperCase().trim(),
-        useCaseTag: selectedTags.join(', '),
+        useCaseTag: combinedTags.join(', '),
         meaning: meaning.trim(),
         trick: trick.trim(),
         example: example.trim(),
@@ -109,6 +118,13 @@ export function VocabFormModal({
       setIsSubmitting(false);
     }
   };
+
+  // Compute live combined tags preview
+  const previewManualTags = customTagInput
+    .split(',')
+    .map((t) => t.trim())
+    .filter(Boolean);
+  const previewCombined = Array.from(new Set([...selectedTags, ...previewManualTags]));
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/65 backdrop-blur-sm animate-fade-in">
@@ -189,12 +205,14 @@ export function VocabFormModal({
                 </div>
               </div>
 
-              {/* Use Case Tags (Locked System Badges) */}
+              {/* Use Case Tags (Pill Badges + Custom Comma-Separated Manual Input) */}
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-ink-soft">
                   Use Case Tags / Exam Categories <span className="text-orange-500">*</span>
                 </label>
-                <div className="flex flex-wrap gap-2 p-3 bg-cream rounded-xl border border-black/10 dark:border-white/10 min-h-[50px] items-center">
+                
+                {/* Preset Exam Badges */}
+                <div className="flex flex-wrap gap-2 p-3 bg-cream rounded-xl border border-black/10 dark:border-white/10 min-h-[46px] items-center">
                   {USE_CASE_TAGS.map((tagName) => {
                     const isSelected = selectedTags.includes(tagName);
                     return (
@@ -214,8 +232,23 @@ export function VocabFormModal({
                     );
                   })}
                 </div>
+
+                {/* Manual Custom Tags Input */}
+                <div className="flex flex-col gap-1 mt-1">
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-ink-soft">
+                    Or Add Custom Tags (Comma-Separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={customTagInput}
+                    onChange={(e) => setCustomTagInput(e.target.value)}
+                    placeholder="e.g. GMAT, BANKING, SAT, IELTS"
+                    className="w-full bg-cream rounded-xl py-2 px-3.5 text-sm text-ink border border-black/10 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-orange-500/40 transition-all placeholder:text-ink-soft/50 font-medium"
+                  />
+                </div>
+
                 <p className="text-[11px] text-ink-soft m-0">
-                  Selected tags: <span className="font-semibold text-ink">{selectedTags.join(', ') || 'None'}</span>
+                  Combined tags: <span className="font-semibold text-ink">{previewCombined.join(', ') || 'None'}</span>
                 </p>
               </div>
 

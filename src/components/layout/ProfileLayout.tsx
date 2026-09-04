@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { Home, Bookmark, CheckCircle, LogOut, Zap, BarChart2, Settings, HelpCircle, MessageSquare, ChevronDown, Sparkles } from 'lucide-react';
+import { Home, Bookmark, CheckCircle, LogOut, BarChart2, Settings, HelpCircle, MessageSquare, ChevronDown, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
 import { useThemeStore } from '../../store/useThemeStore';
@@ -11,7 +11,6 @@ import { Footer } from './Footer';
 const NAV_ITEMS = [
   { to: '/profile', label: 'Home', icon: Home, end: true },
   { to: '/profile/bookmarks', label: 'Vocabulary', icon: Bookmark, end: false },
-  { to: '/profile/practice-queue', label: 'Practice', icon: Zap, end: false },
   { to: '/profile/learned', label: 'Progress', icon: BarChart2, end: false },
   { to: '/profile/cuet-focus', label: 'CUET Focus', icon: Sparkles, end: false, special: true },
   { to: '/profile/settings', label: 'Settings', icon: Settings, end: false },
@@ -27,7 +26,6 @@ export default function ProfileLayout() {
     let isMounted = true;
     const loadProfile = async () => {
       try {
-        console.log('[ProfileLayout] Fetching profile from backend...');
         const res = await authApi.getProfile();
         if (res && isMounted) {
           setProfile(res);
@@ -40,8 +38,7 @@ export default function ProfileLayout() {
     return () => { isMounted = false; };
   }, [setProfile]);
 
-  const handleLogout = async () => {
-    await authApi.logout();
+  const handleLogout = () => {
     logout();
     addToast('Signed out. See you soon!', 'info');
     navigate('/');

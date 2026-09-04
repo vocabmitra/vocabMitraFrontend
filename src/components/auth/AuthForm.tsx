@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { AlertCircle, LogIn, UserPlus } from 'lucide-react';
 import { Input } from '../../components/common/Input';
-import { Button } from '../../components/common/Button';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
 import { authApi } from '../../api/endpoints/auth.api';
@@ -69,8 +69,6 @@ export function AuthForm({ defaultTab = 'signin', onSuccess }: AuthFormProps) {
       const res = await authApi.login({ username: data.username, password: data.password });
       const { token, user } = extractAuthPayload(res, data.username);
 
-      console.log('[AuthForm] Login successful, payload extracted:', { token, user });
-
       login(user, token);
       addToast(`Welcome back, ${user.firstName || user.username}!`, 'success');
 
@@ -101,7 +99,6 @@ export function AuthForm({ defaultTab = 'signin', onSuccess }: AuthFormProps) {
         password: data.password,
       });
       const authUser = toAuthUser(res);
-      // OPEN: backend may return a token on signup; if not, redirect to sign in
       addToast(`Account created! Welcome, ${authUser.firstName}.`, 'success');
       setTab('signin');
     } catch (err) {
@@ -117,17 +114,22 @@ export function AuthForm({ defaultTab = 'signin', onSuccess }: AuthFormProps) {
   };
 
   return (
-    <div style={{ width: '100%' }}>
-      {/* Segmented tab toggle */}
+    <div className="w-full">
+      {/* Tab Header */}
+      <div className="mb-6">
+        <h1 className="font-bricolage text-3xl font-bold text-ink mb-2 tracking-tight">
+          {tab === 'signin' ? 'Welcome Back' : 'Create an Account'}
+        </h1>
+        <p className="text-sm text-ink-soft font-inter leading-relaxed">
+          {tab === 'signin'
+            ? 'Sign in to access your saved words, track progress, and practice flashcards.'
+            : 'Join Vocab Mitra to build your personal vocabulary vault.'}
+        </p>
+      </div>
+
+      {/* Segmented Pill Tab Toggle */}
       <div
-        style={{
-          display: 'flex',
-          background: 'var(--cream)',
-          border: '2px solid var(--ink)',
-          borderRadius: '16px',
-          padding: '6px',
-          marginBottom: '32px',
-        }}
+        className="flex p-1.5 bg-cream rounded-2xl border border-black/10 dark:border-white/10 mb-6"
         role="tablist"
         aria-label="Sign in or Sign up"
       >
@@ -137,163 +139,137 @@ export function AuthForm({ defaultTab = 'signin', onSuccess }: AuthFormProps) {
             role="tab"
             aria-selected={tab === t}
             onClick={() => switchTab(t)}
-            style={{
-              flex: 1,
-              padding: '10px',
-              borderRadius: '10px',
-              fontFamily: "'Space Mono', monospace",
-              fontSize: '13px',
-              fontWeight: 700,
-              border: '2px solid transparent',
-              cursor: 'pointer',
-              transition: 'background 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease)',
-              background: tab === t ? 'var(--ink)' : 'transparent',
-              color: tab === t ? 'var(--cream)' : 'var(--ink)',
-            }}
-            onMouseEnter={(e) => {
-              if (tab !== t) {
-                (e.currentTarget as HTMLButtonElement).style.background = 'var(--line)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (tab !== t) {
-                (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-              }
-            }}
+            className={`flex-1 py-2.5 px-4 rounded-xl font-inter text-xs sm:text-sm font-bold transition-all cursor-pointer border-none flex items-center justify-center gap-2 ${
+              tab === t
+                ? 'bg-orange-500 text-white shadow-sm'
+                : 'bg-transparent text-ink-soft hover:text-ink'
+            }`}
           >
+            {t === 'signin' ? <LogIn size={15} /> : <UserPlus size={15} />}
             {t === 'signin' ? 'Sign In' : 'Sign Up'}
           </button>
         ))}
       </div>
 
-      {/* Error banner */}
+      {/* Error Banner */}
       {submitError && (
         <div
-          style={{
-            background: 'color-mix(in srgb, #FF5A5F 10%, var(--cream-card))',
-            border: '2px dashed #FF5A5F',
-            borderRadius: '12px',
-            padding: '14px 18px',
-            marginBottom: '24px',
-            fontSize: '14px',
-            fontWeight: 600,
-            color: '#FF5A5F',
-            fontFamily: "'Inter', sans-serif",
-          }}
+          className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs font-medium flex items-center gap-2.5 mb-6 animate-fade-in"
           role="alert"
         >
-          {submitError}
+          <AlertCircle size={16} className="shrink-0" />
+          <span>{submitError}</span>
         </div>
       )}
 
-      {/* ─── Sign In form ─── */}
+      {/* ─── Sign In Form ─── */}
       {tab === 'signin' && (
-        <form onSubmit={handleLogin} noValidate role="tabpanel" aria-label="Sign in form">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <Input
-              id="signin-username"
-              label="Username"
-              type="text"
-              placeholder="your_username"
-              autoComplete="username"
-              {...loginForm.register('username')}
-              error={loginForm.formState.errors.username?.message}
-            />
-            <Input
-              id="signin-password"
-              label="Password"
-              type="password"
-              placeholder="••••••••"
-              autoComplete="current-password"
-              {...loginForm.register('password')}
-              error={loginForm.formState.errors.password?.message}
-            />
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              loading={loginForm.formState.isSubmitting}
-              style={{ width: '100%', marginTop: '12px' }}
-              id="signin-submit"
-            >
-              Sign In
-            </Button>
-          </div>
+        <form onSubmit={handleLogin} noValidate role="tabpanel" aria-label="Sign in form" className="space-y-4">
+          <Input
+            id="signin-username"
+            label="Username"
+            type="text"
+            placeholder="your_username"
+            autoComplete="username"
+            {...loginForm.register('username')}
+            error={loginForm.formState.errors.username?.message}
+          />
+          <Input
+            id="signin-password"
+            label="Password"
+            type="password"
+            placeholder="••••••••"
+            autoComplete="current-password"
+            {...loginForm.register('password')}
+            error={loginForm.formState.errors.password?.message}
+          />
+          <button
+            type="submit"
+            disabled={loginForm.formState.isSubmitting}
+            className="w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white bg-orange-500 hover:bg-orange-600 shadow-[0_4px_15px_rgba(249,115,22,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer border-none mt-2 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            id="signin-submit"
+          >
+            {loginForm.formState.isSubmitting ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              'Sign In'
+            )}
+          </button>
         </form>
       )}
 
-      {/* ─── Sign Up form ─── */}
+      {/* ─── Sign Up Form ─── */}
       {tab === 'signup' && (
-        <form onSubmit={handleSignup} noValidate role="tabpanel" aria-label="Sign up form">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-              <Input
-                id="signup-firstname"
-                label="First Name"
-                type="text"
-                placeholder="Ada"
-                autoComplete="given-name"
-                {...signupForm.register('firstName')}
-                error={signupForm.formState.errors.firstName?.message}
-              />
-              <Input
-                id="signup-lastname"
-                label="Last Name"
-                type="text"
-                placeholder="Lovelace"
-                autoComplete="family-name"
-                {...signupForm.register('lastName')}
-                error={signupForm.formState.errors.lastName?.message}
-              />
-            </div>
+        <form onSubmit={handleSignup} noValidate role="tabpanel" aria-label="Sign up form" className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
-              id="signup-username"
-              label="Username"
+              id="signup-firstname"
+              label="First Name"
               type="text"
-              placeholder="ada_lovelace"
-              autoComplete="username"
-              {...signupForm.register('username')}
-              error={signupForm.formState.errors.username?.message}
+              placeholder="Ada"
+              autoComplete="given-name"
+              {...signupForm.register('firstName')}
+              error={signupForm.formState.errors.firstName?.message}
             />
             <Input
-              id="signup-email"
-              label="Email"
-              type="email"
-              placeholder="ada@example.com"
-              autoComplete="email"
-              {...signupForm.register('email')}
-              error={signupForm.formState.errors.email?.message}
+              id="signup-lastname"
+              label="Last Name"
+              type="text"
+              placeholder="Lovelace"
+              autoComplete="family-name"
+              {...signupForm.register('lastName')}
+              error={signupForm.formState.errors.lastName?.message}
             />
-            <Input
-              id="signup-password"
-              label="Password"
-              type="password"
-              placeholder="••••••••"
-              autoComplete="new-password"
-              {...signupForm.register('password')}
-              error={signupForm.formState.errors.password?.message}
-              hint="Minimum 8 characters"
-            />
-            <Input
-              id="signup-confirm-password"
-              label="Confirm Password"
-              type="password"
-              placeholder="••••••••"
-              autoComplete="new-password"
-              {...signupForm.register('confirmPassword')}
-              error={signupForm.formState.errors.confirmPassword?.message}
-            />
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              loading={signupForm.formState.isSubmitting}
-              style={{ width: '100%', marginTop: '12px' }}
-              id="signup-submit"
-            >
-              Create Account
-            </Button>
           </div>
+          <Input
+            id="signup-username"
+            label="Username"
+            type="text"
+            placeholder="ada_lovelace"
+            autoComplete="username"
+            {...signupForm.register('username')}
+            error={signupForm.formState.errors.username?.message}
+          />
+          <Input
+            id="signup-email"
+            label="Email"
+            type="email"
+            placeholder="ada@example.com"
+            autoComplete="email"
+            {...signupForm.register('email')}
+            error={signupForm.formState.errors.email?.message}
+          />
+          <Input
+            id="signup-password"
+            label="Password"
+            type="password"
+            placeholder="••••••••"
+            autoComplete="new-password"
+            {...signupForm.register('password')}
+            error={signupForm.formState.errors.password?.message}
+            hint="Minimum 8 characters"
+          />
+          <Input
+            id="signup-confirm-password"
+            label="Confirm Password"
+            type="password"
+            placeholder="••••••••"
+            autoComplete="new-password"
+            {...signupForm.register('confirmPassword')}
+            error={signupForm.formState.errors.confirmPassword?.message}
+          />
+          <button
+            type="submit"
+            disabled={signupForm.formState.isSubmitting}
+            className="w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white bg-orange-500 hover:bg-orange-600 shadow-[0_4px_15px_rgba(249,115,22,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer border-none mt-2 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            id="signup-submit"
+          >
+            {signupForm.formState.isSubmitting ? (
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              'Create Account'
+            )}
+          </button>
         </form>
       )}
     </div>

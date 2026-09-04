@@ -1,62 +1,69 @@
+import { Sparkles, Zap, BookmarkCheck, GraduationCap } from 'lucide-react';
 import { AuthForm } from '../components/auth/AuthForm';
+import { Navbar } from '../components/layout/Navbar';
+import { Footer } from '../components/layout/Footer';
 
 /**
- * AuthPage — no Navbar per spec.
- * Full-page auth with two-panel layout: left branding, right form.
+ * AuthPage — fully integrated with Navbar and matching site aesthetic.
  */
 export default function AuthPage() {
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-transparent">
-      {/* ─── Left panel: brand + ambient art ─── */}
-      <div className="relative bg-transparent hidden md:flex flex-col justify-between p-10 md:p-12 border-r-2 border-solid border-ink overflow-hidden">
-        {/* Ambient glow (kept for subtle accent but changed to cream theme) */}
-        <div
-          aria-hidden="true"
-          className="absolute -bottom-[100px] -left-[100px] w-[500px] h-[500px] rounded-full pointer-events-none"
-          style={{
-            background: `radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--upsc) 8%, transparent), transparent 55%),
-                         radial-gradient(circle at 70% 70%, color-mix(in srgb, var(--cat) 8%, transparent), transparent 55%)`,
-          }}
-        />
+    <>
+      <Navbar />
 
-        {/* Wordmark */}
-        <div className="font-space text-[18px] font-bold flex items-center gap-0.5 text-ink relative z-10">
-          <span className="text-upsc">[</span>
-          vocab mitra
-          <span className="text-upsc">]</span>
-        </div>
+      <main className="min-h-[calc(100vh-140px)] flex items-center justify-center py-10 sm:py-16 px-4 sm:px-6">
+        <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 rounded-3xl border border-black/10 dark:border-white/10 bg-cream-card shadow-[0_20px_60px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_60px_rgba(0,0,0,0.85)] overflow-hidden">
+          
+          {/* Left Side: Brand & Ambient Highlights */}
+          <div className="lg:col-span-5 relative bg-black/5 dark:bg-white/5 p-8 sm:p-12 flex flex-col justify-between overflow-hidden border-b lg:border-b-0 lg:border-r border-black/5 dark:border-white/10">
+            {/* Subtle Ambient Glow */}
+            <div
+              aria-hidden="true"
+              className="absolute -bottom-20 -left-20 w-80 h-80 rounded-full pointer-events-none bg-orange-500/10 blur-3xl"
+            />
 
-        {/* Center copy */}
-        <div className="relative z-10">
-          <blockquote className="font-bricolage text-[clamp(28px,3.5vw,42px)] font-bold leading-[1.1] tracking-[-0.02em] text-ink mb-5 max-w-[18ch]">
-            "The limits of my language are the limits of my world."
-          </blockquote>
-          <cite className="font-space text-xs font-bold tracking-[0.06em] uppercase text-ink-soft not-italic">
-            — Ludwig Wittgenstein
-          </cite>
-        </div>
+            <div>
+              <div className="flex items-center gap-2.5 mb-8">
+                <div className="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0">
+                  <Sparkles size={22} />
+                </div>
+                <span className="font-bricolage text-xl font-bold text-ink tracking-tight">Vocab Mitra</span>
+              </div>
 
-        {/* Bottom label */}
-        <div className="font-space text-[11.5px] text-ink-soft relative z-10 font-bold">
-          © {new Date().getFullYear()} Vocab Mitra
-        </div>
-      </div>
+              <blockquote className="font-bricolage text-[clamp(24px,3vw,34px)] font-bold leading-tight tracking-tight text-ink mb-4">
+                &ldquo;The limits of my language are the limits of my world.&rdquo;
+              </blockquote>
+              <cite className="font-space text-xs font-bold tracking-widest uppercase text-ink-soft not-italic block mb-8">
+                — Ludwig Wittgenstein
+              </cite>
+            </div>
 
-      {/* ─── Right panel: form ─── */}
-      <div className="flex items-start md:items-center justify-center pt-[60px] md:pt-12 pb-10 px-6 md:p-12 bg-cream-card">
-        <div className="w-full max-w-[440px]">
-          <div className="mb-9">
-            <h1 className="font-bricolage text-4xl font-bold text-ink mb-2 tracking-[-0.02em] mt-0">
-              Welcome
-            </h1>
-            <p className="text-base text-ink-soft font-inter leading-[1.5] m-0">
-              Sign in to save words, track progress, and build your vocabulary.
-            </p>
+            {/* Feature Highlights */}
+            <div className="space-y-3 relative z-10">
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-cream/60 dark:bg-white/5 border border-black/5 dark:border-white/5">
+                <Zap size={18} className="text-orange-500 shrink-0" />
+                <span className="text-xs font-semibold text-ink font-inter">Interactive Flashcard Practice</span>
+              </div>
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-cream/60 dark:bg-white/5 border border-black/5 dark:border-white/5">
+                <BookmarkCheck size={18} className="text-orange-500 shrink-0" />
+                <span className="text-xs font-semibold text-ink font-inter">Bookmark & Track Learned Words</span>
+              </div>
+              <div className="flex items-center gap-3 p-3 rounded-2xl bg-cream/60 dark:bg-white/5 border border-black/5 dark:border-white/5">
+                <GraduationCap size={18} className="text-orange-500 shrink-0" />
+                <span className="text-xs font-semibold text-ink font-inter">Exam Focused (CAT, CUET, GRE, UPSC)</span>
+              </div>
+            </div>
           </div>
 
-          <AuthForm />
+          {/* Right Side: Auth Form */}
+          <div className="lg:col-span-7 p-8 sm:p-12 flex flex-col justify-center">
+            <AuthForm />
+          </div>
+
         </div>
-      </div>
-    </div>
+      </main>
+
+      <Footer />
+    </>
   );
 }
