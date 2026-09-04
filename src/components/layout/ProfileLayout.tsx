@@ -9,8 +9,8 @@ import { Footer } from './Footer';
 
 const NAV_ITEMS = [
   { to: '/profile', label: 'Home', icon: Home, end: true },
-  { to: '/profile/bookmarks', label: 'Vocabulary', icon: Bookmark, end: false },
-  { to: '/profile/learned', label: 'Progress', icon: BarChart2, end: false },
+  { to: '/profile/bookmarks', label: 'My Bookmarks', icon: Bookmark, end: false },
+  { to: '/profile/learned', label: 'Learned Words', icon: BarChart2, end: false },
   { to: '/profile/cuet-focus', label: 'CUET Focus', icon: Sparkles, end: false, special: true },
   { to: '/profile/settings', label: 'Settings', icon: Settings, end: false },
 ];
@@ -61,14 +61,13 @@ export default function ProfileLayout() {
                     to={to}
                     end={end}
                     className={({ isActive }) =>
-                      `flex items-center gap-3 px-3 py-3 rounded-[10px] text-[14px] font-inter transition-all duration-200 ease-[var(--ease)] no-underline group ${
-                        special 
-                          ? isActive 
-                            ? 'font-bold text-orange-500 bg-orange-500/10 border border-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.15)]'
-                            : 'font-semibold text-orange-400 bg-transparent hover:bg-orange-500/5 hover:text-orange-500'
-                          : isActive
-                            ? 'font-semibold text-white bg-white/10'
-                            : 'font-medium text-white/70 bg-transparent hover:bg-white/5 hover:text-white'
+                      `flex items-center gap-3 px-3 py-3 rounded-[10px] text-[14px] font-inter transition-all duration-200 ease-[var(--ease)] no-underline group ${special
+                        ? isActive
+                          ? 'font-bold text-orange-500 bg-orange-500/10 border border-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.15)]'
+                          : 'font-semibold text-orange-400 bg-transparent hover:bg-orange-500/5 hover:text-orange-500'
+                        : isActive
+                          ? 'font-semibold text-white bg-white/10'
+                          : 'font-medium text-white/70 bg-transparent hover:bg-white/5 hover:text-white'
                       }`
                     }
                   >
