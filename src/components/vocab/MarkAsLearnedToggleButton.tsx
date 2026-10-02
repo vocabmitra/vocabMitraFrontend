@@ -9,10 +9,11 @@ import { normalizeError } from '../../utils/errorHandler';
 interface MarkAsLearnedToggleButtonProps {
   vocabId: number;
   isLearned: boolean;
-  variant?: 'default' | 'icon';
+  variant?: 'default' | 'icon' | 'open-card';
+  className?: string;
 }
 
-export function MarkAsLearnedToggleButton({ vocabId, isLearned: initialIsLearned, variant = 'default' }: MarkAsLearnedToggleButtonProps) {
+export function MarkAsLearnedToggleButton({ vocabId, isLearned: initialIsLearned, variant = 'default', className = '' }: MarkAsLearnedToggleButtonProps) {
   const requireAuth = useAuthGate();
   const updateVocabCard = useVocabStore((s) => s.updateVocabCard);
   const addToast = useUIStore((s) => s.addToast);
@@ -56,11 +57,29 @@ export function MarkAsLearnedToggleButton({ vocabId, isLearned: initialIsLearned
           localLearned
             ? 'bg-green-500/20 text-green-500 border-green-500/40 shadow-[0_0_12px_rgba(34,197,94,0.2)]'
             : 'bg-black/5 dark:bg-white/5 text-ink-soft opacity-70 hover:opacity-100 hover:text-green-500 border-black/5 dark:border-white/10'
-        } ${loading ? 'opacity-50 cursor-wait' : 'cursor-pointer'}`}
+        } ${loading ? 'opacity-50 cursor-wait' : 'cursor-pointer'} ${className}`}
         aria-label={localLearned ? 'Mark as unlearned' : 'Mark as learned'}
         title={localLearned ? 'Learned' : 'Mark as learned'}
       >
         {localLearned ? <CheckCircle2 size={18} /> : <BookOpen size={18} />}
+      </button>
+    );
+  }
+
+  if (variant === 'open-card') {
+    return (
+      <button
+        onClick={handleToggle}
+        disabled={loading}
+        className={`flex items-center gap-2 px-5 py-2.5 rounded-[100px] font-inter font-bold text-[14px] transition-all duration-200 ${
+          localLearned
+            ? 'bg-[#059669] text-white shadow-[0_4px_12px_rgba(5,150,105,0.25)] border border-[#059669]'
+            : 'bg-white text-[#334155] border border-[#e2e8f0] shadow-sm hover:bg-gray-50'
+        } ${loading ? 'opacity-50 cursor-wait' : 'cursor-pointer'} ${className}`}
+        aria-label={localLearned ? 'Mark as unlearned' : 'Mark as learned'}
+      >
+        <CheckCircle2 size={18} strokeWidth={2.5} className={localLearned ? '' : 'text-[#64748b]'} />
+        {localLearned ? 'Learned' : 'Mark as Learned'}
       </button>
     );
   }

@@ -9,10 +9,11 @@ import { normalizeError } from '../../utils/errorHandler';
 interface BookmarkToggleButtonProps {
   vocabId: number;
   isBookmarked: boolean;
-  variant?: 'default' | 'icon';
+  variant?: 'default' | 'icon' | 'puffy' | 'open-card';
+  theme?: any;
 }
 
-export function BookmarkToggleButton({ vocabId, isBookmarked: initialIsBookmarked, variant = 'default' }: BookmarkToggleButtonProps) {
+export function BookmarkToggleButton({ vocabId, isBookmarked: initialIsBookmarked, variant = 'default', theme }: BookmarkToggleButtonProps) {
   const requireAuth = useAuthGate();
   const updateVocabCard = useVocabStore((s) => s.updateVocabCard);
   const addToast = useUIStore((s) => s.addToast);
@@ -51,6 +52,28 @@ export function BookmarkToggleButton({ vocabId, isBookmarked: initialIsBookmarke
     });
   };
 
+  if (variant === 'puffy') {
+    const iconClass = theme?.text || 'text-[#ea580c]';
+    const bgClass = theme?.iconBg || 'bg-gradient-to-br from-white to-[#ffdfbe]';
+
+    return (
+      <button
+        onClick={handleToggle}
+        disabled={loading}
+        className={`w-11 h-11 rounded-[14px] flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.06),inset_0_2px_4px_rgba(255,255,255,0.8)] transition-transform duration-200 hover:scale-105 ${bgClass} ${loading ? 'opacity-50 cursor-wait' : 'cursor-pointer'}`}
+        aria-label={localBookmarked ? 'Remove bookmark' : 'Bookmark word'}
+        title={localBookmarked ? 'Bookmarked' : 'Bookmark word'}
+      >
+        <Bookmark 
+          size={20} 
+          className={iconClass} 
+          fill={localBookmarked ? "currentColor" : "none"} 
+          strokeWidth={localBookmarked ? 2 : 2.5}
+        />
+      </button>
+    );
+  }
+
   if (variant === 'icon') {
     return (
       <button
@@ -65,6 +88,24 @@ export function BookmarkToggleButton({ vocabId, isBookmarked: initialIsBookmarke
         title={localBookmarked ? 'Bookmarked' : 'Bookmark word'}
       >
         {localBookmarked ? <BookmarkCheck size={18} /> : <Bookmark size={18} />}
+      </button>
+    );
+  }
+
+  if (variant === 'open-card') {
+    return (
+      <button
+        onClick={handleToggle}
+        disabled={loading}
+        className={`flex items-center gap-2 px-5 py-2.5 rounded-[100px] font-inter font-bold text-[14px] transition-all duration-200 ${
+          localBookmarked
+            ? 'bg-[#fff7ed] text-[#ea580c] border border-[#fed7aa] shadow-sm'
+            : 'bg-white text-[#334155] border border-[#e2e8f0] shadow-sm hover:bg-gray-50'
+        } ${loading ? 'opacity-50 cursor-wait' : 'cursor-pointer'}`}
+        aria-label={localBookmarked ? 'Remove bookmark' : 'Bookmark word'}
+      >
+        <Bookmark size={18} strokeWidth={2.5} fill={localBookmarked ? "currentColor" : "none"} className={localBookmarked ? '' : 'text-[#64748b]'} />
+        {localBookmarked ? 'Bookmarked' : 'Bookmark'}
       </button>
     );
   }

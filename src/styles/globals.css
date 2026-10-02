@@ -8,72 +8,80 @@
    -------------------------------------------------------------------------- */
 :root {
   /* Page & card backgrounds */
-  --cream: #e6eef5;             /* Slightly darker cool blue-gray — main page bg */
+  --cream: #fdfbf7;             /* Warm cream/beige — main page bg */
   --cream-card: #ffffff;        /* Card surfaces pure white */
 
-  /* Text — NO black. Deep blue instead */
-  --ink: #0b5394;               /* Deep blue — primary text */
-  --ink-soft: #5a7fa8;          /* Muted blue — secondary / captions */
-  --line: rgba(11, 83, 148, 0.12); /* Blue-tinted dividers */
+  /* Text — Deep slate/navy */
+  --ink: #0f172a;               /* Deep slate — primary text */
+  --ink-soft: #64748b;          /* Muted slate — secondary / captions */
+  --line: rgba(15, 23, 42, 0.08); /* Subtle dividers */
   
   /* Sidebar */
-  --sidebar-bg: #063866;        /* Deeper navy than --ink */
+  --sidebar-bg: #fdfbf7;        /* Matches main background */
 
-  /* Section backgrounds — warm / cool alternating stripes */
-  --section-bg-1: #eaf3ff;      /* Soft cool blue — clearly distinct from page bg */
-  --section-bg-2: #fce9d8;      /* Warm peach from palette — striking alternation */
-  --section-border: rgba(11, 83, 148, 0.08); /* Subtle blue border on light bg */
+  /* Section backgrounds */
+  --section-bg-1: #fdfbf7;      
+  --section-bg-2: #ffffff;      
+  --section-border: rgba(15, 23, 42, 0.05);
 
   /* Extra surface tokens */
-  --surface-2: #eaf3ff;         /* Nested input / highlight bg */
-  --border-subtle: rgba(11, 83, 148, 0.10);
+  --surface-2: #f1f5f9;         /* Nested input / highlight bg */
+  --border-subtle: rgba(15, 23, 42, 0.06);
 
   /* Brand / Tag Colors */
   --gre: #5B7FDE;
-  --upsc: #ce7e00;              /* Bronze gold replaces orange in light mode */
+  --upsc: #ea580c;              
   --cat: #3FA66B;
   --ssc: #D64B7C;
   --cuet: #9B6FD9;
 
-  /* Accent — Bronze Gold from palette */
-  --accent: #ce7e00;            /* #ce7e00 — bronze, pairs with deep blue */
-  --accent-secondary: #fd9d79;  /* Coral salmon — used for highlights */
+  /* Accent — Vibrant Orange */
+  --accent: #ea580c;            /* Bright orange */
+  --accent-secondary: #f97316;  
   --accent-ink: #FFFFFF;
 
-  /* Card Colors — palette-harmonised */
-  --green-card: #D1FAE5;
-  --yellow-card: #fce9d8;       /* Warm peach from palette */
-  --blue-card: #dbeafe;
-  --green-text: #15803d;
-  --yellow-text: #9a5a00;       /* Darker bronze for readability */
+  /* Card Colors */
+  --green-card: #dcfce7;
+  --yellow-card: #ffedd5;       
+  --blue-card: #e0f2fe;
+  --green-text: #166534;
+  --yellow-text: #9a3412;       
+
+  /* Gradients */
+  --grad-peach: linear-gradient(135deg, #ffedd5 0%, #ffffff 100%);
+  --grad-pink: linear-gradient(135deg, #ffe4e6 0%, #ffffff 100%);
+  --grad-green: linear-gradient(135deg, #dcfce7 0%, #ffffff 100%);
+  --grad-purple: linear-gradient(135deg, #f3e8ff 0%, #ffffff 100%);
+  --grad-blue: linear-gradient(135deg, #e0f2fe 0%, #ffffff 100%);
+  --grad-yellow: linear-gradient(135deg, #fef08a 0%, #ffffff 100%);
 
   /* Glass / floating card surfaces */
-  --glass-card-bg: rgba(255, 255, 255, 0.82);   /* Frosted white card */
-  --glass-card-border: rgba(11, 83, 148, 0.15);
-  --glass-card-shadow: 0 24px 48px rgba(11,83,148,0.12);
-  --glass-header-bg: rgba(234, 243, 255, 0.7);  /* Tinted chrome bar */
-  --glass-header-border: rgba(11, 83, 148, 0.08);
-  --glass-search-bg: rgba(11, 83, 148, 0.06);
-  --glass-search-border: rgba(11, 83, 148, 0.12);
+  --glass-card-bg: rgba(255, 255, 255, 0.9);   
+  --glass-card-border: rgba(15, 23, 42, 0.06);
+  --glass-card-shadow: 0 12px 32px rgba(15, 23, 42, 0.04);
+  --glass-header-bg: rgba(253, 251, 247, 0.8);  
+  --glass-header-border: rgba(15, 23, 42, 0.05);
+  --glass-search-bg: rgba(15, 23, 42, 0.04);
+  --glass-search-border: rgba(15, 23, 42, 0.08);
 
   /* Mnemonic box */
-  --mnemonic-bg: rgba(206, 126, 0, 0.08);        /* Bronze tint */
-  --mnemonic-border: rgba(206, 126, 0, 0.22);
-  --mnemonic-text: #7a4a00;                      /* Dark bronze readable */
-  --mnemonic-label: rgba(206, 126, 0, 0.6);
+  --mnemonic-bg: rgba(234, 88, 12, 0.08);        
+  --mnemonic-border: rgba(234, 88, 12, 0.15);
+  --mnemonic-text: #9a3412;                      
+  --mnemonic-label: rgba(234, 88, 12, 0.6);
 
   /* Exam icon boxes */
   --exam-icon-bg: #ffffff;
-  --exam-icon-border: rgba(11, 83, 148, 0.12);
+  --exam-icon-border: rgba(15, 23, 42, 0.08);
 
   /* Floating vocab card (Hero) */
   --vocab-card-bg: #ffffff;
-  --vocab-card-border: rgba(11, 83, 148, 0.15);
-  --vocab-card-title: #0b5394;
+  --vocab-card-border: rgba(15, 23, 42, 0.08);
+  --vocab-card-title: #0f172a;
 
   /* Navbar dropdown */
   --dropdown-bg: #ffffff;
-  --dropdown-border: rgba(11, 83, 148, 0.12);
+  --dropdown-border: rgba(15, 23, 42, 0.08);
 
   /* Motion easing */
   --ease: cubic-bezier(0.34, 1.3, 0.4, 1);
