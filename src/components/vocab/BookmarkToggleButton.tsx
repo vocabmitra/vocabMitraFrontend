@@ -9,7 +9,7 @@ import { normalizeError } from '../../utils/errorHandler';
 interface BookmarkToggleButtonProps {
   vocabId: number;
   isBookmarked: boolean;
-  variant?: 'default' | 'icon' | 'puffy' | 'open-card';
+  variant?: 'default' | 'icon' | 'puffy' | 'open-card' | 'ribbon' | 'reel';
   theme?: any;
 }
 
@@ -68,6 +68,29 @@ export function BookmarkToggleButton({ vocabId, isBookmarked: initialIsBookmarke
           size={20} 
           className={iconClass} 
           fill={localBookmarked ? "currentColor" : "none"} 
+          strokeWidth={localBookmarked ? 2 : 2.5}
+        />
+      </button>
+    );
+  }
+
+  if (variant === 'ribbon' || variant === 'reel') {
+    return (
+      <button
+        onClick={handleToggle}
+        disabled={loading}
+        className={`transition-all duration-300 hover:scale-105 ${
+          localBookmarked
+            ? 'p-1 cursor-pointer'
+            : 'w-11 h-11 rounded-[14px] flex items-center justify-center bg-[#fff8f0] border border-[#ffedd5] shadow-[0_4px_12px_rgba(249,115,22,0.10),inset_0_2px_4px_rgba(255,255,255,0.9)] cursor-pointer'
+        } ${loading ? 'opacity-50 cursor-wait' : ''}`}
+        aria-label={localBookmarked ? 'Remove bookmark' : 'Bookmark word'}
+        title={localBookmarked ? 'Bookmarked' : 'Bookmark word'}
+      >
+        <Bookmark
+          size={localBookmarked ? 24 : 20}
+          className="text-[#ea580c] transition-all duration-300"
+          fill={localBookmarked ? '#ea580c' : 'none'}
           strokeWidth={localBookmarked ? 2 : 2.5}
         />
       </button>

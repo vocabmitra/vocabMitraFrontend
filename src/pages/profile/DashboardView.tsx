@@ -56,7 +56,7 @@ export default function DashboardView() {
           shapeBgClass="bg-[#fbcfe8]"
           iconBoxBgClass="bg-gradient-to-br from-white to-[#fbcfe8]"
           buttonBgClass="bg-[#f9a8d4]"
-          onClick={() => navigate('/profile/cuet-focus?tab=idioms-and-phrases')}
+          onClick={() => navigate('/profile/exam-focus?tab=idioms-and-phrases')}
         />
         <LongCard
           title="Phrasal Verbs"
@@ -66,7 +66,7 @@ export default function DashboardView() {
           shapeBgClass="bg-[#bbf7d0]"
           iconBoxBgClass="bg-gradient-to-br from-white to-[#bbf7d0]"
           buttonBgClass="bg-[#86efac]"
-          onClick={() => navigate('/profile/cuet-focus?tab=phrasal-verbs')}
+          onClick={() => navigate('/profile/exam-focus?tab=phrasal-verbs')}
         />
         <LongCard
           title="One Word Substitution"
@@ -76,7 +76,7 @@ export default function DashboardView() {
           shapeBgClass="bg-[#ddd6fe]"
           iconBoxBgClass="bg-gradient-to-br from-white to-[#ddd6fe]"
           buttonBgClass="bg-[#c4b5fd]"
-          onClick={() => navigate('/profile/cuet-focus?tab=one-word-substitution')}
+          onClick={() => navigate('/profile/exam-focus?tab=one-word-substitution')}
         />
         <LongCard
           title="Foreign Words"
@@ -86,7 +86,7 @@ export default function DashboardView() {
           shapeBgClass="bg-[#bfdbfe]"
           iconBoxBgClass="bg-gradient-to-br from-white to-[#bfdbfe]"
           buttonBgClass="bg-[#93c5fd]"
-          onClick={() => navigate('/profile/cuet-focus?tab=foreign-words')}
+          onClick={() => navigate('/profile/exam-focus?tab=foreign-words')}
         />
       </div>
 

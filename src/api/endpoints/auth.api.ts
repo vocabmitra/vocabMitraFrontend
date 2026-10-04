@@ -50,7 +50,18 @@ export const authApi = {
     const res = await axiosInstance.get<any>(`${USER_BASE}/profile`, {
       params: activeUserId ? { userId: activeUserId } : {},
     });
-    return res.data?.data ?? res.data;
+    const raw = res.data?.data ?? res.data ?? {};
+    return {
+      firstName: raw.firstName || '',
+      lastName: raw.lastName || '',
+      username: raw.username || '',
+      email: raw.email || '',
+      totalBookmarked: Number(raw.totalBookmarked ?? raw.bookmarkedCount ?? 0),
+      totalLearned: Number(raw.totalLearned ?? raw.learnedCount ?? 0),
+      currentStreak: Number(raw.currentStreak ?? raw.streak ?? raw.userStreak ?? 0),
+      maxStreak: Number(raw.maxStreak ?? raw.highestStreak ?? 0),
+      isStreakActiveToday: Boolean(raw.isStreakActiveToday ?? raw.streakActiveToday ?? false),
+    };
   },
 
   /**

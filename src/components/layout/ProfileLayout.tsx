@@ -13,7 +13,7 @@ const NAV_SECTIONS = [
     items: [
       { to: '/profile', label: 'Home', icon: Home, iconColor: 'text-orange-500', end: true, fill: true },
       { to: '/vocabulary', label: 'Vocabulary', icon: BookOpen, iconColor: 'text-emerald-600', end: false, fill: false },
-      { to: '/profile/cuet-focus', label: 'Exam Focus', icon: Target, iconColor: 'text-red-500', end: false, fill: false },
+      { to: '/profile/exam-focus', label: 'Exam Focus', icon: Target, iconColor: 'text-red-500', end: false, fill: false },
     ]
   },
   {

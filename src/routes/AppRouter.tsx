@@ -12,8 +12,10 @@ const AuthPage = lazy(() => import('../pages/AuthPage'));
 const ProfileLayout = lazy(() => import('../components/layout/ProfileLayout'));
 const DashboardView = lazy(() => import('../pages/profile/DashboardView'));
 const UserWordListPage = lazy(() => import('../features/profile/UserWordListPage'));
-const PracticeSessionPage = lazy(() => import('../pages/PracticeSessionPage'));
-const CuetFocusPage = lazy(() => import('../pages/profile/CuetFocusPage'));
+const ReelSessionPage = lazy(() => import('../pages/ReelSessionPage'));
+const PracticeBookmarkSessionPage = lazy(() => import('../pages/PracticeBookmarkSessionPage'));
+const ExamFocusPage = lazy(() => import('../pages/profile/ExamFocusPage'));
+const ProgressView = lazy(() => import('../pages/profile/ProgressView'));
 const SettingsPage = lazy(() => import('../pages/profile/SettingsPage'));
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage'));
 
@@ -119,17 +121,28 @@ export function AppRouter() {
           >
             <Route index element={<DashboardView />} />
             <Route path="bookmarks" element={<UserWordListPage mode="bookmarked" />} />
-            <Route path="learned" element={<UserWordListPage mode="learned" />} />
-            <Route path="cuet-focus" element={<CuetFocusPage />} />
+            <Route path="learned" element={<ProgressView />} />
+            <Route path="exam-focus" element={<ExamFocusPage />} />
+            <Route path="cuet-focus" element={<Navigate to="/profile/exam-focus" replace />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
 
-          {/* Protected route — Practice Session */}
+          {/* Protected route — Practice Reel Session */}
           <Route
             path="/practice"
             element={
               <ProtectedRoute>
-                <PracticeSessionPage />
+                <ReelSessionPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected route — Practice Bookmark Session */}
+          <Route
+            path="/practice/bookmark"
+            element={
+              <ProtectedRoute>
+                <PracticeBookmarkSessionPage />
               </ProtectedRoute>
             }
           />
