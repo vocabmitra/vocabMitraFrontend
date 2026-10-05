@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Bookmark,
   BookOpen,
@@ -19,7 +19,6 @@ import { OpenVocabCard } from '../../components/vocab/OpenVocabCard';
 import { PracticeSessionLauncher } from '../../components/vocab/PracticeSessionLauncher';
 import { vocabApi } from '../../api/endpoints/vocab.api';
 import type { VocabCard as VocabCardType } from '../../types';
-import { logger } from '../../utils/logger';
 
 type Mode = 'learned' | 'bookmarked';
 
@@ -36,7 +35,6 @@ const SUB_TABS = [
 ];
 
 export default function UserWordListPage({ mode }: UserWordListPageProps) {
-  const navigate = useNavigate();
   const [openCard, setOpenCard] = useState<VocabCardType | null>(null);
   const [activeTab, setActiveTab] = useState('vocabulary');
   const [selectedYear, setSelectedYear] = useState('All Years');
@@ -65,7 +63,7 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
           setTotalPages(res.totalPages || 1);
         }
       } catch (err) {
-        logger.error(`Failed to fetch ${mode} words`, err);
+        console.error(`Failed to fetch ${mode} words`, err);
       } finally {
         setIsLoading(false);
       }
@@ -141,15 +139,6 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto shrink-0 justify-end">
-              {/* Bookmark Practice Mode Button */}
-              <button
-                onClick={() => navigate('/practice/bookmark')}
-                className="flex items-center gap-2 font-inter font-bold text-[14px] text-white bg-gradient-to-r from-[#ef4444] to-[#dc2626] px-5 py-3 rounded-2xl shadow-2xs hover:shadow-xs hover:brightness-105 active:scale-[0.98] transition-all cursor-pointer border-none"
-              >
-                <RefreshCw size={16} />
-                <span>Practice Mode</span>
-              </button>
-
               {/* Practice Reel Launcher */}
               <PracticeSessionLauncher
                 cards={filteredCards}
@@ -183,11 +172,10 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-2xl font-inter text-[14px] font-bold transition-all cursor-pointer border ${
-                    isActive
+                  className={`flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-2xl font-inter text-[14px] font-bold transition-all cursor-pointer border ${isActive
                       ? 'bg-[#fff3e0] border-[#f97316]/30 text-[#ea580c] shadow-xs'
                       : 'bg-white/80 border-black/5 text-[#64748b] hover:text-[#0f172a] hover:bg-white'
-                  }`}
+                    }`}
                 >
                   <Icon size={16} className={isActive ? 'text-[#ea580c]' : 'text-[#64748b]'} />
                   {tab.title}

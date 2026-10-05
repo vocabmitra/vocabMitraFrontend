@@ -46,10 +46,10 @@ export function VocabularySection() {
         </div>
 
         {/* UI Mockup Container */}
-        <div className="w-full max-w-[700px] mx-auto mt-16 bg-cream-card rounded-2xl border border-line shadow-2xl shadow-black/10 overflow-hidden transition-transform duration-300 hover:-translate-y-1">
+        <div className="w-full max-w-[700px] mx-auto mt-16 bg-cream-card rounded-2xl border border-line shadow-[0_20px_50px_var(--line)] overflow-hidden transition-transform duration-300 hover:-translate-y-1">
 
           {/* Top Toggle */}
-          <div className="flex border-b border-line p-4 sm:p-5 bg-cream gap-3">
+          <div className="flex border-b border-line p-4 sm:p-5 bg-surface-2 gap-3">
             <button className="flex-1 py-3 sm:py-3.5 text-center rounded-xl bg-orange-500 text-white font-bold text-[15px] shadow-[0_2px_12px_rgba(249,115,22,0.35)] hover:bg-orange-400 transition-all">
               Learning
             </button>

@@ -7,25 +7,37 @@ const EXAM_CARDS = [
     id: 'ssc',
     title: 'SSC',
     desc: 'Best system for competitive exams.',
-    img: '/images/ssc_logo.png'
+    img: '/images/ssc_logo.png',
+    bg: 'var(--cat-pink-bg)',
+    border: 'var(--cat-pink-border)',
+    accent: 'var(--cat-pink-text)',
   },
   {
     id: 'banking',
     title: 'Banking',
     desc: 'Boost scores in bank exams.',
-    img: '/images/banking_logo.png'
+    img: '/images/banking_logo.png',
+    bg: 'var(--cat-blue-bg)',
+    border: 'var(--cat-blue-border)',
+    accent: 'var(--cat-blue-text)',
   },
   {
     id: 'cuet',
     title: 'CUET',
     desc: 'Curated for university entrances.',
-    img: '/images/cuet_logo.png'
+    img: '/images/cuet_logo.png',
+    bg: 'var(--cat-purple-bg)',
+    border: 'var(--cat-purple-border)',
+    accent: 'var(--cat-purple-text)',
   },
   {
     id: 'upsc',
     title: 'UPSC',
     desc: 'Master vocabulary for top exams.',
-    img: '/images/upsc_logo.png'
+    img: '/images/upsc_logo.png',
+    bg: 'var(--cat-peach-bg)',
+    border: 'var(--cat-peach-border)',
+    accent: 'var(--cat-peach-text)',
   }
 ];
 
@@ -72,13 +84,13 @@ export function ExamFocusSection() {
             <div key={exam.id} className="exam-card flex flex-col items-center text-center opacity-0">
               {/* Squircle Card */}
               <div
-                className="w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] rounded-[2rem] shadow-xl flex flex-col justify-center items-center mb-4 transition-transform hover:-translate-y-1 duration-300"
-                style={{ background: 'var(--exam-icon-bg)', border: '1px solid var(--exam-icon-border)' }}
+                className="w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] rounded-[2rem] shadow-sm flex flex-col justify-center items-center mb-4 transition-all hover:-translate-y-1 duration-300 border"
+                style={{ background: exam.bg, borderColor: exam.border }}
               >
                 <img 
                   src={exam.img} 
                   alt={`${exam.title} Logo`} 
-                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain mb-2.5 rounded-full bg-white/5 p-1"
+                  className="w-14 h-14 sm:w-16 sm:h-16 object-contain mb-2.5 rounded-full bg-white/20 p-1"
                 />
                 <span className="font-bricolage font-bold text-ink tracking-wide text-[15px] sm:text-base">
                   {exam.title}

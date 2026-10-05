@@ -6,7 +6,7 @@ export function Footer() {
   const { theme } = useThemeStore();
 
   return (
-    <footer className="border-t-2 border-ink pt-[52px] pb-[36px] font-inter">
+    <footer className="border-t border-line pt-[52px] pb-[36px] font-inter">
       <div className="vv-container">
         {/* 4-column grid, collapses to 2 on mobile */}
         <div className="grid grid-cols-1 min-[481px]:grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10 mb-11">

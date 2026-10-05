@@ -24,6 +24,31 @@
   --color-green-text: var(--green-text);
   --color-yellow-text: var(--yellow-text);
 
+  --color-surface-2: var(--surface-2);
+  --color-mnemonic-bg: var(--mnemonic-bg);
+  --color-mnemonic-border: var(--mnemonic-border);
+  --color-mnemonic-text: var(--mnemonic-text);
+
+  --color-cat-peach-bg: var(--cat-peach-bg);
+  --color-cat-peach-border: var(--cat-peach-border);
+  --color-cat-peach-text: var(--cat-peach-text);
+
+  --color-cat-pink-bg: var(--cat-pink-bg);
+  --color-cat-pink-border: var(--cat-pink-border);
+  --color-cat-pink-text: var(--cat-pink-text);
+
+  --color-cat-green-bg: var(--cat-green-bg);
+  --color-cat-green-border: var(--cat-green-border);
+  --color-cat-green-text: var(--cat-green-text);
+
+  --color-cat-purple-bg: var(--cat-purple-bg);
+  --color-cat-purple-border: var(--cat-purple-border);
+  --color-cat-purple-text: var(--cat-purple-text);
+
+  --color-cat-blue-bg: var(--cat-blue-bg);
+  --color-cat-blue-border: var(--cat-blue-border);
+  --color-cat-blue-text: var(--cat-blue-text);
+
   --font-bricolage: "Bricolage Grotesque", sans-serif;
   --font-inter: "Inter", sans-serif;
   --font-space: "Space Mono", monospace;

@@ -27,7 +27,7 @@ export function PracticeSection() {
               <Timer size={16} />
               Timed
             </button>
-            <button className="flex items-center gap-2 px-5 py-2.5 rounded-full text-neutral-400 font-bold text-[15px] hover:text-neutral-200 transition-colors">
+            <button className="flex items-center gap-2 px-5 py-2.5 rounded-full text-ink-soft font-bold text-[15px] hover:text-ink transition-colors">
               <Infinity size={16} />
               Untimed
             </button>
@@ -47,7 +47,7 @@ export function PracticeSection() {
             >
 
               {/* Front Face (Unrevealed) */}
-              <div className="absolute inset-0 w-full h-full bg-cream-card rounded-2xl border border-line shadow-2xl shadow-black/10 [backface-visibility:hidden] flex flex-col p-8 sm:p-10">
+              <div className="absolute inset-0 w-full h-full bg-cream-card rounded-2xl border border-line shadow-[0_20px_50px_var(--line)] [backface-visibility:hidden] flex flex-col p-8 sm:p-10">
 
                 <div className="text-center mt-2 mb-auto">
                   <span className="font-space text-ink-soft font-bold tracking-widest text-[13px]">
@@ -73,10 +73,10 @@ export function PracticeSection() {
               </div>
 
               {/* Back Face (Revealed) */}
-              <div className="absolute inset-0 w-full h-full bg-cream-card rounded-2xl border border-line shadow-2xl shadow-black/10 [backface-visibility:hidden] [transform:rotateY(180deg)] flex flex-col p-8 sm:p-10">
+              <div className="absolute inset-0 w-full h-full bg-cream-card rounded-2xl border border-line shadow-[0_20px_50px_var(--line)] [backface-visibility:hidden] [transform:rotateY(180deg)] flex flex-col p-8 sm:p-10">
 
                 <div className="text-center mt-2 mb-auto">
-                  <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-space text-[11px] font-bold tracking-widest uppercase">
+                  <span className="inline-block px-4 py-1.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 font-space text-[11px] font-bold tracking-widest uppercase">
                     Revealed
                   </span>
                 </div>
@@ -103,7 +103,7 @@ export function PracticeSection() {
                 <div className="flex gap-3">
                   <button
                     onClick={() => setIsRevealed(false)}
-                    className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-emerald-500/15 text-emerald-400 font-bold text-[15px] border border-emerald-500/30 hover:bg-emerald-500/25 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+                    className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 font-bold text-[15px] border border-emerald-500/30 hover:bg-emerald-500/25 active:scale-[0.98] transition-all duration-200 cursor-pointer"
                   >
                     <Check size={18} strokeWidth={3} />
                     Learned

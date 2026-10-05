@@ -47,6 +47,37 @@
   --green-text: #166534;
   --yellow-text: #9a3412;       
 
+  /* Category Pastel Tokens (Matching Profile Dashboard & Exam Focus) */
+  --cat-peach-bg: #fef4e8;
+  --cat-peach-border: #ffdfbe;
+  --cat-peach-text: #ea580c;
+  --cat-peach-shape: #ffdfbe;
+  --cat-peach-button: #ffbe7c;
+
+  --cat-pink-bg: #fdf2f4;
+  --cat-pink-border: #fbcfe8;
+  --cat-pink-text: #db2777;
+  --cat-pink-shape: #fbcfe8;
+  --cat-pink-button: #f9a8d4;
+
+  --cat-green-bg: #f0fdf4;
+  --cat-green-border: #bbf7d0;
+  --cat-green-text: #16a34a;
+  --cat-green-shape: #bbf7d0;
+  --cat-green-button: #86efac;
+
+  --cat-purple-bg: #f5f3ff;
+  --cat-purple-border: #ddd6fe;
+  --cat-purple-text: #9333ea;
+  --cat-purple-shape: #ddd6fe;
+  --cat-purple-button: #c4b5fd;
+
+  --cat-blue-bg: #eff6ff;
+  --cat-blue-border: #bfdbfe;
+  --cat-blue-text: #0284c7;
+  --cat-blue-shape: #bfdbfe;
+  --cat-blue-button: #93c5fd;
+
   /* Gradients */
   --grad-peach: linear-gradient(135deg, #ffedd5 0%, #ffffff 100%);
   --grad-pink: linear-gradient(135deg, #ffe4e6 0%, #ffffff 100%);
@@ -56,19 +87,19 @@
   --grad-yellow: linear-gradient(135deg, #fef08a 0%, #ffffff 100%);
 
   /* Glass / floating card surfaces */
-  --glass-card-bg: rgba(255, 255, 255, 0.9);   
-  --glass-card-border: rgba(15, 23, 42, 0.06);
-  --glass-card-shadow: 0 12px 32px rgba(15, 23, 42, 0.04);
-  --glass-header-bg: rgba(253, 251, 247, 0.8);  
-  --glass-header-border: rgba(15, 23, 42, 0.05);
+  --glass-card-bg: rgba(255, 255, 255, 0.95);   
+  --glass-card-border: rgba(15, 23, 42, 0.08);
+  --glass-card-shadow: 0 16px 40px rgba(15, 23, 42, 0.05);
+  --glass-header-bg: rgba(253, 251, 247, 0.85);  
+  --glass-header-border: rgba(15, 23, 42, 0.06);
   --glass-search-bg: rgba(15, 23, 42, 0.04);
   --glass-search-border: rgba(15, 23, 42, 0.08);
 
   /* Mnemonic box */
-  --mnemonic-bg: rgba(234, 88, 12, 0.08);        
-  --mnemonic-border: rgba(234, 88, 12, 0.15);
+  --mnemonic-bg: #fef4e8;        
+  --mnemonic-border: #fed7aa;
   --mnemonic-text: #9a3412;                      
-  --mnemonic-label: rgba(234, 88, 12, 0.6);
+  --mnemonic-label: #ea580c;
 
   /* Exam icon boxes */
   --exam-icon-bg: #ffffff;
@@ -123,6 +154,37 @@
   --blue-card: #1E3A8A;
   --green-text: #A7F3D0;
   --yellow-text: #FDE68A;
+
+  /* Category Pastel Tokens — Dark mode equivalents */
+  --cat-peach-bg: rgba(234, 88, 12, 0.12);
+  --cat-peach-border: rgba(234, 88, 12, 0.25);
+  --cat-peach-text: #fb923c;
+  --cat-peach-shape: rgba(234, 88, 12, 0.20);
+  --cat-peach-button: #ea580c;
+
+  --cat-pink-bg: rgba(219, 39, 119, 0.12);
+  --cat-pink-border: rgba(219, 39, 119, 0.25);
+  --cat-pink-text: #f472b6;
+  --cat-pink-shape: rgba(219, 39, 119, 0.20);
+  --cat-pink-button: #db2777;
+
+  --cat-green-bg: rgba(22, 163, 74, 0.12);
+  --cat-green-border: rgba(22, 163, 74, 0.25);
+  --cat-green-text: #4ade80;
+  --cat-green-shape: rgba(22, 163, 74, 0.20);
+  --cat-green-button: #16a34a;
+
+  --cat-purple-bg: rgba(147, 51, 234, 0.12);
+  --cat-purple-border: rgba(147, 51, 234, 0.25);
+  --cat-purple-text: #c084fc;
+  --cat-purple-shape: rgba(147, 51, 234, 0.20);
+  --cat-purple-button: #9333ea;
+
+  --cat-blue-bg: rgba(2, 132, 199, 0.12);
+  --cat-blue-border: rgba(2, 132, 199, 0.25);
+  --cat-blue-text: #38bdf8;
+  --cat-blue-shape: rgba(2, 132, 199, 0.20);
+  --cat-blue-button: #0284c7;
 
   /* Glass / floating card surfaces */
   --glass-card-bg: rgba(255, 255, 255, 0.04);   /* Barely-there glass */

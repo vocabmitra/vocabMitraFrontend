@@ -49,10 +49,10 @@ export function Navbar() {
     <nav
       className="sticky top-0 z-50 transition-colors duration-400"
       style={{
-        background: theme === 'dark' ? 'rgba(18,18,18,0.65)' : 'rgba(244,250,255,0.85)',
+        background: 'var(--glass-header-bg)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
-        borderBottom: theme === 'dark' ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(11,83,148,0.12)',
+        borderBottom: '1px solid var(--glass-header-border)',
       }}
     >
       <div className="vv-container flex justify-between items-center py-4 sm:py-5">
@@ -90,8 +90,8 @@ export function Navbar() {
               end={to === '/'}
               className={({ isActive }) =>
                 `px-4 py-2 rounded-full font-inter transition-colors duration-200 no-underline ${isActive
-                  ? 'text-orange-400 bg-orange-500/10'
-                  : 'text-ink-soft bg-transparent hover:bg-white/5 hover:text-ink'
+                  ? 'text-cat-peach-text bg-cat-peach-bg font-bold shadow-xs'
+                  : 'text-ink-soft bg-transparent hover:bg-line hover:text-ink'
                 }`
               }
             >
@@ -148,7 +148,7 @@ export function Navbar() {
                     {!isAdmin && (
                       <button
                         onClick={() => { navigate('/profile'); setAvatarMenuOpen(false); }}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-ink text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-white/5"
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-ink text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-line"
                         role="menuitem"
                       >
                         <LayoutDashboard size={14} />
@@ -158,7 +158,7 @@ export function Navbar() {
                     {isAdmin && (
                       <button
                         onClick={() => { navigate('/admin'); setAvatarMenuOpen(false); }}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-ink text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-white/5"
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-ink text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-line"
                         role="menuitem"
                       >
                         <Shield size={14} className="text-orange-500" />
@@ -167,7 +167,7 @@ export function Navbar() {
                     )}
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-orange-400 text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-white/5"
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-transparent border-none cursor-pointer text-accent text-[13px] font-inter font-semibold transition-colors duration-150 hover:bg-line"
                       role="menuitem"
                     >
                       <LogOut size={14} />

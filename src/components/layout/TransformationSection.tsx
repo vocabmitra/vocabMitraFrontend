@@ -42,12 +42,12 @@ export function TransformationSection() {
         <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 w-full max-w-[1000px]">
 
           {/* BEFORE CARD */}
-          <div className="transform-before opacity-0 w-full md:flex-1 max-w-[420px] bg-cream-card rounded-2xl border border-line shadow-2xl shadow-black/10 p-8 sm:p-10 flex flex-col justify-between min-h-[240px] transition-transform duration-300 hover:-translate-y-1">
+          <div className="transform-before opacity-0 w-full md:flex-1 max-w-[420px] bg-cream-card rounded-2xl border border-line shadow-[0_20px_50px_var(--line)] p-8 sm:p-10 flex flex-col justify-between min-h-[240px] transition-transform duration-300 hover:-translate-y-1">
             <div>
-              <h4 className="font-space tracking-widest uppercase text-neutral-600 text-[11px] font-bold mb-5">
+              <h4 className="font-space tracking-widest uppercase text-ink-soft opacity-70 text-[11px] font-bold mb-5">
                 Before
               </h4>
-              <p className="font-inter text-[18px] sm:text-[20px] font-bold text-neutral-400 leading-snug mb-8">
+              <p className="font-inter text-[18px] sm:text-[20px] font-bold text-ink/80 leading-snug mb-8">
                 "I know this word... but I keep forgetting it."
               </p>
             </div>
@@ -62,25 +62,34 @@ export function TransformationSection() {
             <div className="px-6 py-3 bg-orange-500 text-white font-bricolage text-[18px] font-bold rounded-full shadow-[0_4px_24px_rgba(249,115,22,0.45)] rotate-[-3deg] hover:rotate-[3deg] transition-transform duration-300">
               VocabMitra
             </div>
-            <p className="text-[11px] text-neutral-500 font-space font-bold tracking-widest text-center uppercase leading-relaxed">
+            <p className="text-[11px] text-ink-soft font-space font-bold tracking-widest text-center uppercase leading-relaxed">
               Learn &rarr; Mnemonic &rarr;<br />
               Practice &rarr; Repeat
             </p>
           </div>
 
           {/* AFTER CARD */}
-          <div className="transform-after opacity-0 w-full md:flex-1 max-w-[420px] bg-emerald-500/10 rounded-2xl border border-emerald-500/25 shadow-2xl shadow-black/50 p-8 sm:p-10 flex flex-col justify-between min-h-[240px] transition-transform duration-300 hover:-translate-y-1">
+          <div
+            className="transform-after opacity-0 w-full md:flex-1 max-w-[420px] rounded-2xl border shadow-[0_20px_50px_var(--line)] p-8 sm:p-10 flex flex-col justify-between min-h-[240px] transition-transform duration-300 hover:-translate-y-1"
+            style={{
+              background: 'var(--cat-green-bg)',
+              borderColor: 'var(--cat-green-border)',
+            }}
+          >
             <div>
-              <h4 className="font-space tracking-widest uppercase text-emerald-500 text-[11px] font-bold mb-5">
+              <h4
+                className="font-space tracking-widest uppercase text-[11px] font-bold mb-5"
+                style={{ color: 'var(--cat-green-text)' }}
+              >
                 After
               </h4>
               <p className="font-inter text-[22px] sm:text-[26px] font-bold text-ink leading-snug mb-8">
                 "I actually remember it."
               </p>
             </div>
-            <div className="space-y-3 opacity-40">
-              <div className="h-2 w-[85%] bg-emerald-400/40 rounded-full" />
-              <div className="h-2 w-[60%] bg-emerald-400/40 rounded-full" />
+            <div className="space-y-3 opacity-60">
+              <div className="h-2 w-[85%] rounded-full" style={{ background: 'var(--cat-green-border)' }} />
+              <div className="h-2 w-[60%] rounded-full" style={{ background: 'var(--cat-green-border)' }} />
             </div>
           </div>
 

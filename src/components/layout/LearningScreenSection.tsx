@@ -91,7 +91,7 @@ export function LearningScreenSection() {
             ].map((item) => (
               <li key={item} className="learning-list-item flex items-start gap-3 opacity-0">
                 <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2.5 shrink-0" />
-                <span className="text-[16px] text-neutral-300 font-medium">{item}</span>
+                <span className="text-[16px] text-ink font-medium">{item}</span>
               </li>
             ))}
           </ul>
@@ -124,7 +124,7 @@ export function LearningScreenSection() {
                 </div>
                 <div className="flex-1 flex justify-center">
                   <div
-                    className="flex items-center gap-2 px-4 py-1.5 rounded-full text-neutral-400"
+                    className="flex items-center gap-2 px-4 py-1.5 rounded-full text-ink-soft"
                     style={{ background: 'var(--glass-search-bg)', border: '1px solid var(--glass-search-border)' }}
                   >
                     <Search size={11} />
@@ -150,15 +150,15 @@ export function LearningScreenSection() {
                     className="p-2.5 rounded-full transition-all duration-200 hover:scale-105 active:scale-95"
                     style={{ background: 'var(--glass-search-bg)', border: '1px solid var(--glass-search-border)' }}
                   >
-                    <Volume2 size={15} className="text-neutral-300" />
+                    <Volume2 size={15} className="text-ink-soft hover:text-ink" />
                   </button>
                 </div>
 
                 {/* Part of speech */}
-                <p className="learning-ui-item italic text-neutral-500 text-[14px] mb-4 opacity-0">Noun</p>
+                <p className="learning-ui-item italic text-ink-soft text-[14px] mb-4 opacity-0">Noun</p>
 
                 {/* Meaning */}
-                <p className="learning-ui-item text-neutral-200 text-[17px] font-medium mb-7 leading-relaxed opacity-0">
+                <p className="learning-ui-item text-ink text-[17px] font-medium mb-7 leading-relaxed opacity-0">
                   Tiredness / lack of energy
                 </p>
 
@@ -170,8 +170,8 @@ export function LearningScreenSection() {
                     border: '1px solid var(--mnemonic-border)',
                   }}
                 >
-                  <div className="flex items-center gap-2 text-amber-400/60 font-space text-[10px] font-bold tracking-widest uppercase mb-2.5">
-                    <Lightbulb size={13} className="text-amber-400" />
+                  <div className="flex items-center gap-2 font-space text-[10px] font-bold tracking-widest uppercase mb-2.5" style={{ color: 'var(--mnemonic-label)' }}>
+                    <Lightbulb size={13} style={{ color: 'var(--accent)' }} />
                     Remember It
                   </div>
                   <p className="font-inter text-[17px] font-semibold leading-snug" style={{ color: 'var(--mnemonic-text)' }}>
@@ -181,8 +181,8 @@ export function LearningScreenSection() {
 
                 {/* Example */}
                 <div className="learning-ui-item mb-7 opacity-0">
-                  <h4 className="text-[10px] font-space tracking-[0.12em] text-neutral-600 uppercase mb-2 font-bold">Example</h4>
-                  <p className="text-[15px] italic text-neutral-400 font-medium leading-relaxed">
+                  <h4 className="text-[10px] font-space tracking-[0.12em] text-ink-soft opacity-70 uppercase mb-2 font-bold">Example</h4>
+                  <p className="text-[15px] italic text-ink-soft font-medium leading-relaxed">
                     "After the long journey, he felt a deep sense of lassitude."
                   </p>
                 </div>
@@ -190,14 +190,14 @@ export function LearningScreenSection() {
                 {/* Synonyms & Antonyms */}
                 <div className="learning-ui-item grid grid-cols-2 gap-6 opacity-0">
                   <div>
-                    <h4 className="text-[10px] font-space tracking-[0.12em] text-emerald-500/70 uppercase mb-2 font-bold">Synonyms</h4>
-                    <p className="text-[14px] text-neutral-500 font-medium leading-relaxed">
+                    <h4 className="text-[10px] font-space tracking-[0.12em] text-emerald-600 dark:text-emerald-500/70 uppercase mb-2 font-bold">Synonyms</h4>
+                    <p className="text-[14px] text-ink-soft font-medium leading-relaxed">
                       fatigue · weariness · lethargy
                     </p>
                   </div>
                   <div>
-                    <h4 className="text-[10px] font-space tracking-[0.12em] text-orange-500/70 uppercase mb-2 font-bold">Antonyms</h4>
-                    <p className="text-[14px] text-neutral-500 font-medium leading-relaxed">
+                    <h4 className="text-[10px] font-space tracking-[0.12em] text-orange-600 dark:text-orange-500/70 uppercase mb-2 font-bold">Antonyms</h4>
+                    <p className="text-[14px] text-ink-soft font-medium leading-relaxed">
                       energy · vitality
                     </p>
                   </div>
