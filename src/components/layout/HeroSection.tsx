@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { WordReveal } from '../ui/WordReveal';
 import { useAuthStore } from '../../store/useAuthStore';
+import { AUTH_TOKEN_KEY } from '../../utils/constants';
 
 // Floating vocabulary words — positions are % from top-left of section
 const FLOATING_WORDS = [
@@ -22,8 +23,10 @@ const FLOATING_WORDS = [
 export function HeroSection() {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLElement>(null);
-  const { user, isAuthenticated } = useAuthStore();
-  const isLoggedIn = isAuthenticated || Boolean(localStorage.getItem('vv-auth-token')) || Boolean(user);
+  const { user, isAuthenticated, token: storeToken } = useAuthStore();
+  const token = storeToken || localStorage.getItem(AUTH_TOKEN_KEY) || localStorage.getItem('vv-auth-token');
+  const hasValidToken = Boolean(token && token !== 'null' && token !== 'undefined' && token.trim() !== '');
+  const isLoggedIn = hasValidToken && (isAuthenticated || Boolean(user));
 
   useGSAP(() => {
     const tl = gsap.timeline({ delay: 0.2 });

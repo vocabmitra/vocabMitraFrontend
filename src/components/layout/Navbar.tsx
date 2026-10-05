@@ -4,16 +4,18 @@ import { useState } from 'react';
 import { useThemeStore } from '../../store/useThemeStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
+import { AUTH_TOKEN_KEY } from '../../utils/constants';
 
 export function Navbar() {
   const { theme, toggleTheme } = useThemeStore();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, logout, token: storeToken } = useAuthStore();
   const { addToast } = useUIStore();
   const navigate = useNavigate();
   const [avatarMenuOpen, setAvatarMenuOpen] = useState(false);
 
-  const hasToken = Boolean(localStorage.getItem('vv-auth-token'));
-  const isLoggedIn = isAuthenticated || hasToken || Boolean(user);
+  const token = storeToken || localStorage.getItem(AUTH_TOKEN_KEY) || localStorage.getItem('vv-auth-token');
+  const hasValidToken = Boolean(token && token !== 'null' && token !== 'undefined' && token.trim() !== '');
+  const isLoggedIn = hasValidToken && (isAuthenticated || Boolean(user));
 
   const displayName = user
     ? user.firstName && user.lastName

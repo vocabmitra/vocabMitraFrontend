@@ -4,6 +4,7 @@ import { ArrowLeft, Trophy, RotateCcw, Zap, Check, X, Bookmark, Volume2, Lightbu
 import { vocabApi } from '../api/endpoints/vocab.api';
 import type { VocabCard as VocabCardType } from '../types';
 import { BookmarkToggleButton } from '../components/vocab/BookmarkToggleButton';
+import { logger } from '../utils/logger';
 
 function formatDuration(ms: number): string {
   const totalSeconds = Math.floor(ms / 1000);
@@ -64,7 +65,7 @@ export default function PracticeBookmarkSessionPage() {
       setStartTime(Date.now());
       setEndTime(null);
     } catch (err) {
-      console.error('Failed to load bookmarked cards for practice session:', err);
+      logger.error('Failed to load bookmarked cards for practice session:', err);
     } finally {
       setIsLoading(false);
     }
@@ -121,7 +122,7 @@ export default function PracticeBookmarkSessionPage() {
     try {
       await vocabApi.toggleLearned(currentCard.vocab.id);
     } catch (err) {
-      console.error('Failed to mark vocab as learned:', err);
+      logger.error('Failed to mark vocab as learned:', err);
     }
 
     setRememberedCount((prev) => prev + 1);

@@ -3,6 +3,7 @@ import { Lightbulb } from 'lucide-react';
 import type { VocabCard } from '../../types';
 import { usePracticeStore } from '../../store/usePracticeStore';
 import { vocabApi } from '../../api/endpoints/vocab.api';
+import { logger } from '../../utils/logger';
 
 interface PracticeFlashcardProps {
   card: VocabCard;
@@ -30,7 +31,7 @@ export function PracticeFlashcard({ card }: PracticeFlashcardProps) {
         await vocabApi.toggleLearned(vocab.id);
       }
     } catch (err) {
-      console.error('[PracticeFlashcard] Failed to mark as learned:', err);
+      logger.error('[PracticeFlashcard] Failed to mark as learned:', err);
     } finally {
       setIsActing(false);
       nextCard();
@@ -48,7 +49,7 @@ export function PracticeFlashcard({ card }: PracticeFlashcardProps) {
         await vocabApi.toggleLearned(vocab.id);
       }
     } catch (err) {
-      console.error('[PracticeFlashcard] Failed to toggle learned state:', err);
+      logger.error('[PracticeFlashcard] Failed to toggle learned state:', err);
     } finally {
       setIsActing(false);
       nextCard();

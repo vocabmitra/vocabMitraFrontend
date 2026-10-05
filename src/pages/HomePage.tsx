@@ -23,6 +23,7 @@ import { VocabularySection } from '../components/layout/VocabularySection';
 import { TransformationSection } from '../components/layout/TransformationSection';
 import { CtaSection } from '../components/layout/CtaSection';
 import { useGSAP } from '@gsap/react';
+import { logger } from '../utils/logger';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -47,7 +48,7 @@ export default function HomePage() {
           setPreviewCardIds(res.content.slice(1, 7).map(c => c.vocab.id));
         }
       } catch (err) {
-        console.error('Failed to fetch home data:', err);
+        logger.error('Failed to fetch home data:', err);
       }
     };
     fetchHomeData();

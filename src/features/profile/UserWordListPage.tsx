@@ -19,6 +19,7 @@ import { OpenVocabCard } from '../../components/vocab/OpenVocabCard';
 import { PracticeSessionLauncher } from '../../components/vocab/PracticeSessionLauncher';
 import { vocabApi } from '../../api/endpoints/vocab.api';
 import type { VocabCard as VocabCardType } from '../../types';
+import { logger } from '../../utils/logger';
 
 type Mode = 'learned' | 'bookmarked';
 
@@ -64,7 +65,7 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
           setTotalPages(res.totalPages || 1);
         }
       } catch (err) {
-        console.error(`Failed to fetch ${mode} words`, err);
+        logger.error(`Failed to fetch ${mode} words`, err);
       } finally {
         setIsLoading(false);
       }

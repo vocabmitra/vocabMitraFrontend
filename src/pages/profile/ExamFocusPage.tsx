@@ -21,6 +21,7 @@ import { OpenVocabCard } from '../../components/vocab/OpenVocabCard';
 import { PracticeSessionLauncher } from '../../components/vocab/PracticeSessionLauncher';
 import type { VocabCard as VocabCardType } from '../../types';
 import { vocabApi } from '../../api/endpoints/vocab.api';
+import { logger } from '../../utils/logger';
 
 // ── Exam Categories ──
 const EXAM_CATEGORIES: ExamCategory[] = [
@@ -132,7 +133,7 @@ export default function ExamFocusPage() {
         setCards(response.content || []);
         setTotalPages(response.totalPages || 1);
       } catch (error) {
-        console.error('[ExamFocus] Failed to fetch vocabs:', error);
+        logger.error('[ExamFocus] Failed to fetch vocabs:', error);
         setCards([]);
       } finally {
         setIsLoading(false);
@@ -360,5 +361,5 @@ export default function ExamFocusPage() {
   );
 }
 
-// Re-export CuetFocusPage for backwards compatibility
-export { ExamFocusPage as CuetFocusPage };
+// Re-export ExamFocusPage and CuetFocusPage for backwards compatibility
+export { ExamFocusPage, ExamFocusPage as CuetFocusPage };

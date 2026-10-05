@@ -1,6 +1,6 @@
 import axiosInstance from '../axiosInstance';
 import type { SignupRequest, SignupResponse, ProfileResponse, LoginRequest, LoginResponse } from '../../types';
-import { AUTH_USER_KEY } from '../../utils/constants';
+import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from '../../utils/constants';
 import { useAuthStore } from '../../store/useAuthStore';
 
 const AUTH_BASE = '/auth';
@@ -43,13 +43,23 @@ export const authApi = {
 
   /**
    * Get the current authenticated user's profile.
-   * GET /user/profile?userId={id}
+   * Relies on the Bearer JWT token in Authorization header to prevent client-side IDOR.
+   * If a specific userId is explicitly provided (e.g. admin inspection), passes ?userId={id}.
    */
   getProfile: async (userId?: number | string): Promise<ProfileResponse> => {
-    const activeUserId = userId ?? getAuthUserId();
-    const res = await axiosInstance.get<any>(`${USER_BASE}/profile`, {
-      params: activeUserId ? { userId: activeUserId } : {},
-    });
+    const params: Record<string, any> = {};
+    if (userId !== undefined && userId !== null) {
+      params.userId = userId;
+    } else {
+      // In guest or local dev fallback without a JWT token, provide auth user ID if available
+      const token = useAuthStore.getState()?.token || localStorage.getItem(AUTH_TOKEN_KEY);
+      if (!token) {
+        const fallbackId = getAuthUserId();
+        if (fallbackId) params.userId = fallbackId;
+      }
+    }
+
+    const res = await axiosInstance.get<any>(`${USER_BASE}/profile`, { params });
     const raw = res.data?.data ?? res.data ?? {};
     return {
       firstName: raw.firstName || '',

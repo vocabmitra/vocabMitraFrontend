@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
 import {
@@ -26,6 +27,7 @@ import { useUIStore } from '../../store/useUIStore';
 
 export default function AdminDashboardPage() {
   const addToast = useUIStore((s) => s.addToast);
+  const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState<'library' | 'taxonomy'>('library');
 
@@ -75,6 +77,12 @@ export default function AdminDashboardPage() {
       setVocabTypes(tList);
       setUseCaseTags(tagList);
     } catch (err: any) {
+      const status = err?.response?.status;
+      if (status === 403 || status === 401) {
+        addToast('Access Denied: Administrator permissions required.', 'error');
+        navigate('/', { replace: true });
+        return;
+      }
       addToast('Failed to load admin data', 'error');
     } finally {
       setIsLoading(false);

@@ -11,7 +11,6 @@ import {
   Flame,
   Target,
   Bookmark,
-  Award,
 } from 'lucide-react';
 import { vocabApi } from '../../api/endpoints/vocab.api';
 import { authApi } from '../../api/endpoints/auth.api';
@@ -19,6 +18,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import type { VocabCard as VocabCardType, ProfileResponse } from '../../types';
 import { ShrinkVocabCard } from '../../components/vocab/ShrinkVocabCard';
 import { OpenVocabCard } from '../../components/vocab/OpenVocabCard';
+import { logger } from '../../utils/logger';
 
 function getRandomSample<T>(arr: T[], n: number): T[] {
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
@@ -52,7 +52,7 @@ export default function ProgressView() {
           setStoreProfile(p);
         }
       } catch (err) {
-        console.error('Failed to fetch user profile:', err);
+        logger.error('Failed to fetch user profile:', err);
       }
     };
 
@@ -64,7 +64,7 @@ export default function ProgressView() {
         setBookmarkedCards(list);
         setTotalBookmarked(res.totalElements || list.length);
       } catch (err) {
-        console.error('Failed to fetch bookmarked vocabs for Progress:', err);
+        logger.error('Failed to fetch bookmarked vocabs for Progress:', err);
       } finally {
         setIsBookmarkedLoading(false);
       }
@@ -78,7 +78,7 @@ export default function ProgressView() {
         setLearnedCards(list);
         setTotalLearned(res.totalElements || list.length);
       } catch (err) {
-        console.error('Failed to fetch learned vocabs for Progress:', err);
+        logger.error('Failed to fetch learned vocabs for Progress:', err);
       } finally {
         setIsLearnedLoading(false);
       }

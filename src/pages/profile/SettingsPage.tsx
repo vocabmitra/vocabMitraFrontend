@@ -6,6 +6,7 @@ import { useThemeStore } from '../../store/useThemeStore';
 
 import { authApi } from '../../api/endpoints/auth.api';
 import { normalizeError } from '../../utils/errorHandler';
+import { logger } from '../../utils/logger';
 
 export default function SettingsPage() {
   const { user, profile, setProfile } = useAuthStore();
@@ -26,39 +27,65 @@ export default function SettingsPage() {
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const trimmedFirst = firstName.trim();
+    const trimmedLast = lastName.trim();
+    const trimmedEmail = email.trim();
+
+    if (!trimmedFirst) {
+      addToast('First name is required.', 'error');
+      return;
+    }
+
+    if (trimmedFirst.length > 50 || trimmedLast.length > 50) {
+      addToast('Name cannot exceed 50 characters.', 'error');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+      addToast('Please enter a valid email address.', 'error');
+      return;
+    }
+
+    if (trimmedEmail.length > 100) {
+      addToast('Email cannot exceed 100 characters.', 'error');
+      return;
+    }
+
     setIsSaving(true);
 
-    const updates: { firstName?: string; lastName?: string; email?: string } = {};
-
-    if (firstName.trim()) updates.firstName = firstName.trim();
-    if (lastName.trim()) updates.lastName = lastName.trim();
-    if (email.trim()) updates.email = email.trim();
+    const updates: { firstName?: string; lastName?: string; email?: string } = {
+      firstName: trimmedFirst,
+      lastName: trimmedLast,
+      email: trimmedEmail,
+    };
 
     try {
       const updatedProfile = await authApi.updateProfile(updates);
-      if (updatedProfile && updatedProfile.firstName) {
-        setProfile(updatedProfile);
-      } else if (profile) {
+      if (updatedProfile) {
         setProfile({
-          ...profile,
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
-          email: email.trim(),
+          ...(profile || {
+            username: user?.username || '',
+            totalBookmarked: 0,
+            totalLearned: 0,
+            currentStreak: 1,
+            maxStreak: 1,
+            isStreakActiveToday: true,
+          }),
+          firstName: updatedProfile.firstName || trimmedFirst,
+          lastName: updatedProfile.lastName ?? trimmedLast,
+          email: updatedProfile.email || trimmedEmail,
         });
       }
       addToast('Profile details updated successfully!', 'success');
     } catch (err) {
-      console.error('Profile update failed:', err);
-      // Fallback update in state
-      if (profile) {
-        setProfile({
-          ...profile,
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
-          email: email.trim(),
-        });
-      }
-      addToast(normalizeError(err).message || 'Profile updated!', 'success');
+      logger.error('Profile update failed:', err);
+      // Revert inputs to confirmed store state — do NOT fake update state
+      setFirstName(profile?.firstName || user?.firstName || '');
+      setLastName(profile?.lastName || user?.lastName || '');
+      setEmail(profile?.email || user?.email || '');
+      addToast(normalizeError(err).message || 'Failed to update profile.', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -144,6 +171,7 @@ export default function SettingsPage() {
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder="Enter first name"
+                maxLength={50}
                 required
                 className="w-full bg-white/50 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 font-inter text-[14px] text-ink placeholder:text-ink-soft/60 focus:outline-none focus:ring-2 focus:ring-orange-500/40 transition-all shadow-sm"
               />
@@ -160,6 +188,7 @@ export default function SettingsPage() {
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder="Enter last name"
+                maxLength={50}
                 className="w-full bg-white/50 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 font-inter text-[14px] text-ink placeholder:text-ink-soft/60 focus:outline-none focus:ring-2 focus:ring-orange-500/40 transition-all shadow-sm"
               />
             </div>
@@ -177,6 +206,7 @@ export default function SettingsPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="name@domain.com"
+              maxLength={100}
               required
               className="w-full bg-white/50 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl px-4 py-3 font-inter text-[14px] text-ink placeholder:text-ink-soft/60 focus:outline-none focus:ring-2 focus:ring-orange-500/40 transition-all shadow-sm"
             />

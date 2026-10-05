@@ -1,5 +1,7 @@
 import axiosInstance from '../axiosInstance';
 import type { Vocab } from '../../types';
+import { ENABLE_MOCK_DATA } from '../../utils/constants';
+import { logger } from '../../utils/logger';
 
 export interface VocabInput {
   id?: number;
@@ -166,7 +168,11 @@ export const adminApi = {
         last: currentPage >= totalPages - 1,
       };
     } catch (e) {
-      console.warn('[adminApi] GET /admin/all/Vocabs failed, using fallback mock dataset:', e);
+      if (ENABLE_MOCK_DATA) {
+        logger.warn('[adminApi] GET /admin/all/Vocabs failed, using fallback mock dataset:', e);
+      } else {
+        throw e;
+      }
     }
     const totalElements = mockVocabs.length;
     const totalPages = Math.max(1, Math.ceil(totalElements / size));
@@ -188,7 +194,7 @@ export const adminApi = {
       const item = res.data?.data ?? res.data;
       if (item && typeof item === 'object') return item;
     } catch (e) {
-      /* ignore */
+      if (!ENABLE_MOCK_DATA) throw e;
     }
     return mockVocabs.find((v) => v.id === id) || null;
   },
@@ -223,7 +229,11 @@ export const adminApi = {
         return newVocab;
       }
     } catch (e) {
-      console.warn('[adminApi] POST /admin/addVocab failed, using local fallback:', e);
+      if (ENABLE_MOCK_DATA) {
+        logger.warn('[adminApi] POST /admin/addVocab failed, using local fallback:', e);
+      } else {
+        throw e;
+      }
     }
     const newId = mockVocabs.length > 0 ? Math.max(...mockVocabs.map((v) => v.id)) + 1 : 1;
     const newVocab = {
@@ -275,7 +285,11 @@ export const adminApi = {
         return item;
       }
     } catch (e) {
-      console.warn('[adminApi] PATCH /admin/update failed, using local fallback:', e);
+      if (ENABLE_MOCK_DATA) {
+        logger.warn('[adminApi] PATCH /admin/update failed, using local fallback:', e);
+      } else {
+        throw e;
+      }
     }
     const idx = mockVocabs.findIndex((v) => v.id === id);
     if (idx === -1) {
@@ -314,7 +328,11 @@ export const adminApi = {
       mockVocabs = mockVocabs.filter((v) => v.id !== id);
       return res.data?.data ?? res.data ?? { success: true, id };
     } catch (e) {
-      console.warn('[adminApi] DELETE /admin/vocabs failed, using local fallback:', e);
+      if (ENABLE_MOCK_DATA) {
+        logger.warn('[adminApi] DELETE /admin/vocabs failed, using local fallback:', e);
+      } else {
+        throw e;
+      }
     }
     mockVocabs = mockVocabs.filter((v) => v.id !== id);
     return { success: true, id };
@@ -341,7 +359,9 @@ export const adminApi = {
         mockUseCaseTags = [...mockUseCaseTags, created];
         return created;
       }
-    } catch (e) { /* ignore */ }
+    } catch (e) {
+      if (!ENABLE_MOCK_DATA) throw e;
+    }
     const newItem = {
       id: String(Date.now()),
       name: name.toUpperCase().trim(),
@@ -357,7 +377,9 @@ export const adminApi = {
       await axiosInstance.delete(`/admin/usecase-tags/${id}`);
       mockUseCaseTags = mockUseCaseTags.filter((item) => item.id !== id);
       return true;
-    } catch (e) { /* ignore */ }
+    } catch (e) {
+      if (!ENABLE_MOCK_DATA) throw e;
+    }
     mockUseCaseTags = mockUseCaseTags.filter((item) => item.id !== id);
     return true;
   },

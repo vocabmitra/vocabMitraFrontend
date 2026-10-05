@@ -4,6 +4,7 @@ import { Home, Bookmark, LogOut, BarChart2, Settings, HelpCircle, MessageSquare,
 import { useAuthStore } from '../../store/useAuthStore';
 import { useUIStore } from '../../store/useUIStore';
 import { authApi } from '../../api/endpoints/auth.api';
+import { logger } from '../../utils/logger';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 
@@ -45,7 +46,7 @@ export default function ProfileLayout() {
           setProfile(res);
         }
       } catch (err) {
-        console.error('Failed to fetch profile:', err);
+        logger.error('Failed to fetch profile:', err);
       }
     };
     loadProfile();
