@@ -53,20 +53,29 @@ export function BookmarkToggleButton({ vocabId, isBookmarked: initialIsBookmarke
   };
 
   if (variant === 'puffy') {
-    const iconClass = theme?.text || 'text-[#ea580c]';
-    const bgClass = theme?.iconBg || 'bg-gradient-to-br from-white to-[#ffdfbe]';
+    const isCustomTheme = Boolean(theme?.iconFrom && theme?.iconTo);
+    const iconClass = !isCustomTheme ? (theme?.text || 'text-[#ea580c]') : '';
+    const bgClass = !isCustomTheme ? (theme?.iconBg || 'bg-gradient-to-br from-white to-[#ffdfbe]') : '';
 
     return (
       <button
         onClick={handleToggle}
         disabled={loading}
-        className={`w-11 h-11 rounded-[14px] flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.06),inset_0_2px_4px_rgba(255,255,255,0.8)] transition-transform duration-200 hover:scale-105 ${bgClass} ${loading ? 'opacity-50 cursor-wait' : 'cursor-pointer'}`}
+        className={`w-11 h-11 rounded-[14px] flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.06),inset_0_2px_4px_rgba(255,255,255,0.8)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.4),inset_0_1px_2px_rgba(255,255,255,0.12)] dark:border dark:border-white/10 transition-transform duration-200 hover:scale-105 ${bgClass} ${loading ? 'opacity-50 cursor-wait' : 'cursor-pointer'}`}
+        style={
+          isCustomTheme
+            ? {
+                background: `linear-gradient(135deg, ${theme.iconFrom}, ${theme.iconTo})`,
+              }
+            : undefined
+        }
         aria-label={localBookmarked ? 'Remove bookmark' : 'Bookmark word'}
         title={localBookmarked ? 'Bookmarked' : 'Bookmark word'}
       >
         <Bookmark 
           size={20} 
           className={iconClass} 
+          style={isCustomTheme ? { color: theme.text } : undefined}
           fill={localBookmarked ? "currentColor" : "none"} 
           strokeWidth={localBookmarked ? 2 : 2.5}
         />
@@ -82,14 +91,14 @@ export function BookmarkToggleButton({ vocabId, isBookmarked: initialIsBookmarke
         className={`transition-all duration-300 hover:scale-105 ${
           localBookmarked
             ? 'p-1 cursor-pointer'
-            : 'w-11 h-11 rounded-[14px] flex items-center justify-center bg-[#fff8f0] border border-[#ffedd5] shadow-[0_4px_12px_rgba(249,115,22,0.10),inset_0_2px_4px_rgba(255,255,255,0.9)] cursor-pointer'
+            : 'w-11 h-11 rounded-[14px] flex items-center justify-center bg-[#fff8f0] dark:bg-[#221c17] border border-[#ffedd5] dark:border-orange-500/20 shadow-[0_4px_12px_rgba(249,115,22,0.10),inset_0_2px_4px_rgba(255,255,255,0.9)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)] cursor-pointer'
         } ${loading ? 'opacity-50 cursor-wait' : ''}`}
         aria-label={localBookmarked ? 'Remove bookmark' : 'Bookmark word'}
         title={localBookmarked ? 'Bookmarked' : 'Bookmark word'}
       >
         <Bookmark
           size={localBookmarked ? 24 : 20}
-          className="text-[#ea580c] transition-all duration-300"
+          className="text-[#ea580c] dark:text-orange-400 transition-all duration-300"
           fill={localBookmarked ? '#ea580c' : 'none'}
           strokeWidth={localBookmarked ? 2 : 2.5}
         />
@@ -122,12 +131,12 @@ export function BookmarkToggleButton({ vocabId, isBookmarked: initialIsBookmarke
         disabled={loading}
         className={`flex items-center gap-2 px-5 py-2.5 rounded-[100px] font-inter font-bold text-[14px] transition-all duration-200 ${
           localBookmarked
-            ? 'bg-[#fff7ed] text-[#ea580c] border border-[#fed7aa] shadow-sm'
-            : 'bg-white text-[#334155] border border-[#e2e8f0] shadow-sm hover:bg-gray-50'
+            ? 'bg-[#fff7ed] dark:bg-orange-500/15 text-[#ea580c] dark:text-orange-400 border border-[#fed7aa] dark:border-orange-500/30 shadow-sm'
+            : 'bg-white dark:bg-[#222226] text-[#334155] dark:text-[#f8fafc] border border-[#e2e8f0] dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-white/10'
         } ${loading ? 'opacity-50 cursor-wait' : 'cursor-pointer'}`}
         aria-label={localBookmarked ? 'Remove bookmark' : 'Bookmark word'}
       >
-        <Bookmark size={18} strokeWidth={2.5} fill={localBookmarked ? "currentColor" : "none"} className={localBookmarked ? '' : 'text-[#64748b]'} />
+        <Bookmark size={18} strokeWidth={2.5} fill={localBookmarked ? "currentColor" : "none"} className={localBookmarked ? '' : 'text-[#64748b] dark:text-slate-400'} />
         {localBookmarked ? 'Bookmarked' : 'Bookmark'}
       </button>
     );

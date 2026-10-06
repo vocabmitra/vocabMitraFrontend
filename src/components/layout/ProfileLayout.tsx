@@ -12,22 +12,22 @@ const NAV_SECTIONS = [
   {
     title: '',
     items: [
-      { to: '/profile', label: 'Home', icon: Home, iconColor: 'text-orange-500', end: true, fill: true },
-      { to: '/vocabulary', label: 'Vocabulary', icon: BookOpen, iconColor: 'text-emerald-600', end: false, fill: false },
-      { to: '/profile/exam-focus', label: 'Exam Focus', icon: Target, iconColor: 'text-red-500', end: false, fill: false },
+      { to: '/profile', label: 'Home', icon: Home, iconColor: 'text-orange-500 dark:text-orange-400', end: true, fill: true },
+      { to: '/vocabulary', label: 'Vocabulary', icon: BookOpen, iconColor: 'text-emerald-600 dark:text-emerald-400', end: false, fill: false },
+      { to: '/profile/exam-focus', label: 'Exam Focus', icon: Target, iconColor: 'text-red-500 dark:text-rose-400', end: false, fill: false },
     ]
   },
   {
     title: 'YOUR LEARNING',
     items: [
-      { to: '/profile/bookmarks', label: 'Bookmarks', icon: Bookmark, iconColor: 'text-red-500', end: false, fill: true },
-      { to: '/profile/learned', label: 'Progress', icon: BarChart2, iconColor: 'text-blue-500', end: false, fill: false },
+      { to: '/profile/bookmarks', label: 'Bookmarks', icon: Bookmark, iconColor: 'text-red-500 dark:text-rose-400', end: false, fill: true },
+      { to: '/profile/progress', label: 'Progress', icon: BarChart2, iconColor: 'text-blue-500 dark:text-sky-400', end: false, fill: false },
     ]
   },
   {
     title: 'OTHER',
     items: [
-      { to: '/profile/settings', label: 'Settings', icon: Settings, iconColor: 'text-slate-500', end: false, fill: true },
+      { to: '/profile/settings', label: 'Settings', icon: Settings, iconColor: 'text-slate-500 dark:text-slate-400', end: false, fill: true },
     ]
   }
 ];
@@ -66,14 +66,14 @@ export default function ProfileLayout() {
         <div className="w-full max-w-[1500px] mx-auto flex flex-col md:flex-row min-h-[calc(100vh-80px)]">
           {/* Desktop Sidebar */}
           <aside
-            className="hidden md:flex w-[260px] lg:w-[280px] shrink-0 border-r border-black/5 py-8 pr-6 pl-4 sm:pl-6 md:pl-8 flex-col sticky top-[80px] h-[calc(100vh-80px)] overflow-y-auto bg-[#fdfbf7]"
+            className="hidden md:flex w-[260px] lg:w-[280px] shrink-0 border-r border-black/5 dark:border-white/10 py-8 pr-6 pl-4 sm:pl-6 md:pl-8 flex-col sticky top-[80px] h-[calc(100vh-80px)] overflow-y-auto bg-[#fdfbf7] dark:bg-[#141416]"
           >
             {/* Nav items */}
             <nav className="flex-1 flex flex-col gap-6" aria-label="Profile navigation">
               {NAV_SECTIONS.map((section, idx) => (
                 <div key={idx} className="flex flex-col gap-1.5">
                   {section.title && (
-                    <h4 className="text-[11px] font-inter font-bold text-[#64748b] tracking-widest uppercase mb-1 px-3">
+                    <h4 className="text-[11px] font-inter font-bold text-[#64748b] dark:text-[#a1a1aa] tracking-widest uppercase mb-1 px-3">
                       {section.title}
                     </h4>
                   )}
@@ -86,8 +86,8 @@ export default function ProfileLayout() {
                         end={item.end}
                         className={({ isActive }) =>
                           `flex items-center gap-3.5 px-3 py-3 rounded-[12px] text-[15px] font-inter transition-all duration-200 no-underline group ${isActive
-                            ? 'font-bold text-[#ea580c] bg-[#ffedd5]'
-                            : 'font-medium text-[#0f172a] hover:bg-black/5'
+                            ? 'font-bold text-[#ea580c] dark:text-orange-400 bg-[#ffedd5] dark:bg-orange-500/15'
+                            : 'font-medium text-[#0f172a] dark:text-[#f8fafc] hover:bg-black/5 dark:hover:bg-white/5'
                           }`
                         }
                       >
@@ -95,7 +95,7 @@ export default function ProfileLayout() {
                           <>
                             <Icon
                               size={20}
-                              className={`transition-colors ${isActive ? 'text-[#ea580c]' : item.iconColor}`}
+                              className={`transition-colors ${isActive ? 'text-[#ea580c] dark:text-orange-400' : item.iconColor}`}
                               fill={item.fill ? "currentColor" : "none"}
                               strokeWidth={item.fill ? 1.5 : 2}
                             />
@@ -114,17 +114,17 @@ export default function ProfileLayout() {
 
               {/* Help & Feedback */}
               <div className="flex flex-col gap-1">
-                <button className="flex items-center gap-3 px-3 py-2 rounded-[10px] text-[14px] font-inter font-medium text-[#64748b] bg-transparent border-none cursor-pointer hover:bg-black/5 hover:text-[#0f172a] text-left transition-colors">
+                <button className="flex items-center gap-3 px-3 py-2 rounded-[10px] text-[14px] font-inter font-medium text-[#64748b] dark:text-ink-soft bg-transparent border-none cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#0f172a] dark:hover:text-[#f8fafc] text-left transition-colors">
                   <HelpCircle size={18} />
                   Help
                 </button>
-                <button className="flex items-center gap-3 px-3 py-2 rounded-[10px] text-[14px] font-inter font-medium text-[#64748b] bg-transparent border-none cursor-pointer hover:bg-black/5 hover:text-[#0f172a] text-left transition-colors">
+                <button className="flex items-center gap-3 px-3 py-2 rounded-[10px] text-[14px] font-inter font-medium text-[#64748b] dark:text-ink-soft bg-transparent border-none cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 hover:text-[#0f172a] dark:hover:text-[#f8fafc] text-left transition-colors">
                   <MessageSquare size={18} />
                   Feedback
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-3 px-3 py-2 rounded-[10px] text-[14px] font-inter font-medium text-[#64748b] bg-transparent border-none cursor-pointer hover:bg-red-50 hover:text-red-500 text-left transition-colors"
+                  className="flex items-center gap-3 px-3 py-2 rounded-[10px] text-[14px] font-inter font-medium text-[#64748b] dark:text-ink-soft bg-transparent border-none cursor-pointer hover:bg-red-50 dark:hover:bg-rose-950/30 hover:text-red-500 dark:hover:text-rose-400 text-left transition-colors"
                 >
                   <LogOut size={18} />
                   Log out
@@ -154,7 +154,7 @@ function MobileTabBar() {
 
   return (
     <nav
-      className="md:hidden sticky top-[72px] z-40 bg-white/90 backdrop-blur-md border-b border-black/5 px-4 shadow-sm"
+      className="md:hidden sticky top-[72px] z-40 bg-white/90 dark:bg-[#141416]/90 backdrop-blur-md border-b border-black/5 dark:border-white/10 px-4 shadow-sm"
       aria-label="Profile tabs"
     >
       <div className="flex gap-0 overflow-x-auto justify-between">
@@ -167,14 +167,14 @@ function MobileTabBar() {
               end={item.end}
               className={({ isActive }) =>
                 `flex flex-col items-center gap-1 py-3 px-4 text-[11px] font-inter no-underline whitespace-nowrap shrink-0 border-b-2 ${isActive
-                  ? 'font-bold text-[#ea580c] border-[#ea580c]'
-                  : 'font-medium text-[#64748b] border-transparent'
+                  ? 'font-bold text-[#ea580c] dark:text-orange-400 border-[#ea580c] dark:border-orange-500'
+                  : 'font-medium text-[#64748b] dark:text-ink-soft border-transparent'
                 }`
               }
             >
               {({ isActive }) => (
                 <>
-                  <Icon size={20} className={isActive ? 'text-[#ea580c]' : item.iconColor} fill={item.fill ? "currentColor" : "none"} strokeWidth={item.fill ? 1.5 : 2} />
+                  <Icon size={20} className={isActive ? 'text-[#ea580c] dark:text-orange-400' : item.iconColor} fill={item.fill ? "currentColor" : "none"} strokeWidth={item.fill ? 1.5 : 2} />
                   {item.label}
                 </>
               )}

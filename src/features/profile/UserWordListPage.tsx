@@ -118,7 +118,7 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
           {/* Header Title: SAVED WORDS with Red Bookmark Ribbon Icon */}
           <div className="flex items-center gap-3">
             <Bookmark size={30} className="text-[#ea580c]" fill="#ea580c" />
-            <h1 className="font-bricolage text-3xl font-extrabold text-[#0f172a] tracking-tight leading-tight m-0">
+            <h1 className="font-bricolage text-3xl font-extrabold text-[#0f172a] dark:text-[#f8fafc] tracking-tight leading-tight m-0">
               SAVED WORDS
             </h1>
           </div>
@@ -127,15 +127,15 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full justify-between">
             {/* Search Input */}
             <div className="relative flex-1 w-full max-w-[500px]">
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#64748b]" />
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#64748b] dark:text-ink-soft" />
               <input
                 type="text"
                 placeholder="Search words (e.g. obstinate, meticulous, ubiquitous...)"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/90 rounded-2xl py-3 pl-11 pr-10 font-inter text-[14px] text-[#0f172a] placeholder:text-[#94a3b8] border border-black/5 shadow-xs focus:outline-none focus:ring-2 focus:ring-[#f97316]/40 transition-all"
+                className="w-full bg-white/90 dark:bg-[#18181b] rounded-2xl py-3 pl-11 pr-10 font-inter text-[14px] text-[#0f172a] dark:text-[#f8fafc] placeholder:text-[#94a3b8] dark:placeholder:text-ink-soft/70 border border-black/5 dark:border-white/10 shadow-xs dark:shadow-[0_4px_20px_rgba(0,0,0,0.35)] focus:outline-none focus:ring-2 focus:ring-[#f97316]/40 dark:focus:border-white/20 transition-all"
               />
-              <Filter size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#94a3b8]" />
+              <Filter size={16} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#94a3b8] dark:text-ink-soft" />
             </div>
 
             <div className="flex items-center gap-3 w-full sm:w-auto shrink-0 justify-end">
@@ -150,15 +150,15 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
                 <select
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(e.target.value)}
-                  className="appearance-none bg-white/90 border border-black/5 rounded-2xl py-3 pl-4 pr-10 font-inter font-bold text-[14px] text-[#0f172a] shadow-xs cursor-pointer focus:outline-none"
+                  className="appearance-none bg-white/90 dark:bg-[#18181b] border border-black/5 dark:border-white/10 rounded-2xl py-3 pl-4 pr-10 font-inter font-bold text-[14px] text-[#0f172a] dark:text-[#f8fafc] shadow-xs cursor-pointer focus:outline-none dark:hover:border-white/25"
                 >
-                  <option value="All Years">All Years</option>
-                  <option value="2024">2024</option>
-                  <option value="2023">2023</option>
-                  <option value="2022">2022</option>
-                  <option value="2021">2021</option>
+                  <option value="All Years" className="bg-white dark:bg-[#18181b] text-[#0f172a] dark:text-[#f8fafc]">All Years</option>
+                  <option value="2024" className="bg-white dark:bg-[#18181b] text-[#0f172a] dark:text-[#f8fafc]">2024</option>
+                  <option value="2023" className="bg-white dark:bg-[#18181b] text-[#0f172a] dark:text-[#f8fafc]">2023</option>
+                  <option value="2022" className="bg-white dark:bg-[#18181b] text-[#0f172a] dark:text-[#f8fafc]">2022</option>
+                  <option value="2021" className="bg-white dark:bg-[#18181b] text-[#0f172a] dark:text-[#f8fafc]">2021</option>
                 </select>
-                <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#64748b] pointer-events-none" />
+                <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#64748b] dark:text-[#f8fafc] pointer-events-none" />
               </div>
             </div>
           </div>
@@ -173,11 +173,11 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-2xl font-inter text-[14px] font-bold transition-all cursor-pointer border ${isActive
-                      ? 'bg-[#fff3e0] border-[#f97316]/30 text-[#ea580c] shadow-xs'
-                      : 'bg-white/80 border-black/5 text-[#64748b] hover:text-[#0f172a] hover:bg-white'
+                      ? 'bg-[#fff3e0] dark:bg-orange-500/15 border-[#f97316]/30 dark:border-orange-500/30 text-[#ea580c] dark:text-orange-400 shadow-xs'
+                      : 'bg-white/80 dark:bg-[#18181b] border-black/5 dark:border-white/10 text-[#64748b] dark:text-[#a1a1aa] hover:text-[#0f172a] dark:hover:text-[#f8fafc] hover:bg-white dark:hover:bg-white/5'
                     }`}
                 >
-                  <Icon size={16} className={isActive ? 'text-[#ea580c]' : 'text-[#64748b]'} />
+                  <Icon size={16} className={isActive ? 'text-[#ea580c] dark:text-orange-400' : 'text-[#64748b] dark:text-[#a1a1aa]'} />
                   {tab.title}
                 </button>
               );
@@ -186,13 +186,13 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
 
           {/* Grid of ShrinkVocabCard components */}
           {isLoading ? (
-            <div className="w-full bg-white/80 rounded-2xl p-16 text-center border border-black/5 shadow-xs flex flex-col items-center justify-center gap-3">
+            <div className="w-full bg-white/80 dark:bg-[#18181b] rounded-2xl p-16 text-center border border-black/5 dark:border-white/10 shadow-xs flex flex-col items-center justify-center gap-3">
               <RefreshCw size={24} className="animate-spin text-[#f97316]" />
-              <p className="font-inter text-xs text-[#64748b]">Loading saved words...</p>
+              <p className="font-inter text-xs text-[#64748b] dark:text-ink-soft">Loading saved words...</p>
             </div>
           ) : filteredCards.length === 0 ? (
-            <div className="w-full bg-white/80 rounded-2xl p-12 text-center border border-black/5 shadow-xs flex flex-col items-center justify-center">
-              <p className="font-inter text-[#64748b] mb-4">
+            <div className="w-full bg-white/80 dark:bg-[#18181b] rounded-2xl p-12 text-center border border-black/5 dark:border-white/10 shadow-xs flex flex-col items-center justify-center">
+              <p className="font-inter text-[#64748b] dark:text-[#a1a1aa] mb-4">
                 {searchQuery.trim()
                   ? `No saved words match "${searchQuery}".`
                   : 'You haven\'t bookmarked any words yet. Bookmark words to save them here!'}
@@ -228,7 +228,7 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
               <BookOpen size={24} />
             </div>
             <div>
-              <h1 className="font-bricolage text-2xl font-bold text-ink m-0 leading-tight">
+              <h1 className="font-bricolage text-2xl font-bold text-ink dark:text-[#f8fafc] m-0 leading-tight">
                 Learned Words
               </h1>
               <p className="font-inter text-[13px] text-ink-soft">
@@ -239,13 +239,13 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
 
           {/* Grid of Learned Words */}
           {isLoading ? (
-            <div className="w-full bg-cream-card rounded-2xl p-16 text-center border border-black/5 shadow-xs flex flex-col items-center justify-center gap-3">
+            <div className="w-full bg-cream-card dark:bg-[#18181b] rounded-2xl p-16 text-center border border-black/5 dark:border-white/10 shadow-xs flex flex-col items-center justify-center gap-3">
               <RefreshCw size={24} className="animate-spin text-orange-500" />
               <p className="font-inter text-xs text-ink-soft">Loading learned words...</p>
             </div>
           ) : filteredCards.length === 0 ? (
-            <div className="w-full bg-cream-card rounded-3xl p-12 flex flex-col items-center justify-center text-center border border-black/5 shadow-xs">
-              <h2 className="font-bricolage text-[26px] font-bold text-ink mb-2">
+            <div className="w-full bg-cream-card dark:bg-[#18181b] rounded-3xl p-12 flex flex-col items-center justify-center text-center border border-black/5 dark:border-white/10 shadow-xs">
+              <h2 className="font-bricolage text-[26px] font-bold text-ink dark:text-[#f8fafc] mb-2">
                 You haven't marked any words as learned yet.
               </h2>
               <p className="font-inter text-[14px] text-ink-soft max-w-[420px] mb-6">
@@ -278,17 +278,17 @@ export default function UserWordListPage({ mode }: UserWordListPageProps) {
           <button
             onClick={() => setPage((p) => Math.max(0, p - 1))}
             disabled={page === 0 || isLoading}
-            className="font-inter font-bold text-[13px] text-[#0f172a] bg-white border border-black/10 rounded-xl py-2.5 px-5 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:not(:disabled):bg-[#f97316] hover:not(:disabled):text-white hover:not(:disabled):border-[#f97316] shadow-2xs"
+            className="font-inter font-bold text-[13px] text-[#0f172a] dark:text-[#f8fafc] bg-white dark:bg-[#18181b] border border-black/10 dark:border-white/10 rounded-xl py-2.5 px-5 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:not(:disabled):bg-[#f97316] hover:not(:disabled):text-white hover:not(:disabled):border-[#f97316] shadow-2xs"
           >
             Previous
           </button>
-          <span className="text-[#64748b] px-2">
+          <span className="text-[#64748b] dark:text-ink-soft px-2">
             Page {page + 1} of {totalPages}
           </span>
           <button
             onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
             disabled={page >= totalPages - 1 || isLoading}
-            className="font-inter font-bold text-[13px] text-[#0f172a] bg-white border border-black/10 rounded-xl py-2.5 px-5 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:not(:disabled):bg-[#f97316] hover:not(:disabled):text-white hover:not(:disabled):border-[#f97316] shadow-2xs"
+            className="font-inter font-bold text-[13px] text-[#0f172a] dark:text-[#f8fafc] bg-white dark:bg-[#18181b] border border-black/10 dark:border-white/10 rounded-xl py-2.5 px-5 cursor-pointer transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:not(:disabled):bg-[#f97316] hover:not(:disabled):text-white hover:not(:disabled):border-[#f97316] shadow-2xs"
           >
             Next
           </button>

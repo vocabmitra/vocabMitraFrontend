@@ -16,47 +16,47 @@ interface ExploreExamCardProps {
 
 const THEME_STYLES = {
   orange: {
-    bg: 'bg-[#fff8f0]',
-    border: 'border-[#fed7aa]/60 hover:border-[#f97316]',
-    iconBg: 'bg-[#ffedd5] text-[#ea580c]',
-    barColor: 'bg-[#ea580c]',
-    checkColor: 'text-[#ea580c]',
-    checkBg: 'bg-[#ffedd5]',
-    btnColor: 'text-[#ea580c]',
-    glowColor: 'from-[#ffedd5]/60',
+    bg: 'bg-[#fff8f0] dark:bg-[#18181b]',
+    border: 'border-[#fed7aa]/60 hover:border-[#f97316] dark:border-white/10 dark:hover:border-orange-500/50',
+    iconBg: 'bg-[#ffedd5] text-[#ea580c] dark:bg-orange-500/15 dark:text-orange-400',
+    barColor: 'bg-[#ea580c] dark:bg-orange-500',
+    checkColor: 'text-[#ea580c] dark:text-orange-400',
+    checkBg: 'bg-[#ffedd5] dark:bg-orange-500/15',
+    btnColor: 'text-[#ea580c] dark:text-orange-400',
+    glowColor: 'from-[#ffedd5]/60 dark:from-orange-500/10',
     illustrationColor: '#f97316',
   },
   purple: {
-    bg: 'bg-[#faf5ff]',
-    border: 'border-[#e9d5ff]/60 hover:border-[#a855f7]',
-    iconBg: 'bg-[#f3e8ff] text-[#9333ea]',
-    barColor: 'bg-[#9333ea]',
-    checkColor: 'text-[#9333ea]',
-    checkBg: 'bg-[#f3e8ff]',
-    btnColor: 'text-[#9333ea]',
-    glowColor: 'from-[#f3e8ff]/60',
+    bg: 'bg-[#faf5ff] dark:bg-[#18181b]',
+    border: 'border-[#e9d5ff]/60 hover:border-[#a855f7] dark:border-white/10 dark:hover:border-purple-500/50',
+    iconBg: 'bg-[#f3e8ff] text-[#9333ea] dark:bg-purple-500/15 dark:text-purple-400',
+    barColor: 'bg-[#9333ea] dark:bg-purple-500',
+    checkColor: 'text-[#9333ea] dark:text-purple-400',
+    checkBg: 'bg-[#f3e8ff] dark:bg-purple-500/15',
+    btnColor: 'text-[#9333ea] dark:text-purple-400',
+    glowColor: 'from-[#f3e8ff]/60 dark:from-purple-500/10',
     illustrationColor: '#a855f7',
   },
   blue: {
-    bg: 'bg-[#f0f9ff]',
-    border: 'border-[#bae6fd]/60 hover:border-[#0284c7]',
-    iconBg: 'bg-[#e0f2fe] text-[#0284c7]',
-    barColor: 'bg-[#0284c7]',
-    checkColor: 'text-[#0284c7]',
-    checkBg: 'bg-[#e0f2fe]',
-    btnColor: 'text-[#0284c7]',
-    glowColor: 'from-[#e0f2fe]/60',
+    bg: 'bg-[#f0f9ff] dark:bg-[#18181b]',
+    border: 'border-[#bae6fd]/60 hover:border-[#0284c7] dark:border-white/10 dark:hover:border-sky-500/50',
+    iconBg: 'bg-[#e0f2fe] text-[#0284c7] dark:bg-sky-500/15 dark:text-sky-400',
+    barColor: 'bg-[#0284c7] dark:bg-sky-500',
+    checkColor: 'text-[#0284c7] dark:text-sky-400',
+    checkBg: 'bg-[#e0f2fe] dark:bg-sky-500/15',
+    btnColor: 'text-[#0284c7] dark:text-sky-400',
+    glowColor: 'from-[#e0f2fe]/60 dark:from-sky-500/10',
     illustrationColor: '#0284c7',
   },
   green: {
-    bg: 'bg-[#f0fdf4]',
-    border: 'border-[#bbf7d0]/60 hover:border-[#16a34a]',
-    iconBg: 'bg-[#dcfce7] text-[#16a34a]',
-    barColor: 'bg-[#16a34a]',
-    checkColor: 'text-[#16a34a]',
-    checkBg: 'bg-[#dcfce7]',
-    btnColor: 'text-[#16a34a]',
-    glowColor: 'from-[#dcfce7]/60',
+    bg: 'bg-[#f0fdf4] dark:bg-[#18181b]',
+    border: 'border-[#bbf7d0]/60 hover:border-[#16a34a] dark:border-white/10 dark:hover:border-emerald-500/50',
+    iconBg: 'bg-[#dcfce7] text-[#16a34a] dark:bg-emerald-500/15 dark:text-emerald-400',
+    barColor: 'bg-[#16a34a] dark:bg-emerald-500',
+    checkColor: 'text-[#16a34a] dark:text-emerald-400',
+    checkBg: 'bg-[#dcfce7] dark:bg-emerald-500/15',
+    btnColor: 'text-[#16a34a] dark:text-emerald-400',
+    glowColor: 'from-[#dcfce7]/60 dark:from-emerald-500/10',
     illustrationColor: '#16a34a',
   },
 };
@@ -73,7 +73,7 @@ export function ExploreExamCard({ exam, onClick }: ExploreExamCardProps) {
       }}
       tabIndex={0}
       role="button"
-      className={`group relative flex flex-col justify-between rounded-[24px] p-6 sm:p-7 border ${styles.bg} ${styles.border} shadow-xs hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden min-h-[260px] cursor-pointer select-none`}
+      className={`group relative flex flex-col justify-between rounded-[24px] p-6 sm:p-7 border ${styles.bg} ${styles.border} shadow-xs hover:shadow-lg dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.7)] transition-all duration-300 hover:-translate-y-1 overflow-hidden min-h-[260px] cursor-pointer select-none`}
     >
       {/* ── Soft Top-Right Color Glow ── */}
       <div className={`absolute top-0 right-0 w-[200px] h-[200px] bg-gradient-to-bl ${styles.glowColor} to-transparent opacity-60 rounded-tl-full pointer-events-none transition-transform duration-500 group-hover:scale-110`} />
@@ -85,10 +85,10 @@ export function ExploreExamCard({ exam, onClick }: ExploreExamCardProps) {
             <Icon size={26} strokeWidth={2} />
           </div>
           <div>
-            <h3 className="font-bricolage text-[24px] font-bold text-[#0f172a] leading-tight">
+            <h3 className="font-bricolage text-[24px] font-bold text-[#0f172a] dark:text-[#f8fafc] leading-tight">
               {exam.title}
             </h3>
-            <p className="font-inter text-[13px] font-bold text-[#64748b] mt-1 tracking-wide uppercase">
+            <p className="font-inter text-[13px] font-bold text-[#64748b] dark:text-ink-soft mt-1 tracking-wide uppercase">
               {exam.subtitle}
             </p>
             <div className={`w-10 h-1 rounded-full ${styles.barColor} mt-2`} />
@@ -141,7 +141,7 @@ export function ExploreExamCard({ exam, onClick }: ExploreExamCardProps) {
             <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${styles.checkBg} ${styles.checkColor}`}>
               <CheckCircle2 size={14} strokeWidth={2.5} />
             </div>
-            <span className="font-inter text-[14px] font-medium text-[#334155]">
+            <span className="font-inter text-[14px] font-medium text-[#334155] dark:text-[#cbd5e1]">
               {feature}
             </span>
           </div>

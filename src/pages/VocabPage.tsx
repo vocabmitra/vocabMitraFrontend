@@ -67,22 +67,22 @@ export default function VocabPage() {
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
               {/* Sleek Search Box */}
               <div
-                className="flex items-center gap-2.5 px-4 py-3 border border-[#cbd5e1] rounded-[100px] bg-white transition-all duration-200 ease-in-out flex-1 w-full focus-within:shadow-[0_4px_20px_rgba(0,0,0,0.06)] focus-within:border-[#94a3b8]"
+                className="flex items-center gap-2.5 px-4 py-3 border border-[#cbd5e1] dark:border-white/10 rounded-[100px] bg-white dark:bg-[#18181b] transition-all duration-200 ease-in-out flex-1 w-full focus-within:shadow-[0_4px_20px_rgba(0,0,0,0.06)] dark:focus-within:shadow-[0_4px_20px_rgba(0,0,0,0.4)] focus-within:border-[#94a3b8] dark:focus-within:border-white/25"
               >
-                <Search size={18} className="text-[#94a3b8] shrink-0" aria-hidden="true" />
+                <Search size={18} className="text-[#94a3b8] dark:text-ink-soft shrink-0" aria-hidden="true" />
                 <input
                   type="text"
                   placeholder="Search words, meanings, mnemonics, or exam tags…"
                   aria-label="Search vocabulary"
                   value={localSearch}
                   onChange={(e) => setLocalSearch(e.target.value)}
-                  className="flex-1 bg-transparent border-none outline-none text-[#0f172a] text-[14px] font-medium py-0 px-0 font-inter placeholder:text-[#94a3b8] placeholder:font-normal min-w-0"
+                  className="flex-1 bg-transparent border-none outline-none text-[#0f172a] dark:text-[#f8fafc] text-[14px] font-medium py-0 px-0 font-inter placeholder:text-[#94a3b8] dark:placeholder:text-ink-soft/70 placeholder:font-normal min-w-0"
                   id="vocab-search-input"
                 />
                 {localSearch && (
                   <button
                     onClick={() => setLocalSearch('')}
-                    className="text-[#64748b] hover:text-[#0f172a] bg-transparent border-none cursor-pointer p-0 shrink-0 transition-colors"
+                    className="text-[#64748b] dark:text-ink-soft hover:text-[#0f172a] dark:hover:text-[#f8fafc] bg-transparent border-none cursor-pointer p-0 shrink-0 transition-colors"
                     aria-label="Clear search"
                   >
                     <X size={16} strokeWidth={2.5} />
@@ -91,22 +91,22 @@ export default function VocabPage() {
               </div>
 
               {/* Sleek Cards Per Page Dropdown */}
-              <div className="flex items-center gap-3 font-inter text-[13.5px] font-semibold text-[#334155] shrink-0 sm:ml-1">
+              <div className="flex items-center gap-3 font-inter text-[13.5px] font-semibold text-[#334155] dark:text-ink-soft shrink-0 sm:ml-1">
                 <span className="tracking-wide">Cards per page:</span>
                 <div className="relative flex items-center">
                   <select
                     value={pageSize}
                     onChange={(e) => setPageSize(Number(e.target.value))}
-                    className="appearance-none bg-white text-[#0f172a] font-inter font-bold border border-[#cbd5e1] rounded-[14px] py-2 pl-4 pr-10 outline-none cursor-pointer text-[14px] transition-all hover:border-[#94a3b8] hover:shadow-sm"
+                    className="appearance-none bg-white dark:bg-[#18181b] text-[#0f172a] dark:text-[#f8fafc] font-inter font-bold border border-[#cbd5e1] dark:border-white/10 rounded-[14px] py-2 pl-4 pr-10 outline-none cursor-pointer text-[14px] transition-all hover:border-[#94a3b8] dark:hover:border-white/25 hover:shadow-sm"
                     aria-label="Select cards per page"
                   >
                     {[9, 12, 18, 24, 36, 48].map((size) => (
-                      <option key={size} value={size}>
+                      <option key={size} value={size} className="bg-white dark:bg-[#18181b] text-[#0f172a] dark:text-[#f8fafc]">
                         {size}
                       </option>
                     ))}
                   </select>
-                  <ChevronDown size={16} className="absolute right-3.5 text-[#0f172a] pointer-events-none" strokeWidth={3} />
+                  <ChevronDown size={16} className="absolute right-3.5 text-[#0f172a] dark:text-[#f8fafc] pointer-events-none" strokeWidth={3} />
                 </div>
               </div>
 
@@ -115,7 +115,8 @@ export default function VocabPage() {
                 <PracticeSessionLauncher
                   cards={vocabList}
                   label="Reel Mode"
-                  className="sm:ml-1 !bg-[#fff1f2] !text-[#e11d48] hover:!bg-[#ffe4e6] !border border-[#fecdd3] !px-4 !py-2 !rounded-[14px] font-inter !text-[13.5px] !shadow-none tracking-wide"
+                  iconClassName="fill-white dark:fill-transparent"
+                  className="sm:ml-1 !bg-[#fff1f2] !text-[#e11d48] hover:!bg-[#ffe4e6] !border border-[#fecdd3] dark:!bg-rose-950/40 dark:!text-rose-400 dark:hover:!bg-rose-900/50 dark:!border-rose-800/40 !px-4 !py-2 !rounded-[14px] font-inter !text-[13.5px] !shadow-none tracking-wide"
                 />
               )}
             </div>

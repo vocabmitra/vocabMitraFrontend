@@ -2,6 +2,8 @@
 @import "tailwindcss";
 @import "./styles/globals.css";
 
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
 @theme {
   --color-cream: var(--cream);
   --color-cream-card: var(--cream-card);
