@@ -4,6 +4,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { WordReveal } from '../ui/WordReveal';
 import { useAuthStore } from '../../store/useAuthStore';
+import { AUTH_TOKEN_KEY } from '../../utils/constants';
 
 // Floating vocabulary words — positions are % from top-left of section
 const FLOATING_WORDS = [
@@ -22,8 +23,10 @@ const FLOATING_WORDS = [
 export function HeroSection() {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLElement>(null);
-  const { user, isAuthenticated } = useAuthStore();
-  const isLoggedIn = isAuthenticated || Boolean(localStorage.getItem('vv-auth-token')) || Boolean(user);
+  const { user, isAuthenticated, token: storeToken } = useAuthStore();
+  const token = storeToken || localStorage.getItem(AUTH_TOKEN_KEY) || localStorage.getItem('vv-auth-token');
+  const hasValidToken = Boolean(token && token !== 'null' && token !== 'undefined' && token.trim() !== '');
+  const isLoggedIn = hasValidToken && (isAuthenticated || Boolean(user));
 
   useGSAP(() => {
     const tl = gsap.timeline({ delay: 0.2 });
@@ -110,8 +113,9 @@ export function HeroSection() {
             left: 'left' in fw ? (fw as any).left : undefined,
             right: 'right' in fw ? (fw as any).right : undefined,
             color: fw.color === 'orange'
-              ? 'rgba(249,115,22,0.55)'
-              : 'rgba(255,255,255,0.13)',
+              ? 'var(--accent)'
+              : 'var(--ink-soft)',
+            opacity: fw.color === 'orange' ? 0.7 : 0.35,
           }}
           data-delay={fw.delay}
           data-dur={fw.duration}
@@ -173,7 +177,7 @@ export function HeroSection() {
             style={{
               background: 'var(--vocab-card-bg)',
               border: '1px solid var(--vocab-card-border)',
-              boxShadow: '0 24px 48px rgba(0,0,0,0.3)',
+              boxShadow: 'var(--glass-card-shadow)',
             }}
           >
             <h3 style={{ color: 'var(--vocab-card-title)' }} className="font-bricolage font-bold text-lg mb-0.5 tracking-wide uppercase">LASSITUDE</h3>

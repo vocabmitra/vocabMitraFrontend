@@ -77,23 +77,57 @@ export function VocabFormModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!vocab.trim()) {
+    const trimmedVocab = vocab.trim();
+    const trimmedMeaning = meaning.trim();
+    const trimmedTrick = trick.trim();
+    const trimmedExample = example.trim();
+    const trimmedMessage = message.trim();
+
+    if (!trimmedVocab) {
       setError('Vocabulary word or phrase is required.');
       return;
     }
-    if (!meaning.trim()) {
+    if (trimmedVocab.length > 100) {
+      setError('Word or phrase cannot exceed 100 characters.');
+      return;
+    }
+
+    if (!trimmedMeaning) {
       setError('Meaning is required.');
+      return;
+    }
+    if (trimmedMeaning.length > 500) {
+      setError('Meaning cannot exceed 500 characters.');
+      return;
+    }
+
+    if (trimmedTrick.length > 500) {
+      setError('Trick / Mnemonic cannot exceed 500 characters.');
+      return;
+    }
+
+    if (trimmedExample.length > 500) {
+      setError('Example sentence cannot exceed 500 characters.');
+      return;
+    }
+
+    if (trimmedMessage.length > 300) {
+      setError('Context message cannot exceed 300 characters.');
       return;
     }
 
     const manualTags = customTagInput
       .split(',')
-      .map((t) => t.trim().toUpperCase())
-      .filter(Boolean);
+      .map((t) => t.trim().replace(/[^a-zA-Z0-9_\-\s]/g, '').toUpperCase())
+      .filter((t) => t.length > 0 && t.length <= 30);
     const combinedTags = Array.from(new Set([...selectedTags, ...manualTags]));
 
     if (combinedTags.length === 0) {
       setError('At least one Use Case Tag / Exam Category is required.');
+      return;
+    }
+    if (combinedTags.length > 10) {
+      setError('A maximum of 10 tags can be assigned.');
       return;
     }
 
@@ -103,17 +137,17 @@ export function VocabFormModal({
     try {
       await onSubmit({
         ...(initialData?.id ? { id: initialData.id } : {}),
-        vocab: vocab.trim(),
+        vocab: trimmedVocab,
         vocabType: vocabType.toUpperCase().trim(),
         useCaseTag: combinedTags.join(', '),
-        meaning: meaning.trim(),
-        trick: trick.trim(),
-        example: example.trim(),
-        message: message.trim() || undefined,
+        meaning: trimmedMeaning,
+        trick: trimmedTrick,
+        example: trimmedExample,
+        message: trimmedMessage || undefined,
       });
       onClose();
     } catch (err: any) {
-      setError(err?.message || 'Failed to save vocabulary entry. Please try again.');
+      setError(err?.response?.data?.error || err?.message || 'Failed to save vocabulary entry. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -182,6 +216,7 @@ export function VocabFormModal({
                     value={vocab}
                     onChange={(e) => setVocab(e.target.value)}
                     placeholder="e.g. Bear in mind"
+                    maxLength={100}
                     className="w-full bg-cream rounded-xl py-2.5 px-4 text-sm text-ink border border-black/10 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-orange-500/40 transition-all placeholder:text-ink-soft/50"
                     required
                   />
@@ -243,6 +278,7 @@ export function VocabFormModal({
                     value={customTagInput}
                     onChange={(e) => setCustomTagInput(e.target.value)}
                     placeholder="e.g. GMAT, BANKING, SAT, IELTS"
+                    maxLength={150}
                     className="w-full bg-cream rounded-xl py-2 px-3.5 text-sm text-ink border border-black/10 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-orange-500/40 transition-all placeholder:text-ink-soft/50 font-medium"
                   />
                 </div>
@@ -262,6 +298,7 @@ export function VocabFormModal({
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="e.g. Frequently tested in CAT reading comprehension"
+                  maxLength={300}
                   className="w-full bg-cream rounded-xl py-2.5 px-4 text-sm text-ink border border-black/10 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-orange-500/40 transition-all placeholder:text-ink-soft/50"
                 />
               </div>
@@ -279,6 +316,7 @@ export function VocabFormModal({
                   value={meaning}
                   onChange={(e) => setMeaning(e.target.value)}
                   placeholder="Clear definition of the word or phrase..."
+                  maxLength={500}
                   className="w-full bg-cream rounded-xl py-2.5 px-4 text-sm text-ink border border-black/10 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-orange-500/40 transition-all placeholder:text-ink-soft/50 resize-none"
                   required
                 />
@@ -294,6 +332,7 @@ export function VocabFormModal({
                   value={trick}
                   onChange={(e) => setTrick(e.target.value)}
                   placeholder="Visual hook or mnemonic breakdown to remember easily..."
+                  maxLength={500}
                   className="w-full bg-cream rounded-xl py-2.5 px-4 text-sm text-ink border border-black/10 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-orange-500/40 transition-all placeholder:text-ink-soft/50 resize-none"
                 />
               </div>
@@ -308,6 +347,7 @@ export function VocabFormModal({
                   value={example}
                   onChange={(e) => setExample(e.target.value)}
                   placeholder="Sentence demonstrating contextual usage..."
+                  maxLength={500}
                   className="w-full bg-cream rounded-xl py-2.5 px-4 text-sm text-ink border border-black/10 dark:border-white/10 focus:outline-none focus:ring-2 focus:ring-orange-500/40 transition-all placeholder:text-ink-soft/50 resize-none"
                 />
               </div>

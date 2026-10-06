@@ -4,6 +4,7 @@ import { useAuthGate } from '../../hooks/useAuthGate';
 import { vocabApi } from '../../api/endpoints/vocab.api';
 import { useVocabStore } from '../../store/useVocabStore';
 import { useUIStore } from '../../store/useUIStore';
+import { logger } from '../../utils/logger';
 
 interface AddToPracticeToggleButtonProps {
   vocabId: number;
@@ -37,7 +38,7 @@ export function AddToPracticeToggleButton({ vocabId, addedToPractice: initialAdd
         );
       } catch (err) {
         setLocalAdded(!nextState);
-        console.error('Failed to toggle practice', err);
+        logger.error('Failed to toggle practice', err);
       } finally {
         setLoading(false);
       }

@@ -33,7 +33,7 @@ export function PracticeSystemSection() {
         <div className="flex-1 w-full flex justify-center lg:justify-end pb-8 pr-2 sm:pr-8">
 
           {/* Main Card Container */}
-          <div className="w-full max-w-[520px] bg-cream-card rounded-2xl border border-line shadow-2xl shadow-black/10 p-6 sm:p-8 flex flex-col gap-6 sm:gap-8 transition-transform duration-300 hover:-translate-y-1">
+          <div className="w-full max-w-[520px] bg-cream-card rounded-2xl border border-line shadow-[0_20px_50px_var(--line)] p-6 sm:p-8 flex flex-col gap-6 sm:gap-8 transition-transform duration-300 hover:-translate-y-1">
 
             {/* Category Pills — toggle style */}
             <div className="flex flex-wrap gap-2.5 sm:gap-3">
@@ -45,8 +45,8 @@ export function PracticeSystemSection() {
                     onClick={() => setActiveCategory(cat)}
                     className={`px-4 py-2 rounded-full font-semibold text-[13px] sm:text-[14px] border transition-all duration-200 cursor-pointer ${
                       isActive
-                        ? 'border-orange-500 text-orange-400 bg-orange-500/10'
-                        : 'border-line text-ink-soft bg-transparent hover:border-line hover:text-ink'
+                        ? 'border-orange-500 text-cat-peach-text bg-cat-peach-bg font-bold shadow-xs'
+                        : 'border-line text-ink-soft bg-surface-2 hover:bg-line hover:text-ink'
                     }`}
                   >
                     {cat}
@@ -77,7 +77,14 @@ export function PracticeSystemSection() {
               </div>
 
               <div className="flex items-center flex-wrap gap-3">
-                <span className="px-3 py-1 bg-orange-500/10 text-orange-400 font-bold text-[12px] sm:text-[13px] rounded-lg border border-orange-500/20">
+                <span
+                  className="px-3 py-1 font-bold text-[12px] sm:text-[13px] rounded-lg border"
+                  style={{
+                    background: 'var(--cat-peach-bg)',
+                    borderColor: 'var(--cat-peach-border)',
+                    color: 'var(--cat-peach-text)'
+                  }}
+                >
                   Random card 1 of 15
                 </span>
                 <span className="text-[13px] sm:text-[14px] text-ink-soft font-medium">

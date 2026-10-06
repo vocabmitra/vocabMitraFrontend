@@ -8,72 +8,151 @@
    -------------------------------------------------------------------------- */
 :root {
   /* Page & card backgrounds */
-  --cream: #e6eef5;             /* Slightly darker cool blue-gray — main page bg */
+  --cream: #fdfbf7;             /* Warm cream/beige — main page bg */
   --cream-card: #ffffff;        /* Card surfaces pure white */
 
-  /* Text — NO black. Deep blue instead */
-  --ink: #0b5394;               /* Deep blue — primary text */
-  --ink-soft: #5a7fa8;          /* Muted blue — secondary / captions */
-  --line: rgba(11, 83, 148, 0.12); /* Blue-tinted dividers */
+  /* Text — Deep slate/navy */
+  --ink: #0f172a;               /* Deep slate — primary text */
+  --ink-soft: #64748b;          /* Muted slate — secondary / captions */
+  --line: rgba(15, 23, 42, 0.08); /* Subtle dividers */
   
   /* Sidebar */
-  --sidebar-bg: #063866;        /* Deeper navy than --ink */
+  --sidebar-bg: #fdfbf7;        /* Matches main background */
 
-  /* Section backgrounds — warm / cool alternating stripes */
-  --section-bg-1: #eaf3ff;      /* Soft cool blue — clearly distinct from page bg */
-  --section-bg-2: #fce9d8;      /* Warm peach from palette — striking alternation */
-  --section-border: rgba(11, 83, 148, 0.08); /* Subtle blue border on light bg */
+  /* Section backgrounds */
+  --section-bg-1: #fdfbf7;      
+  --section-bg-2: #ffffff;      
+  --section-border: rgba(15, 23, 42, 0.05);
 
   /* Extra surface tokens */
-  --surface-2: #eaf3ff;         /* Nested input / highlight bg */
-  --border-subtle: rgba(11, 83, 148, 0.10);
+  --surface-2: #f1f5f9;         /* Nested input / highlight bg */
+  --border-subtle: rgba(15, 23, 42, 0.06);
 
   /* Brand / Tag Colors */
   --gre: #5B7FDE;
-  --upsc: #ce7e00;              /* Bronze gold replaces orange in light mode */
+  --upsc: #ea580c;              
   --cat: #3FA66B;
   --ssc: #D64B7C;
   --cuet: #9B6FD9;
 
-  /* Accent — Bronze Gold from palette */
-  --accent: #ce7e00;            /* #ce7e00 — bronze, pairs with deep blue */
-  --accent-secondary: #fd9d79;  /* Coral salmon — used for highlights */
+  /* Accent — Vibrant Orange */
+  --accent: #ea580c;            /* Bright orange */
+  --accent-secondary: #f97316;  
   --accent-ink: #FFFFFF;
 
-  /* Card Colors — palette-harmonised */
-  --green-card: #D1FAE5;
-  --yellow-card: #fce9d8;       /* Warm peach from palette */
-  --blue-card: #dbeafe;
-  --green-text: #15803d;
-  --yellow-text: #9a5a00;       /* Darker bronze for readability */
+  /* Card Colors */
+  --green-card: #dcfce7;
+  --yellow-card: #ffedd5;       
+  --blue-card: #e0f2fe;
+  --green-text: #166534;
+  --yellow-text: #9a3412;       
+
+  /* Category Pastel Tokens (Matching Profile Dashboard & Exam Focus) */
+  --cat-peach-bg: #fef4e8;
+  --cat-peach-border: #ffdfbe;
+  --cat-peach-text: #ea580c;
+  --cat-peach-shape: #ffdfbe;
+  --cat-peach-button: #ffbe7c;
+
+  --cat-pink-bg: #fdf2f4;
+  --cat-pink-border: #fbcfe8;
+  --cat-pink-text: #db2777;
+  --cat-pink-shape: #fbcfe8;
+  --cat-pink-button: #f9a8d4;
+
+  --cat-green-bg: #f0fdf4;
+  --cat-green-border: #bbf7d0;
+  --cat-green-text: #16a34a;
+  --cat-green-shape: #bbf7d0;
+  --cat-green-button: #86efac;
+
+  --cat-purple-bg: #f5f3ff;
+  --cat-purple-border: #ddd6fe;
+  --cat-purple-text: #9333ea;
+  --cat-purple-shape: #ddd6fe;
+  --cat-purple-button: #c4b5fd;
+
+  --cat-blue-bg: #eff6ff;
+  --cat-blue-border: #bfdbfe;
+  --cat-blue-text: #0284c7;
+  --cat-blue-shape: #bfdbfe;
+  --cat-blue-button: #93c5fd;
+
+  /* Gradients */
+  --grad-peach: linear-gradient(135deg, #ffedd5 0%, #ffffff 100%);
+  --grad-pink: linear-gradient(135deg, #ffe4e6 0%, #ffffff 100%);
+  --grad-green: linear-gradient(135deg, #dcfce7 0%, #ffffff 100%);
+  --grad-purple: linear-gradient(135deg, #f3e8ff 0%, #ffffff 100%);
+  --grad-blue: linear-gradient(135deg, #e0f2fe 0%, #ffffff 100%);
+  --grad-yellow: linear-gradient(135deg, #fef08a 0%, #ffffff 100%);
 
   /* Glass / floating card surfaces */
-  --glass-card-bg: rgba(255, 255, 255, 0.82);   /* Frosted white card */
-  --glass-card-border: rgba(11, 83, 148, 0.15);
-  --glass-card-shadow: 0 24px 48px rgba(11,83,148,0.12);
-  --glass-header-bg: rgba(234, 243, 255, 0.7);  /* Tinted chrome bar */
-  --glass-header-border: rgba(11, 83, 148, 0.08);
-  --glass-search-bg: rgba(11, 83, 148, 0.06);
-  --glass-search-border: rgba(11, 83, 148, 0.12);
+  --glass-card-bg: rgba(255, 255, 255, 0.95);   
+  --glass-card-border: rgba(15, 23, 42, 0.08);
+  --glass-card-shadow: 0 16px 40px rgba(15, 23, 42, 0.05);
+  --glass-header-bg: rgba(253, 251, 247, 0.85);  
+  --glass-header-border: rgba(15, 23, 42, 0.06);
+  --glass-search-bg: rgba(15, 23, 42, 0.04);
+  --glass-search-border: rgba(15, 23, 42, 0.08);
 
   /* Mnemonic box */
-  --mnemonic-bg: rgba(206, 126, 0, 0.08);        /* Bronze tint */
-  --mnemonic-border: rgba(206, 126, 0, 0.22);
-  --mnemonic-text: #7a4a00;                      /* Dark bronze readable */
-  --mnemonic-label: rgba(206, 126, 0, 0.6);
+  --mnemonic-bg: #fef4e8;        
+  --mnemonic-border: #fed7aa;
+  --mnemonic-text: #9a3412;                      
+  --mnemonic-label: #ea580c;
 
   /* Exam icon boxes */
   --exam-icon-bg: #ffffff;
-  --exam-icon-border: rgba(11, 83, 148, 0.12);
+  --exam-icon-border: rgba(15, 23, 42, 0.08);
 
   /* Floating vocab card (Hero) */
   --vocab-card-bg: #ffffff;
-  --vocab-card-border: rgba(11, 83, 148, 0.15);
-  --vocab-card-title: #0b5394;
+  --vocab-card-border: rgba(15, 23, 42, 0.08);
+  --vocab-card-title: #0f172a;
 
   /* Navbar dropdown */
   --dropdown-bg: #ffffff;
-  --dropdown-border: rgba(11, 83, 148, 0.12);
+  --dropdown-border: rgba(15, 23, 42, 0.08);
+
+  /* Vocab Deck Cards — Light theme (matches original white theme untouched) */
+  --vcard-card-border: rgba(0, 0, 0, 0.05);
+  --vcard-example-bg: rgba(255, 255, 255, 0.95);
+  --vcard-example-border: transparent;
+
+  --vcard-orange-bg: #fff6ef;
+  --vcard-orange-glow: #ffdfbe;
+  --vcard-orange-border: #f97316;
+  --vcard-orange-text: #ea580c;
+  --vcard-orange-icon-from: #ffffff;
+  --vcard-orange-icon-to: #ffdfbe;
+
+  --vcard-pink-bg: #fef5f7;
+  --vcard-pink-glow: #fbcfe8;
+  --vcard-pink-border: #f43f5e;
+  --vcard-pink-text: #e11d48;
+  --vcard-pink-icon-from: #ffffff;
+  --vcard-pink-icon-to: #fbcfe8;
+
+  --vcard-blue-bg: #f4faff;
+  --vcard-blue-glow: #bfdbfe;
+  --vcard-blue-border: #0ea5e9;
+  --vcard-blue-text: #0284c7;
+  --vcard-blue-icon-from: #ffffff;
+  --vcard-blue-icon-to: #bfdbfe;
+
+  --vcard-green-bg: #f2fdf7;
+  --vcard-green-glow: #bbf7d0;
+  --vcard-green-border: #22c55e;
+  --vcard-green-text: #16a34a;
+  --vcard-green-icon-from: #ffffff;
+  --vcard-green-icon-to: #bbf7d0;
+
+  --vcard-purple-bg: #f8f5ff;
+  --vcard-purple-glow: #ddd6fe;
+  --vcard-purple-border: #a855f7;
+  --vcard-purple-text: #9333ea;
+  --vcard-purple-icon-from: #ffffff;
+  --vcard-purple-icon-to: #ddd6fe;
 
   /* Motion easing */
   --ease: cubic-bezier(0.34, 1.3, 0.4, 1);
@@ -115,6 +194,77 @@
   --blue-card: #1E3A8A;
   --green-text: #A7F3D0;
   --yellow-text: #FDE68A;
+
+  /* Category Pastel Tokens — Dark mode equivalents */
+  --cat-peach-bg: rgba(234, 88, 12, 0.12);
+  --cat-peach-border: rgba(234, 88, 12, 0.25);
+  --cat-peach-text: #fb923c;
+  --cat-peach-shape: rgba(234, 88, 12, 0.20);
+  --cat-peach-button: #ea580c;
+
+  --cat-pink-bg: rgba(219, 39, 119, 0.12);
+  --cat-pink-border: rgba(219, 39, 119, 0.25);
+  --cat-pink-text: #f472b6;
+  --cat-pink-shape: rgba(219, 39, 119, 0.20);
+  --cat-pink-button: #db2777;
+
+  --cat-green-bg: rgba(22, 163, 74, 0.12);
+  --cat-green-border: rgba(22, 163, 74, 0.25);
+  --cat-green-text: #4ade80;
+  --cat-green-shape: rgba(22, 163, 74, 0.20);
+  --cat-green-button: #16a34a;
+
+  --cat-purple-bg: rgba(147, 51, 234, 0.12);
+  --cat-purple-border: rgba(147, 51, 234, 0.25);
+  --cat-purple-text: #c084fc;
+  --cat-purple-shape: rgba(147, 51, 234, 0.20);
+  --cat-purple-button: #9333ea;
+
+  --cat-blue-bg: rgba(2, 132, 199, 0.12);
+  --cat-blue-border: rgba(2, 132, 199, 0.25);
+  --cat-blue-text: #38bdf8;
+  --cat-blue-shape: rgba(2, 132, 199, 0.20);
+  --cat-blue-button: #0284c7;
+
+  /* Vocab Deck Cards — Dark theme (black SaaS theme) */
+  --vcard-card-border: rgba(255, 255, 255, 0.08);
+  --vcard-example-bg: rgba(18, 18, 20, 0.85);
+  --vcard-example-border: rgba(255, 255, 255, 0.08);
+
+  --vcard-orange-bg: #1a1614;
+  --vcard-orange-glow: rgba(249, 115, 22, 0.22);
+  --vcard-orange-border: #f97316;
+  --vcard-orange-text: #fb923c;
+  --vcard-orange-icon-from: #2c1e15;
+  --vcard-orange-icon-to: #1c1917;
+
+  --vcard-pink-bg: #1a1416;
+  --vcard-pink-glow: rgba(244, 63, 94, 0.22);
+  --vcard-pink-border: #fb7185;
+  --vcard-pink-text: #f43f5e;
+  --vcard-pink-icon-from: #2c151e;
+  --vcard-pink-icon-to: #1c1917;
+
+  --vcard-blue-bg: #14171c;
+  --vcard-blue-glow: rgba(14, 165, 233, 0.22);
+  --vcard-blue-border: #38bdf8;
+  --vcard-blue-text: #38bdf8;
+  --vcard-blue-icon-from: #15222c;
+  --vcard-blue-icon-to: #1c1917;
+
+  --vcard-green-bg: #141a16;
+  --vcard-green-glow: rgba(34, 197, 94, 0.22);
+  --vcard-green-border: #4ade80;
+  --vcard-green-text: #4ade80;
+  --vcard-green-icon-from: #152b1b;
+  --vcard-green-icon-to: #1c1917;
+
+  --vcard-purple-bg: #18141c;
+  --vcard-purple-glow: rgba(168, 85, 247, 0.22);
+  --vcard-purple-border: #c084fc;
+  --vcard-purple-text: #c084fc;
+  --vcard-purple-icon-from: #25152b;
+  --vcard-purple-icon-to: #1c1917;
 
   /* Glass / floating card surfaces */
   --glass-card-bg: rgba(255, 255, 255, 0.04);   /* Barely-there glass */

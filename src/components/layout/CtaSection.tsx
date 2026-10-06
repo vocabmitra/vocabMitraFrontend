@@ -4,13 +4,16 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { WordReveal } from '../ui/WordReveal';
 import { useAuthStore } from '../../store/useAuthStore';
+import { AUTH_TOKEN_KEY } from '../../utils/constants';
 
 export function CtaSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useAuthStore();
-  const isLoggedIn = isAuthenticated || Boolean(localStorage.getItem('vv-auth-token')) || Boolean(user);
+  const { user, isAuthenticated, token: storeToken } = useAuthStore();
+  const token = storeToken || localStorage.getItem(AUTH_TOKEN_KEY) || localStorage.getItem('vv-auth-token');
+  const hasValidToken = Boolean(token && token !== 'null' && token !== 'undefined' && token.trim() !== '');
+  const isLoggedIn = hasValidToken && (isAuthenticated || Boolean(user));
 
   useGSAP(() => {
     const tl = gsap.timeline({

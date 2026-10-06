@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { X, ExternalLink, Info } from 'lucide-react';
+import { X, ExternalLink, Info, Lightbulb, PenLine, Volume2 } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import type { VocabCard as VocabCardType } from '../../types';
 import { parseUseCaseTags } from '../../types';
@@ -17,8 +17,8 @@ export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps
   const vocab = (vocabCard && (vocabCard as any).vocabResponse
     ? (vocabCard as any).vocabResponse
     : vocabCard && typeof (vocabCard as any).vocab === 'object'
-    ? (vocabCard as any).vocab
-    : vocabCard) as any;
+      ? (vocabCard as any).vocab
+      : vocabCard) as any;
   const tags = parseUseCaseTags(vocab?.useCaseTag || '');
 
   // Close on ESC
@@ -43,113 +43,138 @@ export function OpenVocabCard({ vocabCard, isOpen, onClose }: OpenVocabCardProps
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40 dark:bg-black/80 backdrop-blur-md transition-all duration-300"
+      className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-all duration-300"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       role="dialog"
       aria-modal="true"
       aria-label={`Dictionary entry for ${vocab.vocab}`}
     >
       <div
-        className="relative w-full max-w-[680px] max-h-[90vh] flex flex-col rounded-3xl p-7 sm:p-10 bg-cream-card dark:bg-[#121212] text-ink dark:text-white border border-black/10 dark:border-white/10 shadow-2xl dark:shadow-[0_25px_60px_rgba(0,0,0,0.85)] animate-modal-in overflow-hidden"
+        className="relative w-full max-w-[700px] max-h-[95vh] flex flex-col rounded-[28px] p-8 sm:p-10 bg-[#fff9f2] dark:bg-[#18181b] text-[#0f172a] dark:text-[#f8fafc] shadow-2xl animate-modal-in overflow-hidden border border-white/60 dark:border-white/10"
       >
+        {/* Soft background glows */}
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-gradient-to-bl from-[#ffedd5] dark:from-orange-500/15 to-transparent opacity-90 dark:opacity-40 rounded-bl-full pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[220px] h-[220px] bg-gradient-to-tl from-[#ffedd5] dark:from-orange-500/10 to-transparent opacity-70 dark:opacity-30 rounded-tl-full pointer-events-none" />
+        <div className="absolute top-[20%] left-[10%] w-[200px] h-[200px] bg-gradient-to-br from-white dark:from-white/5 to-transparent opacity-60 dark:opacity-20 rounded-br-full pointer-events-none" />
 
-        {/* Close button */}
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 z-10 flex items-center gap-1.5 font-inter text-[12.5px] font-semibold text-ink-soft dark:text-neutral-300 bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/10 rounded-full py-1.5 px-3.5 transition-all cursor-pointer"
+          className="absolute top-5 right-5 z-20 flex items-center gap-1.5 font-inter text-[13px] font-semibold text-[#0f172a] dark:text-[#f8fafc] bg-white/80 dark:bg-white/10 backdrop-blur-sm border border-[#fed7aa]/50 dark:border-white/10 rounded-[100px] py-2 px-3.5 shadow-sm hover:bg-white dark:hover:bg-white/20 transition-all cursor-pointer"
           aria-label="Close entry"
           id="open-vocab-close"
         >
           Close
-          <X size={14} strokeWidth={2.5} />
+          <X size={15} strokeWidth={2.5} />
         </button>
 
-        {/* Scrollable content */}
-        <div className="overflow-y-auto flex-1 mt-1 pr-2 custom-scrollbar">
+        {/* Scrollable content without visible scrollbar */}
+        <div className="relative z-10 overflow-y-auto flex-1 mt-1 pr-1 pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
 
           {/* Headword row */}
-          <div className="flex items-center gap-3.5 flex-wrap mb-2.5 sm:pr-[60px]">
-            <h2 className="font-bricolage text-[clamp(32px,5vw,48px)] font-extrabold text-ink dark:text-white m-0 tracking-tight uppercase">
+          <div className="flex items-center gap-3.5 flex-wrap mb-4 sm:pr-[60px]">
+            <h2 className="font-bricolage text-[42px] sm:text-[52px] font-bold text-[#0f172a] dark:text-[#f8fafc] m-0 tracking-tight uppercase leading-none">
               {vocab.vocab}
             </h2>
-            {tags.map((tag) => (
-              <CategoryBadge key={tag} tag={tag} active />
-            ))}
+            <div className="flex items-center gap-2 mt-1">
+              {tags.map((tag) => (
+                <CategoryBadge key={tag} tag={tag} active />
+              ))}
+            </div>
           </div>
 
-          {/* Type */}
-          <div className="font-space text-sm font-semibold text-ink-soft dark:text-neutral-400 mb-5">
-            / {vocab.vocabType} /
+          {/* Type & Audio */}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="font-inter text-[13px] font-bold tracking-widest text-[#64748b] dark:text-[#94a3b8] uppercase">
+              / {vocab.vocabType} /
+            </div>
+            <button className="w-10 h-10 flex items-center justify-center bg-white dark:bg-white/10 rounded-full shadow-sm text-[#0f172a] dark:text-[#f8fafc] hover:bg-gray-50 dark:hover:bg-white/20 transition-colors border border-gray-100 dark:border-white/10">
+              <Volume2 size={18} strokeWidth={2.5} />
+            </button>
           </div>
 
           {/* Meaning */}
-          <div className="text-[18px] sm:text-[20px] font-medium text-ink dark:text-neutral-200 leading-[1.6] max-w-[50ch] mb-6">
+          <div className="text-[17.5px] sm:text-[19.5px] font-medium text-[#1e293b] dark:text-[#e2e8f0] leading-[1.5] max-w-[95%] mb-7">
             {vocab.meaning}
           </div>
 
           {/* Mnemonic — Memory Hook box */}
           {vocab.trick && (
-            <div
-              className="mb-6 max-w-[50ch] rounded-2xl p-5 bg-orange-500/10 dark:bg-orange-500/15 border border-orange-500/25 dark:border-orange-500/30"
-            >
-              <div
-                className="font-inter text-xs font-bold tracking-wider uppercase mb-1.5 text-orange-600 dark:text-orange-400"
-              >
-                Memory Hook
-              </div>
-              <div className="font-inter font-semibold text-[15px] text-ink dark:text-white leading-relaxed">
-                "{vocab.trick}"
+            <div className="mb-6 max-w-[100%] rounded-[20px] p-5 sm:p-6 bg-gradient-to-r from-[#fff7ed] to-[#fffcf8] dark:from-[#241a14] dark:to-[#1c1815] border border-[#ffedd5] dark:border-orange-500/20 shadow-[0_2px_10px_rgba(249,115,22,0.03)] relative overflow-hidden">
+              {/* decorative left border curve */}
+              <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-[#f97316]" />
+              <div className="flex gap-3.5 relative z-10">
+                <div className="mt-0.5">
+                  <Lightbulb size={22} className="text-[#f97316] fill-[#f97316]/20" strokeWidth={2.5} />
+                </div>
+                <div>
+                  <div className="font-inter text-[11.5px] font-extrabold tracking-wider uppercase mb-1.5 text-[#ea580c]">
+                    Memory Hook
+                  </div>
+                  <div className="font-inter font-bold text-[16.5px] text-[#0f172a] dark:text-[#f8fafc] leading-relaxed">
+                    "{vocab.trick}"
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
           {/* Example */}
           {vocab.example && (
-            <div
-              className="pl-4 text-[15px] text-ink-soft dark:text-neutral-400 italic max-w-[50ch] mb-6 border-l-4 border-orange-500/40"
-            >
-              "{vocab.example}"
-              <span className="block font-space not-italic text-[11px] font-bold tracking-wider uppercase mt-2 text-ink-soft/70 dark:text-neutral-500">
-                Example usage
-              </span>
+            <div className="mb-8 max-w-[100%] rounded-[20px] p-5 sm:p-6 bg-[#f0f7ff] dark:bg-[#141b24] border border-[#e0f2fe] dark:border-sky-500/20 shadow-[0_2px_10px_rgba(14,165,233,0.03)] relative overflow-hidden">
+              <div className="flex gap-3.5">
+                <div className="mt-0.5">
+                  <PenLine size={20} className="text-[#0284c7]" strokeWidth={2.5} />
+                </div>
+                <div>
+                  <div className="font-inter text-[11.5px] font-extrabold tracking-wider uppercase mb-1.5 text-[#0284c7]">
+                    Example
+                  </div>
+                  <div className="font-inter font-medium text-[16.5px] text-[#0f172a] dark:text-[#cbd5e1] leading-relaxed">
+                    {vocab.example}
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
           {/* Usage Note / Message */}
           {vocab.message && (
-            <div className="mb-6 max-w-[50ch] rounded-2xl p-4 bg-blue-500/10 dark:bg-blue-500/15 border border-blue-500/25 dark:border-blue-500/30">
-              <div className="font-inter text-xs font-bold tracking-wider uppercase mb-1 text-blue-600 dark:text-blue-400 flex items-center gap-1.5">
-                <Info size={14} /> Usage Note / Context
-              </div>
-              <div className="font-inter font-medium text-[14px] text-ink dark:text-neutral-200 leading-relaxed">
-                {vocab.message}
+            <div className="mb-5 max-w-[100%] rounded-[20px] p-2 sm:p-3 bg-purple-50 dark:bg-purple-950/30 border border-purple-100 dark:border-purple-800/30 relative">
+              <div className="flex items-center gap-2">
+                <div className="mt-0.5">
+                  <Info size={10} className="text-purple-600 dark:text-purple-400" strokeWidth={2.5} />
+                </div>
+                <div className="font-inter font-medium text-sm text-[#0f172a] dark:text-[#f8fafc] leading-relaxed">
+                  {vocab.message}
+                </div>
               </div>
             </div>
           )}
 
-          {/* Divider */}
-          <div
-            className="h-px mb-6 bg-black/10 dark:bg-white/10"
-          />
-
           {/* Actions */}
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-3.5 flex-wrap pt-2">
             <MarkAsLearnedToggleButton
               vocabId={vocab.id}
               isLearned={Boolean(vocabCard?.isLearned ?? (vocabCard as any)?.learned)}
+              variant="open-card"
             />
             <BookmarkToggleButton
               vocabId={vocab.id}
               isBookmarked={Boolean(vocabCard?.isBookmarked ?? (vocabCard as any)?.bookmarked)}
+              variant="open-card"
             />
-            <div className="ml-auto">
+
+            <div className="hidden sm:block w-px h-6 bg-[#cbd5e1] dark:bg-white/10 mx-1" />
+
+            <div className="ml-auto w-full sm:w-auto mt-4 sm:mt-0">
               <a
                 href={`https://www.merriam-webster.com/dictionary/${encodeURIComponent(vocab.vocab)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-[12px] font-bold text-ink-soft hover:text-ink dark:text-neutral-400 dark:hover:text-white font-space transition-colors no-underline"
+                className="inline-flex items-center justify-end w-full gap-1.5 text-[14px] font-semibold text-[#64748b] dark:text-[#94a3b8] hover:text-[#0f172a] dark:hover:text-white transition-colors no-underline"
               >
-                <ExternalLink size={13} strokeWidth={2.5} />
+                <ExternalLink size={16} strokeWidth={2.5} />
                 Merriam-Webster
               </a>
             </div>

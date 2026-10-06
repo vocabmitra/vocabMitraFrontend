@@ -13,6 +13,13 @@ const axiosInstance = axios.create({
 // Request interceptor — attach Bearer token if present
 axiosInstance.interceptors.request.use(
   (config) => {
+    const url = config.url || '';
+    const isPublicAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/signUp');
+
+    if (isPublicAuthEndpoint) {
+      return config;
+    }
+
     let token = localStorage.getItem(AUTH_TOKEN_KEY) || localStorage.getItem('vv-auth-token');
     
     if (!token || token === 'null' || token === 'undefined') {
@@ -33,6 +40,7 @@ axiosInstance.interceptors.request.use(
     }
 
     if (token && token.trim() !== '' && token !== 'null' && token !== 'undefined') {
+      config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
@@ -40,14 +48,27 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor — handle global errors such as 403 Forbidden
+// Response interceptor — handle authentication expiry & global error flows
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status;
+    const requestUrl = error.config?.url || '';
 
-    // 403 Forbidden — immediately logout from anywhere and redirect to login page (/auth)
-    if (status === 403) {
+    // Check if the 403 response is specifically a token expired/invalid message from mock/temp backends
+    const errorData = error.response?.data;
+    const errorMessage = typeof errorData === 'string'
+      ? errorData
+      : (errorData?.error || errorData?.message || '');
+    const isTokenExpiredOn403 = status === 403 && typeof errorMessage === 'string' &&
+      (errorMessage.toLowerCase().includes('token is invalid or expired') ||
+       errorMessage.toLowerCase().includes('jwt expired') ||
+       errorMessage.toLowerCase().includes('token expired'));
+
+    const isAuthRequest = requestUrl.includes('/auth/login') || requestUrl.includes('/auth/signUp');
+
+    // 401 Unauthorized OR 403 token expiration: clean up auth state and redirect to /auth
+    if ((status === 401 || isTokenExpiredOn403) && !isAuthRequest) {
       try {
         useAuthStore.getState().logout();
       } catch (e) {
@@ -55,13 +76,10 @@ axiosInstance.interceptors.response.use(
         localStorage.removeItem('vv-auth-token');
         localStorage.removeItem('vv-auth-user');
       }
+
       if (typeof window !== 'undefined' && window.location.pathname !== '/auth') {
         window.location.href = '/auth';
       }
-    } else if (status === 401) {
-      // 401 Unauthorized — clear stale auth token
-      localStorage.removeItem(AUTH_TOKEN_KEY);
-      localStorage.removeItem('vv-auth-token');
     }
 
     return Promise.reject(error);

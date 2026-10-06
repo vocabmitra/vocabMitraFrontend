@@ -7,11 +7,11 @@ import { WordReveal } from '../ui/WordReveal';
 
 // Shared glass style utility
 const glass = {
-  background: 'rgba(255, 255, 255, 0.04)',
+  background: 'var(--glass-card-bg)',
   backdropFilter: 'blur(20px)',
   WebkitBackdropFilter: 'blur(20px)',
-  border: '1px solid rgba(255, 255, 255, 0.09)',
-  boxShadow: '0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.07)',
+  border: '1px solid var(--glass-card-border)',
+  boxShadow: 'var(--glass-card-shadow)',
 } as React.CSSProperties;
 
 export function HomeScreenSection() {
@@ -89,31 +89,26 @@ export function HomeScreenSection() {
         {/* Glassmorphic Dashboard */}
         <div
           ref={dashboardRef}
-          className="home-dashboard w-full max-w-[900px] rounded-2xl p-4 sm:p-5 flex flex-col gap-4 opacity-0"
+          className="home-dashboard w-full max-w-[900px] rounded-2xl p-4 sm:p-5 flex flex-col gap-4 opacity-0 border border-line"
           style={{
-            background: 'rgba(255, 255, 255, 0.03)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            boxShadow: '0 40px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07)',
+            background: 'var(--cream-card)',
+            boxShadow: 'var(--glass-card-shadow)',
           }}
         >
 
           {/* Top Row */}
           <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-4">
 
-            {/* Continue Learning — orange accent glass card */}
+            {/* Continue Learning — styled to match profile Continue Learning banner */}
             <div
-              className="home-dash-card rounded-xl p-6 sm:p-7 flex flex-col justify-between opacity-0 min-h-[180px]"
+              className="home-dash-card rounded-xl p-6 sm:p-7 flex flex-col justify-between opacity-0 min-h-[180px] border"
               style={{
-                background: 'linear-gradient(135deg, rgba(249,115,22,0.20) 0%, rgba(249,115,22,0.06) 100%)',
-                border: '1px solid rgba(249,115,22,0.25)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
+                background: 'var(--cat-peach-bg)',
+                borderColor: 'var(--cat-peach-border)',
               }}
             >
               <div>
-                <h4 className="text-[10px] font-space text-orange-400/60 tracking-[0.14em] uppercase font-bold mb-4">
+                <h4 className="text-[11px] font-space text-cat-peach-text tracking-[0.14em] uppercase font-bold mb-4">
                   Continue Learning
                 </h4>
                 <h3 className="font-bricolage text-[26px] sm:text-[30px] text-ink font-bold leading-[1.1] mb-2 tracking-[-0.01em]">
@@ -125,13 +120,13 @@ export function HomeScreenSection() {
               </div>
               {/* Progress bar */}
               <div className="mt-5">
-                <div className="w-full h-[3px] rounded-full" style={{ background: 'rgba(255,255,255,0.10)' }}>
-                  <div className="h-full w-[35%] rounded-full bg-orange-500/80" />
+                <div className="w-full h-[4px] rounded-full" style={{ background: 'var(--line)' }}>
+                  <div className="h-full w-[35%] rounded-full bg-orange-500" />
                 </div>
               </div>
             </div>
 
-            {/* Today's Learning — plain glass */}
+            {/* Today's Learning — clean glass/card */}
             <div className="home-dash-card rounded-xl p-6 sm:p-7 flex flex-col justify-center opacity-0" style={glass}>
               <h4 className="text-[10px] font-space text-ink-soft tracking-[0.14em] uppercase font-bold mb-4">
                 Today's Learning
@@ -166,30 +161,27 @@ export function HomeScreenSection() {
                 <p className="text-[14px] text-ink-soft font-medium">Scheduled · 6 min</p>
               </div>
               <button
-                className="w-full py-3 rounded-xl text-ink text-[14px] font-bold font-inter transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+                className="w-full py-3 rounded-xl text-ink text-[14px] font-bold font-inter transition-all duration-200 hover:opacity-90 active:scale-[0.98] border border-line"
                 style={{
-                  background: 'var(--glass-search-bg)',
-                  border: '1px solid var(--glass-search-border)',
+                  background: 'var(--surface-2)',
                 }}
               >
                 <span className="flex items-center justify-center gap-2">
-                  <Zap size={14} className="text-orange-400" />
+                  <Zap size={14} className="text-orange-500" />
                   Start practice
                 </span>
               </button>
             </div>
 
-            {/* Word of the Day — amber glass */}
+            {/* Word of the Day — matching mnemonic tokens */}
             <div
-              className="home-dash-card rounded-xl p-6 sm:p-7 flex flex-col justify-center opacity-0"
+              className="home-dash-card rounded-xl p-6 sm:p-7 flex flex-col justify-center opacity-0 border"
               style={{
-                background: 'linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(245,158,11,0.03) 100%)',
-                border: '1px solid rgba(245,158,11,0.18)',
-                backdropFilter: 'blur(12px)',
-                WebkitBackdropFilter: 'blur(12px)',
+                background: 'var(--mnemonic-bg)',
+                borderColor: 'var(--mnemonic-border)',
               }}
             >
-              <h4 className="text-[10px] font-space text-amber-400/50 tracking-[0.14em] uppercase font-bold mb-4">
+              <h4 className="text-[10px] font-space tracking-[0.14em] uppercase font-bold mb-4" style={{ color: 'var(--mnemonic-label)' }}>
                 Word of the Day
               </h4>
               <h3 className="font-bricolage text-[26px] font-bold text-ink uppercase tracking-[-0.02em] mb-1.5">
@@ -199,8 +191,8 @@ export function HomeScreenSection() {
                 Lasting for a very short time.
               </p>
               <div className="flex items-start gap-2.5">
-                <Lightbulb size={15} className="text-amber-400 shrink-0 mt-0.5" />
-                <p className="font-inter text-[15px] font-semibold text-amber-200/80 leading-snug">
+                <Lightbulb size={15} style={{ color: 'var(--accent)' }} className="shrink-0 mt-0.5" />
+                <p className="font-inter text-[15px] font-semibold leading-snug" style={{ color: 'var(--mnemonic-text)' }}>
                   "Ephemeral cheez, pal bhar ki mehmaan."
                 </p>
               </div>

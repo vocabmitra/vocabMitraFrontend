@@ -61,7 +61,7 @@ export function ProblemSection() {
 
         {/* Right Content (Mock Card) */}
         <div className="flex-1 w-full flex justify-center lg:justify-end relative pb-8 pr-2 sm:pr-8">
-          <div className="problem-card relative w-full max-w-[460px] bg-cream-card rounded-2xl border border-line shadow-2xl shadow-black/20 p-7 sm:p-9 z-10 mx-auto lg:mx-0 opacity-0">
+          <div className="problem-card relative w-full max-w-[460px] bg-cream-card rounded-2xl border border-line shadow-[0_16px_40px_var(--line)] p-7 sm:p-9 z-10 mx-auto lg:mx-0 opacity-0">
             <div className="mb-6">
               <h3 className="font-bricolage text-[28px] sm:text-[32px] font-bold text-ink mb-2 leading-none uppercase tracking-[-0.02em]">
                 Lassitude
@@ -79,8 +79,11 @@ export function ProblemSection() {
             </div>
 
             {/* Confusion Quote */}
-            <div className="px-5 py-4 rounded-xl bg-orange-500/8 border border-orange-500/20">
-              <p className="text-accent font-medium font-inter text-[14.5px] italic leading-snug">
+            <div
+              className="px-5 py-4 rounded-xl"
+              style={{ background: 'var(--mnemonic-bg)', border: '1px solid var(--mnemonic-border)' }}
+            >
+              <p className="font-medium font-inter text-[14.5px] italic leading-snug" style={{ color: 'var(--mnemonic-text)' }}>
                 "Wait... was this tiredness or stubbornness..."
               </p>
             </div>

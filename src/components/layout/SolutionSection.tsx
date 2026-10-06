@@ -132,7 +132,7 @@ export function SolutionSection() {
             </div>
 
             {/* Center Mock Card */}
-            <div className="solution-card w-full bg-cream-card rounded-2xl border border-line shadow-[0_32px_64px_rgba(0,0,0,0.15)] p-7 sm:p-9 relative z-10 opacity-0">
+            <div className="solution-card w-full bg-cream-card rounded-2xl border border-line shadow-[0_20px_50px_var(--line)] p-7 sm:p-9 relative z-10 opacity-0">
 
               {/* Card Header (Definition) */}
               <div className="solution-card-item mb-6">
@@ -145,12 +145,15 @@ export function SolutionSection() {
               </div>
 
               {/* Mnemonic Box */}
-              <div className="solution-card-item bg-amber-500/10 border border-amber-500/20 rounded-xl p-5 mb-6">
-                <div className="flex items-center gap-2 text-amber-400/70 font-space text-[11px] font-bold tracking-widest uppercase mb-3">
-                  <Lightbulb size={14} className="text-amber-400" />
+              <div
+                className="solution-card-item rounded-xl p-5 mb-6"
+                style={{ background: 'var(--mnemonic-bg)', border: '1px solid var(--mnemonic-border)' }}
+              >
+                <div className="flex items-center gap-2 font-space text-[11px] font-bold tracking-widest uppercase mb-3" style={{ color: 'var(--mnemonic-label)' }}>
+                  <Lightbulb size={14} style={{ color: 'var(--accent)' }} />
                   Mnemonic
                 </div>
-                <p className="font-inter text-[18px] sm:text-[20px] font-bold text-ink leading-snug">
+                <p className="font-inter text-[18px] sm:text-[20px] font-bold leading-snug" style={{ color: 'var(--mnemonic-text)' }}>
                   Lassi pi ke nind aati hai.
                 </p>
               </div>

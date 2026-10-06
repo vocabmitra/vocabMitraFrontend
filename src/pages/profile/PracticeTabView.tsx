@@ -4,6 +4,7 @@ import { Dumbbell, Clock, Play } from 'lucide-react';
 import { usePracticeStore } from '../../store/usePracticeStore';
 import { vocabApi } from '../../api/endpoints/vocab.api';
 import type { VocabCard } from '../../types';
+import { logger } from '../../utils/logger';
 
 export function PracticeTabView() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export function PracticeTabView() {
         const cards = await vocabApi.getPracticeQueue();
         setPracticeCards(cards);
       } catch (err) {
-        console.error('Failed to fetch practice queue', err);
+        logger.error('Failed to fetch practice queue', err);
       }
     };
     fetchPracticeQueue();
@@ -58,7 +59,7 @@ export function PracticeTabView() {
       setPracticeCards(prev => prev.filter(c => !selectedIds.has(c.vocab.id)));
       setSelectedIds(new Set());
     } catch (err) {
-      console.error('Failed to remove from practice queue', err);
+      logger.error('Failed to remove from practice queue', err);
     } finally {
       setIsRemoving(false);
     }

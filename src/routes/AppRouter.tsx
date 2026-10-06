@@ -14,6 +14,8 @@ const DashboardView = lazy(() => import('../pages/profile/DashboardView'));
 const UserWordListPage = lazy(() => import('../features/profile/UserWordListPage'));
 const PracticeSessionPage = lazy(() => import('../pages/PracticeSessionPage'));
 const CuetFocusPage = lazy(() => import('../pages/profile/CuetFocusPage'));
+const ProgressView = lazy(() => import('../pages/profile/ProgressView'));
+const PracticeBookmarkSessionPage = lazy(() => import('../pages/PracticeBookmarkSessionPage'));
 const SettingsPage = lazy(() => import('../pages/profile/SettingsPage'));
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage'));
 
@@ -119,17 +121,29 @@ export function AppRouter() {
           >
             <Route index element={<DashboardView />} />
             <Route path="bookmarks" element={<UserWordListPage mode="bookmarked" />} />
-            <Route path="learned" element={<UserWordListPage mode="learned" />} />
-            <Route path="cuet-focus" element={<CuetFocusPage />} />
+            <Route path="progress" element={<ProgressView />} />
+            <Route path="learned" element={<ProgressView />} />
+            <Route path="exam-focus" element={<CuetFocusPage />} />
+            <Route path="cuet-focus" element={<Navigate to="/profile/exam-focus" replace />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
 
-          {/* Protected route — Practice Session */}
+          {/* Protected route — Practice Reel Session */}
           <Route
             path="/practice"
             element={
               <ProtectedRoute>
                 <PracticeSessionPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected route — Practice Bookmark Session */}
+          <Route
+            path="/practice/bookmark"
+            element={
+              <ProtectedRoute>
+                <PracticeBookmarkSessionPage />
               </ProtectedRoute>
             }
           />

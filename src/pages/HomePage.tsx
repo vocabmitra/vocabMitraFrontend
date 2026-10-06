@@ -23,6 +23,7 @@ import { VocabularySection } from '../components/layout/VocabularySection';
 import { TransformationSection } from '../components/layout/TransformationSection';
 import { CtaSection } from '../components/layout/CtaSection';
 import { useGSAP } from '@gsap/react';
+import { logger } from '../utils/logger';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -47,7 +48,7 @@ export default function HomePage() {
           setPreviewCardIds(res.content.slice(1, 7).map(c => c.vocab.id));
         }
       } catch (err) {
-        console.error('Failed to fetch home data:', err);
+        logger.error('Failed to fetch home data:', err);
       }
     };
     fetchHomeData();
@@ -127,7 +128,7 @@ export default function HomePage() {
             aria-label="Word of the Day"
           >
             <div
-              className="vv-container wod-reveal-header font-space text-xs font-bold tracking-[0.05em] uppercase text-neutral-500 mb-[18px]"
+              className="vv-container wod-reveal-header font-space text-xs font-bold tracking-[0.05em] uppercase text-ink-soft mb-[18px]"
             >
               Card of the day · {wodTags[0]}
             </div>
@@ -174,11 +175,17 @@ export default function HomePage() {
               </div>
 
               {/* Mnemonic */}
-              <div className="ml-8 mb-6 max-w-[50ch] bg-orange-500/10 border border-orange-500/20 rounded-xl py-4 px-5">
-                <div className="font-inter text-xs font-semibold tracking-wide uppercase text-orange-600 dark:text-orange-400 mb-1.5">
+              <div
+                className="ml-8 mb-6 max-w-[50ch] rounded-xl py-4 px-5 border"
+                style={{
+                  background: 'var(--mnemonic-bg)',
+                  borderColor: 'var(--mnemonic-border)',
+                }}
+              >
+                <div className="font-inter text-xs font-semibold tracking-wide uppercase mb-1.5" style={{ color: 'var(--mnemonic-label)' }}>
                   Memory Hook
                 </div>
-                <div className="font-inter font-medium text-[15px] text-ink leading-relaxed">
+                <div className="font-inter font-medium text-[15px] leading-relaxed" style={{ color: 'var(--mnemonic-text)' }}>
                   "{wordOfTheDay.vocab.trick}"
                 </div>
               </div>

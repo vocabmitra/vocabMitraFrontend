@@ -1,5 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
+import { AUTH_TOKEN_KEY } from '../utils/constants';
+import { isTokenExpired } from '../utils/jwt';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -15,13 +17,16 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   const storeToken = useAuthStore((s) => s.token);
   const location = useLocation();
 
-  const token = storeToken || localStorage.getItem('vv-auth-token') || localStorage.getItem('AUTH_TOKEN_KEY');
+  const token = storeToken || localStorage.getItem(AUTH_TOKEN_KEY) || localStorage.getItem('vv-auth-token');
+  const hasValidToken = Boolean(token && token !== 'null' && token !== 'undefined' && token.trim() !== '');
 
-  const isLoggedIn = Boolean(
-    (token && token !== 'null' && token !== 'undefined') ||
-    isAuthenticated ||
-    user
-  );
+  // Proactively fail closed if token has expired
+  if (hasValidToken && isTokenExpired(token)) {
+    useAuthStore.getState().logout();
+    return <Navigate to="/auth" state={{ from: location }} replace />;
+  }
+
+  const isLoggedIn = hasValidToken && (isAuthenticated || Boolean(user));
 
   if (!isLoggedIn) {
     return <Navigate to="/auth" state={{ from: location }} replace />;

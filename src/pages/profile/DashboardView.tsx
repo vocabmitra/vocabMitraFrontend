@@ -1,38 +1,19 @@
 import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Bell, Flame, Search, BookOpen, Bookmark,
-  Leaf, Zap, Volume2, Lightbulb, Star, MessageSquare,
-  PenTool, Link as LinkIcon, Globe, ArrowRight, Book, Award
+  Search, Star, ArrowRight, FileText
 } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { LongCard } from '../../components/dashboard/LongCard';
 
 export default function DashboardView() {
-  const { user, profile } = useAuthStore();
+  const { profile, user } = useAuthStore();
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // ─── Frontend Derived Metrics (Zero-Gimmick & Practical) ───
-  const totalLearned = profile?.totalLearned ?? 0;
-  const totalBookmarked = profile?.totalBookmarked ?? 0;
-  const currentStreak = profile?.currentStreak ?? 0;
-  const maxStreak = profile?.maxStreak ?? 0;
-  const isStreakActive = Boolean(profile?.isStreakActiveToday);
-
-  // 1. Total Active Vault Volume
-  const totalVaultVolume = totalLearned + totalBookmarked;
-
-  // 2. Mastery Efficiency Index (% of total engaged words that are fully learned)
-  const masteryEfficiency = totalVaultVolume > 0 
-    ? Math.round((totalLearned / totalVaultVolume) * 100) 
-    : 0;
-
-  // 3. Streak Retention Rate (% of max streak achieved in current streak)
-  const streakRetentionRate = maxStreak > 0 
-    ? Math.min(100, Math.round((currentStreak / maxStreak) * 100)) 
-    : (currentStreak > 0 ? 100 : 0);
+  const firstName = profile?.firstName || user?.firstName || (user as any)?.name?.split(' ')[0] || 'Student';
 
   useGSAP(() => {
     const tl = gsap.timeline();
@@ -43,339 +24,154 @@ export default function DashboardView() {
   }, { scope: containerRef });
 
   return (
-    <div ref={containerRef} className="w-full flex flex-col gap-6 pb-12 max-w-[1200px] mx-auto pr-4 sm:pr-6 md:pr-8">
+    <div ref={containerRef} className="w-full flex flex-col gap-10 pb-12 max-w-[1200px] mx-auto pr-4 sm:pr-6 md:pr-8">
 
-      {/* ─── Global Top Header ─── */}
-      <div className="dash-element flex flex-col sm:flex-row sm:items-center justify-between gap-6 w-full">
-        {/* Search Bar */}
-        <div className="relative w-full max-w-[400px]">
-          <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-ink-soft opacity-70" />
-          <input
-            type="text"
-            placeholder="Search any word..."
-            className="w-full bg-cream-card rounded-2xl py-3 pl-12 pr-4 font-inter text-[14px] text-ink placeholder:text-ink-soft focus:outline-none focus:ring-1 focus:ring-orange-500/50 transition-all border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-sm dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]"
+      {/* ─── 1. Welcome Section ─── */}
+      <div className="dash-element flex flex-col gap-1">
+        <h1 className="font-bricolage text-xl sm:text-2xl font-bold text-ink leading-tight">
+          Welcome back, {firstName}! 👋
+        </h1>
+        <p className="font-inter text-md text-ink-soft">
+          What would you like to learn today?
+        </p>
+      </div>
+
+      {/* ─── 2. Categories (5 Long Cards) ─── */}
+      <div className="dash-element grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <LongCard
+          title="Words"
+          description="Build your vocabulary, one word at a time."
+          icon={<img src="/image_icons/book.png" alt="Words" className="w-[80px] h-[80px] object-contain" />}
+          cardBgClass="bg-[#fef4e8] dark:bg-[#18181b]"
+          shapeBgClass="bg-[#ffdfbe] dark:bg-orange-500/10"
+          iconBoxBgClass="bg-gradient-to-br from-white to-[#ffdfbe] dark:from-[#241c18] dark:to-[#1a1412] dark:border dark:border-orange-500/20"
+          buttonBgClass="bg-[#ffbe7c] dark:bg-orange-500/20"
+          onClick={() => navigate('/profile/practice')}
+        />
+        <LongCard
+          title="Idioms & Phrases"
+          description="Learn popular expressions."
+          icon={<img src="/image_icons/message.png" alt="Idioms" className="w-[80px] h-[80px] object-contain" />}
+          cardBgClass="bg-[#fdf2f4] dark:bg-[#18181b]"
+          shapeBgClass="bg-[#fbcfe8] dark:bg-pink-500/10"
+          iconBoxBgClass="bg-gradient-to-br from-white to-[#fbcfe8] dark:from-[#26161f] dark:to-[#1a1417] dark:border dark:border-pink-500/20"
+          buttonBgClass="bg-[#f9a8d4] dark:bg-pink-500/20"
+          onClick={() => navigate('/profile/exam-focus?tab=idioms-and-phrases')}
+        />
+        <LongCard
+          title="Phrasal Verbs"
+          description="Master verb combinations."
+          icon={<img src="/image_icons/link.png" alt="Phrasal Verbs" className="w-[80px] h-[80px] object-contain" />}
+          cardBgClass="bg-[#f0fdf4] dark:bg-[#18181b]"
+          shapeBgClass="bg-[#bbf7d0] dark:bg-emerald-500/10"
+          iconBoxBgClass="bg-gradient-to-br from-white to-[#bbf7d0] dark:from-[#16241b] dark:to-[#131a15] dark:border dark:border-emerald-500/20"
+          buttonBgClass="bg-[#86efac] dark:bg-emerald-500/20"
+          onClick={() => navigate('/profile/exam-focus?tab=phrasal-verbs')}
+        />
+        <LongCard
+          title="One Word Substitution"
+          description="Say more in fewer words."
+          icon={<img src="/image_icons/bulb.png" alt="One Word Substitution" className="w-[80px] h-[80px] object-contain" />}
+          cardBgClass="bg-[#f5f3ff] dark:bg-[#18181b]"
+          shapeBgClass="bg-[#ddd6fe] dark:bg-purple-500/10"
+          iconBoxBgClass="bg-gradient-to-br from-white to-[#ddd6fe] dark:from-[#21182c] dark:to-[#17141d] dark:border dark:border-purple-500/20"
+          buttonBgClass="bg-[#c4b5fd] dark:bg-purple-500/20"
+          onClick={() => navigate('/profile/exam-focus?tab=one-word-substitution')}
+        />
+        <LongCard
+          title="Foreign Words"
+          description="Explore words from around the world."
+          icon={<img src="/image_icons/earth.png" alt="Foreign Words" className="w-[80px] h-[80px] object-contain" />}
+          cardBgClass="bg-[#eff6ff] dark:bg-[#18181b]"
+          shapeBgClass="bg-[#bfdbfe] dark:bg-sky-500/10"
+          iconBoxBgClass="bg-gradient-to-br from-white to-[#bfdbfe] dark:from-[#17212c] dark:to-[#14181d] dark:border dark:border-sky-500/20"
+          buttonBgClass="bg-[#93c5fd] dark:bg-sky-500/20"
+          onClick={() => navigate('/profile/exam-focus?tab=foreign-words')}
+        />
+      </div>
+
+      {/* ─── 3. Continue Learning ─── */}
+      <div className="dash-element w-full">
+        <div
+          onClick={() => navigate('/profile/practice')}
+          className="relative w-full rounded-[32px] p-6 sm:p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 bg-[#fef4e8] dark:bg-[#18181b] border border-black/5 dark:border-white/10 shadow-sm dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] cursor-pointer hover:shadow-md dark:hover:shadow-[0_12px_40px_rgba(0,0,0,0.7)] transition-all group overflow-hidden"
+        >
+          {/* Sweeping Background Shape on the Right */}
+          <div
+            className="absolute -bottom-1/2 -right-10 w-[60%] h-[200%] bg-[#ffdfbe] dark:bg-orange-500/10 rounded-tl-[100%] pointer-events-none transition-transform duration-500 group-hover:scale-105"
           />
-        </div>
 
-        <div className="flex items-center gap-4 shrink-0">
-          {/* Streak Pill */}
-          <div className="flex items-center gap-3 bg-cream-card rounded-2xl px-4 py-2 border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-sm dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]">
-            <Flame className={`text-orange-500 ${isStreakActive ? 'fill-orange-500 animate-pulse' : 'fill-orange-500/30'}`} size={18} />
-            <div className="flex flex-col">
-              <span className="font-bricolage font-bold text-ink leading-none text-[15px]">
-                {currentStreak}
+          <div className="relative z-10 flex items-center gap-5 sm:gap-6 w-full">
+            {/* Puffy Icon Box (matching LongCards) */}
+            <div className="w-[76px] h-[76px] rounded-[22px] flex items-center justify-center shadow-[0_8px_20px_rgba(0,0,0,0.06),inset_0_2px_4px_rgba(255,255,255,0.8)] dark:shadow-[0_8px_20px_rgba(0,0,0,0.4),inset_0_1px_2px_rgba(255,255,255,0.12)] bg-gradient-to-br from-white to-[#ffdfbe] dark:from-[#241c18] dark:to-[#1a1412] dark:border dark:border-orange-500/20 shrink-0">
+              <img src="/image_icons/book.png" alt="Continue" className="w-[65px] h-[65px] object-contain" />
+            </div>
+
+            <div className="flex flex-col gap-0.5">
+              <span className="font-inter text-[11px] font-bold text-[#64748b] dark:text-orange-400 tracking-[0.08em] uppercase">
+                Continue Learning
               </span>
-              <span className="font-inter text-[10px] text-ink-soft leading-tight mt-0.5">
-                {isStreakActive ? 'streak active 🔥' : 'day streak'}
-              </span>
-            </div>
-          </div>
-
-          {/* Notifications */}
-          <button className="w-11 h-11 rounded-2xl flex items-center justify-center text-ink-soft hover:text-ink bg-cream-card cursor-pointer transition-colors border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-sm dark:shadow-[0_4px_12px_rgba(0,0,0,0.4)]">
-            <Bell size={18} />
-          </button>
-
-          {/* Profile Avatar */}
-          <button className="w-11 h-11 rounded-full bg-orange-500 text-white flex items-center justify-center font-bricolage font-bold text-[16px] cursor-pointer shadow-[0_4px_10px_rgba(249,115,22,0.3)] hover:opacity-90 transition-opacity border-none">
-            {(profile?.firstName?.[0] || user?.firstName?.[0] || (user as any)?.name?.[0] || 'N').toUpperCase()}
-          </button>
-        </div>
-      </div>
-
-      {/* ─── Row 1: Derived Metrics ─── */}
-      <div className="dash-element grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
-
-        {/* Metric 1: Mastery Efficiency Index */}
-        <div className="bg-cream-card rounded-2xl p-5 flex flex-col justify-between border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)] group hover:border-purple-500/30 transition-all duration-300">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex flex-col">
-              <span className="font-bricolage text-[36px] sm:text-[40px] font-extrabold text-ink leading-none tracking-tight">
-                {masteryEfficiency}%
-              </span>
-              <span className="font-inter text-[11px] font-semibold text-purple-500 dark:text-purple-400 uppercase tracking-wider mt-1.5">
-                Mastery Efficiency
-              </span>
-            </div>
-            <div className="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0 border border-purple-500/20 shadow-inner">
-              <Award size={24} className="stroke-[2.5]" />
-            </div>
-          </div>
-          <div className="mt-4 pt-3 border-t border-black/5 dark:border-white/5">
-            <div className="w-full h-1.5 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden mb-1.5">
-              <div 
-                className="h-full bg-purple-500 rounded-full transition-all duration-700 ease-out shadow-[0_0_8px_rgba(168,85,247,0.5)]" 
-                style={{ width: `${Math.max(5, masteryEfficiency)}%` }} 
-              />
-            </div>
-            <span className="font-inter text-[11px] text-ink-soft">
-              {totalLearned} learned of {totalVaultVolume} active words
-            </span>
-          </div>
-        </div>
-
-        {/* Metric 2: Active Vault Words */}
-        <div className="bg-cream-card rounded-2xl p-5 flex flex-col justify-between border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)] group hover:border-green-500/30 transition-all duration-300">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex flex-col">
-              <span className="font-bricolage text-[36px] sm:text-[40px] font-extrabold text-ink leading-none tracking-tight">
-                {totalVaultVolume}
-              </span>
-              <span className="font-inter text-[11px] font-semibold text-green-600 dark:text-green-400 uppercase tracking-wider mt-1.5">
-                Active Vault Words
-              </span>
-            </div>
-            <div className="w-12 h-12 rounded-xl bg-green-500/10 text-green-500 flex items-center justify-center shrink-0 border border-green-500/20 shadow-inner">
-              <Bookmark size={24} className="stroke-[2.5]" />
-            </div>
-          </div>
-          <div className="mt-4 pt-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between">
-            <span className="font-inter text-[11px] text-ink-soft">
-              {totalBookmarked} bookmarked · {totalLearned} learned
-            </span>
-            <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 font-inter text-[10px] font-bold">
-              Vault Active
-            </span>
-          </div>
-        </div>
-
-        {/* Metric 3: Streak Maintained & Retention */}
-        <div className="bg-cream-card rounded-2xl p-5 flex flex-col justify-between border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)] group hover:border-orange-500/30 transition-all duration-300">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex flex-col">
-              <span className="font-bricolage text-[36px] sm:text-[40px] font-extrabold text-ink leading-none tracking-tight flex items-baseline gap-1.5">
-                {currentStreak} <span className="text-[16px] text-ink-soft font-semibold font-inter">days</span>
-              </span>
-              <span className="font-inter text-[11px] font-semibold text-orange-500 uppercase tracking-wider mt-1.5">
-                Streak Maintained
-              </span>
-            </div>
-            <div className="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0 border border-orange-500/20 shadow-inner">
-              <Flame size={24} className={isStreakActive ? 'fill-orange-500 animate-pulse' : 'fill-orange-500/20'} />
-            </div>
-          </div>
-          <div className="mt-4 pt-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between">
-            <span className="font-inter text-[11px] text-ink-soft">
-              {isStreakActive ? 'Protected today 🔥' : `Peak: ${maxStreak} days (${streakRetentionRate}%)`}
-            </span>
-            <span className={`px-2 py-0.5 rounded-full font-inter text-[10px] font-bold ${
-              isStreakActive 
-                ? 'bg-orange-500/10 text-orange-500' 
-                : 'bg-amber-500/10 text-amber-500 dark:text-amber-400'
-            }`}>
-              {isStreakActive ? 'Active Today' : 'Practice Today'}
-            </span>
-          </div>
-        </div>
-
-      </div>
-
-      {/* ─── Row 2: Learning ─── */}
-      <div className="dash-element grid grid-cols-1 xl:grid-cols-12 gap-6">
-
-        {/* Continue Learning */}
-        <div className="xl:col-span-7 bg-cream-card rounded-2xl p-6 flex flex-col border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)]">
-          <div className="flex flex-col gap-1 mb-6">
-            <div className="font-inter text-[14px] font-medium text-purple-500">
-              Continue from where you left
-            </div>
-            <div className="font-inter text-[13px] text-ink-soft">
-              [ Learning Words ]
-            </div>
-          </div>
-
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex flex-col gap-2">
-              <h2 className="font-bricolage text-[32px] font-bold text-ink leading-none uppercase">
+              <h2 className="font-bricolage text-[26px] sm:text-[30px] font-bold text-[#0f172a] dark:text-[#f8fafc] leading-tight uppercase tracking-tight">
                 LASSITUDE
               </h2>
-              <p className="font-inter text-[14px] text-ink-soft mb-2">
+              <p className="font-inter text-[14px] text-[#475569] dark:text-[#a1a1aa] font-medium">
                 Tiredness / lack of energy
               </p>
-              <div className="flex items-center gap-2">
-                <Lightbulb size={16} className="text-orange-500" />
-                <span className="font-inter text-[14px] text-orange-500">Lassi pi ke nind aati hai.</span>
-              </div>
-            </div>
-            <div className="w-16 h-16 rounded-2xl bg-black/5 dark:bg-white/5 flex items-center justify-center shrink-0 border border-black/5 dark:border-white/5 shadow-inner">
-              <Book size={28} className="text-ink-soft opacity-80" />
             </div>
           </div>
 
-          <div className="mt-auto flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-            <div className="flex-1 w-full max-w-[300px]">
-              <div className="w-full h-2 bg-black/10 dark:bg-white/5 rounded-full overflow-hidden mb-3 shadow-inner">
-                <div className="h-full bg-purple-500 rounded-full w-[57%] shadow-[0_0_10px_rgba(168,85,247,0.4)]" />
-              </div>
-              <div className="font-inter text-[13px] text-ink-soft font-medium">
-                4 / 7 words completed
-              </div>
-            </div>
-            <button className="shrink-0 bg-transparent border border-purple-500/50 hover:border-purple-500 hover:bg-purple-500/5 text-purple-500 font-inter text-[13px] font-medium px-5 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2">
-              Continue <ArrowRight size={14} />
-            </button>
-          </div>
-        </div>
-
-        {/* Total Learned Overview */}
-        <div className="xl:col-span-5 bg-cream-card rounded-2xl p-6 flex flex-col justify-between border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)] group hover:border-green-500/30 transition-all duration-300">
-          <div className="font-inter text-[11px] font-bold text-green-600 dark:text-green-400 tracking-[0.1em] mb-4 uppercase">
-            Total Learned Overview
-          </div>
-
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex flex-col">
-              <span className="font-bricolage text-[48px] font-bold text-ink leading-none mb-1">
-                {totalLearned}
-              </span>
-              <span className="font-inter text-[13px] text-ink-soft leading-tight max-w-[140px]">
-                words mastered in total ({masteryEfficiency}% efficiency)
-              </span>
-            </div>
-            <div className="w-16 h-16 rounded-2xl bg-green-500/10 flex items-center justify-center shrink-0 border border-green-500/20 shadow-inner">
-              <Leaf size={28} className="text-green-500 fill-green-500/20 opacity-90" />
-            </div>
-          </div>
-
-          <div className="mt-auto pt-4 border-t border-black/5 dark:border-white/5 flex items-center justify-between">
-            <span className="font-inter text-[12px] text-ink-soft font-medium">
-              Vault Footprint
-            </span>
-            <span className="font-inter text-[12px] font-semibold text-green-600 dark:text-green-400">
-              {totalBookmarked} saved in bookmarks
-            </span>
-          </div>
-        </div>
-
-      </div>
-
-      {/* ─── Row 3: Practice & Word of the Day ─── */}
-      <div className="dash-element grid grid-cols-1 xl:grid-cols-12 gap-6">
-
-        {/* Practice */}
-        <div className="xl:col-span-5 bg-cream-card rounded-2xl p-6 flex flex-col border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)]">
-          <div className="font-inter text-[11px] font-bold text-purple-500 tracking-[0.1em] mb-4 uppercase">
-            Practice
-          </div>
-
-          <div className="flex items-start justify-between mb-8">
-            <div className="flex flex-col gap-2">
-              <h2 className="font-bricolage text-[32px] font-bold text-ink leading-none">
-                5 cards ready
-              </h2>
-              <p className="font-inter text-[14px] text-ink-soft">
-                Scheduled · 6 min
-              </p>
-            </div>
-            <div className="w-16 h-16 rounded-2xl bg-black/5 dark:bg-white/5 flex items-center justify-center shrink-0 border border-black/5 dark:border-white/5 shadow-inner">
-              <Zap size={28} className="text-purple-500 fill-purple-500/10 opacity-90" />
-            </div>
-          </div>
-
-          <div className="mt-auto flex justify-start sm:justify-end">
-            <button className="w-full sm:w-auto bg-transparent border border-purple-500/50 hover:border-purple-500 text-purple-500 font-inter text-[13px] font-semibold px-5 py-2 rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2">
-              Start Practice <ArrowRight size={14} />
-            </button>
-          </div>
-        </div>
-
-        {/* Word of the Day */}
-        <div className="xl:col-span-7 bg-cream-card rounded-2xl p-6 flex flex-col border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)]">
-          <div className="font-inter text-[11px] font-bold text-orange-500 tracking-[0.1em] mb-4 uppercase">
-            Word of the Day
-          </div>
-
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-4">
-                <h2 className="font-bricolage text-[36px] font-bold text-ink leading-none uppercase">
-                  EPHEMERAL
-                </h2>
-                <Volume2 size={24} className="text-ink-soft cursor-pointer hover:text-ink transition-colors" />
-              </div>
-              <p className="font-inter text-[15px] text-ink-soft">
-                Lasting for a very short time.
-              </p>
-            </div>
-            <div className="w-16 h-16 rounded-2xl bg-black/5 dark:bg-white/5 flex items-center justify-center shrink-0 border border-black/5 dark:border-white/5 shadow-inner">
-              <Star size={28} className="text-orange-500 fill-orange-500 opacity-90" />
-            </div>
-          </div>
-
-          <div className="mt-auto flex items-start gap-4 pt-6">
-            <Lightbulb size={20} className="text-orange-500 shrink-0 mt-0.5 opacity-80" />
-            <p className="font-inter text-[14px] font-medium text-ink-soft italic leading-relaxed">
-              "Ephemeral cheez, pal bhar ki mehmaan."
-            </p>
-          </div>
-        </div>
-
-      </div>
-
-      {/* ─── Row 4: CUET Focus ─── */}
-      <div className="dash-element w-full mt-2">
-        <div className="flex items-center justify-between mb-4 px-2">
-          <div className="flex items-center gap-2 font-inter text-[13px] font-bold text-orange-500 uppercase tracking-wider">
-            <span>✨</span> CUET FOCUS
-          </div>
-          <button
-            onClick={() => navigate('/profile/cuet-focus')}
-            className="bg-transparent border-none text-orange-500 font-inter text-[13px] font-semibold cursor-pointer flex items-center gap-1 hover:underline"
-          >
-            Explore all <ArrowRight size={14} />
+          <button className="relative z-10 shrink-0 bg-[#ea580c] hover:bg-[#d946ef] bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white font-inter text-[15px] font-bold px-8 py-3.5 rounded-full shadow-[0_4px_12px_rgba(234,88,12,0.3)] hover:shadow-[0_6px_16px_rgba(234,88,12,0.4)] dark:shadow-[0_4px_15px_rgba(249,115,22,0.35)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 w-full sm:w-auto cursor-pointer border-none">
+            Continue <ArrowRight size={18} strokeWidth={2.5} />
           </button>
         </div>
+      </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 pb-4 pt-2 w-full">
+      {/* ─── 4. Explore More ─── */}
+      <div className="dash-element flex flex-col gap-4">
+        <h2 className="font-bricolage text-[24px] font-bold text-ink">
+          Explore More
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
           <div
-            onClick={() => navigate('/profile/cuet-focus?tab=previous-year-words')}
-            className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] hover:-translate-y-0.5 transition-all"
+            className="bg-white dark:bg-[#18181b] rounded-[24px] p-5 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-transform border border-black/5 dark:border-white/10 shadow-sm dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] group"
           >
-            <div className="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0">
-              <BookOpen size={20} />
+            <div className="w-14 h-14 rounded-[18px] bg-[#ffedd5]/50 dark:bg-orange-500/15 flex items-center justify-center shrink-0">
+              <Search size={24} className="text-[#ea580c] dark:text-orange-400" />
             </div>
-            <span className="font-inter text-[13px] font-semibold text-ink leading-tight">Previous-Year<br />Words</span>
+            <div className="flex flex-col flex-1">
+              <span className="font-inter text-[16px] font-bold text-ink leading-tight">Search Words</span>
+              <span className="font-inter text-[13px] text-ink-soft">Find any word instantly.</span>
+            </div>
+            <ArrowRight size={18} className="text-ink-soft group-hover:text-ink transition-colors" />
           </div>
 
           <div
-            onClick={() => navigate('/profile/cuet-focus?tab=idioms-and-phrases')}
-            className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] hover:-translate-y-0.5 transition-all"
+            onClick={() => navigate('/profile/cuet-focus')}
+            className="bg-gradient-to-r from-[#f3e8ff] to-[#faf5ff] dark:from-purple-950/20 dark:to-[#18181b] dark:bg-[#18181b] rounded-[24px] p-5 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-transform border border-[#d8b4fe]/20 dark:border-purple-500/20 shadow-sm dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] group"
           >
-            <div className="w-11 h-11 rounded-xl bg-green-500/10 text-green-500 flex items-center justify-center shrink-0">
-              <MessageSquare size={20} />
+            <div className="w-14 h-14 rounded-[18px] bg-white/60 dark:bg-purple-500/15 flex items-center justify-center shrink-0">
+              <FileText size={24} className="text-[#9333ea] dark:text-purple-400" />
             </div>
-            <span className="font-inter text-[13px] font-semibold text-ink leading-tight">Idioms &<br />Phrases</span>
+            <div className="flex flex-col flex-1">
+              <span className="font-inter text-[16px] font-bold text-ink leading-tight">Browse by Exam</span>
+              <span className="font-inter text-[13px] text-ink-soft">CUET, SSC, Banking & more.</span>
+            </div>
+            <ArrowRight size={18} className="text-ink-soft group-hover:text-ink transition-colors" />
           </div>
 
           <div
-            onClick={() => navigate('/profile/cuet-focus?tab=one-word-substitution')}
-            className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] hover:-translate-y-0.5 transition-all"
+            onClick={() => navigate('/profile/user-words')}
+            className="bg-gradient-to-r from-[#ffe4e6] to-[#fff1f2] dark:from-rose-950/20 dark:to-[#18181b] dark:bg-[#18181b] rounded-[24px] p-5 flex items-center gap-4 cursor-pointer hover:-translate-y-1 transition-transform border border-[#fda4af]/20 dark:border-rose-500/20 shadow-sm dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] group"
           >
-            <div className="w-11 h-11 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
-              <PenTool size={20} />
+            <div className="w-14 h-14 rounded-[18px] bg-white/60 dark:bg-rose-500/15 flex items-center justify-center shrink-0">
+              <Star size={24} className="text-[#e11d48] dark:text-rose-400" />
             </div>
-            <span className="font-inter text-[13px] font-semibold text-ink leading-tight">One Word<br />Substitution</span>
-          </div>
-
-          <div
-            onClick={() => navigate('/profile/cuet-focus?tab=phrasal-verbs')}
-            className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] hover:-translate-y-0.5 transition-all"
-          >
-            <div className="w-11 h-11 rounded-xl bg-teal-500/10 text-teal-500 flex items-center justify-center shrink-0">
-              <LinkIcon size={20} />
+            <div className="flex flex-col flex-1">
+              <span className="font-inter text-[16px] font-bold text-ink leading-tight">View Bookmarks</span>
+              <span className="font-inter text-[13px] text-ink-soft">Your saved words.</span>
             </div>
-            <span className="font-inter text-[13px] font-semibold text-ink leading-tight">Phrasal<br />Verbs</span>
-          </div>
-
-          <div
-            onClick={() => navigate('/profile/cuet-focus?tab=foreign-words')}
-            className="bg-cream-card rounded-2xl p-4 flex items-center gap-3 w-full border border-black/5 dark:border-white/5 dark:border-t-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.6)] cursor-pointer hover:shadow-[0_0_15px_rgba(249,115,22,0.15)] hover:-translate-y-0.5 transition-all"
-          >
-            <div className="w-11 h-11 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0">
-              <Globe size={20} />
-            </div>
-            <span className="font-inter text-[13px] font-semibold text-ink leading-tight">Foreign<br />Words</span>
+            <ArrowRight size={18} className="text-ink-soft group-hover:text-ink transition-colors" />
           </div>
 
         </div>

@@ -1,70 +1,99 @@
 import type { VocabCard as VocabCardType } from '../../types';
 import { BookmarkToggleButton } from './BookmarkToggleButton';
-import { MarkAsLearnedToggleButton } from './MarkAsLearnedToggleButton';
 
 interface VocabCardProps {
   vocabCard: VocabCardType;
   onClick: () => void;
 }
 
+const getCardTheme = (word: string) => {
+  const hash = word.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const themeIds = ['blue', 'pink', 'green', 'purple', 'orange'] as const;
+  const id = themeIds[hash % themeIds.length];
+  return {
+    id,
+    bg: `var(--vcard-${id}-bg)`,
+    glow: `var(--vcard-${id}-glow)`,
+    border: `var(--vcard-${id}-border)`,
+    text: `var(--vcard-${id}-text)`,
+    iconFrom: `var(--vcard-${id}-icon-from)`,
+    iconTo: `var(--vcard-${id}-icon-to)`,
+  };
+};
+
 export function VocabCard({ vocabCard, onClick }: VocabCardProps) {
   // Support vocabResponse envelope, wrapped VocabCard ({ vocab: {...} }) and direct Vocab object
   const vocabObj = (vocabCard && (vocabCard as any).vocabResponse
     ? (vocabCard as any).vocabResponse
     : vocabCard && typeof (vocabCard as any).vocab === 'object'
-    ? (vocabCard as any).vocab
-    : vocabCard) as any;
+      ? (vocabCard as any).vocab
+      : vocabCard) as any;
 
   const wordTitle = vocabObj?.vocab || vocabObj?.word || 'WORD';
   const meaningText = vocabObj?.meaning || 'No description available.';
-  const typeText = vocabObj?.vocabType || 'WORD';
-  const trickText = vocabObj?.trick || vocabObj?.mnemonics;
-
   const isBookmarked = Boolean(vocabCard?.isBookmarked ?? (vocabCard as any)?.bookmarked);
-  const isLearned = Boolean(vocabCard?.isLearned ?? (vocabCard as any)?.learned);
+
+  // Use example if available, fallback to trick or first synonym
+  const exampleText = vocabObj?.example || vocabObj?.trick || vocabObj?.mnemonics || vocabObj?.synonyms?.[0];
+
+  const theme = getCardTheme(wordTitle);
 
   return (
     <div
-      className="group relative flex flex-col justify-between rounded-2xl cursor-pointer bg-cream-card border border-black/5 dark:border-white/5 dark:border-t-white/10 p-6 shadow-[0_8px_30px_rgba(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.7)] transition-all duration-200 hover:-translate-y-1"
+      className="group relative flex flex-col justify-between rounded-[20px] cursor-pointer p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1 overflow-hidden min-h-[220px] border"
+      style={{
+        background: theme.bg,
+        borderColor: 'var(--vcard-card-border)',
+      }}
       onClick={onClick}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(); }}
       tabIndex={0}
       role="button"
       aria-label={`Open entry for ${wordTitle}`}
     >
-      {/* Top Section: Big Title (Left) and Interactive Action Icons (Right) */}
-      <div className="flex items-center justify-between gap-4 mb-3">
-        <h3 className="font-bricolage text-[28px] font-bold text-ink leading-none tracking-tight uppercase">
-          {wordTitle}
-        </h3>
+      {/* Soft Top-Right Glow */}
+      <div
+        className="absolute top-0 right-0 w-[160px] h-[260px] rounded-tl-full pointer-events-none transition-transform duration-500 group-hover:scale-110 opacity-70"
+        style={{
+          background: `radial-gradient(circle at top right, ${theme.glow} 0%, transparent 70%)`,
+        }}
+      />
 
-        {/* Action icons: Learned + Bookmark */}
-        <div className="flex items-center gap-2 shrink-0">
+      {/* Top Section: Title & Bookmark */}
+      <div className="flex items-start justify-between relative z-10 gap-3">
+        <div className="flex flex-col pr-1 pt-1">
+          <h3 className="font-bricolage text-[20px] sm:text-[22px] font-bold text-ink leading-tight tracking-tight uppercase">
+            {wordTitle}
+          </h3>
+          <p className="font-inter text-[14px] text-ink-soft leading-snug mt-2 line-clamp-2 pr-4">
+            {meaningText}
+          </p>
+        </div>
+
+        {/* Action icon: Bookmark only */}
+        <div className="shrink-0 pt-0.5 pr-0.5">
           {vocabObj?.id && (
-            <>
-              <MarkAsLearnedToggleButton vocabId={vocabObj.id} isLearned={isLearned} variant="icon" />
-              <BookmarkToggleButton vocabId={vocabObj.id} isBookmarked={isBookmarked} variant="icon" />
-            </>
+            <BookmarkToggleButton vocabId={vocabObj.id} isBookmarked={isBookmarked} variant="puffy" theme={theme} />
           )}
         </div>
       </div>
 
-      {/* Subtitle / Meaning */}
-      <p className="font-inter text-[14px] text-ink-soft leading-relaxed line-clamp-2 mb-6">
-        {meaningText}
-      </p>
-
-      {/* Bottom Section: Pill Badges */}
-      <div className="flex items-center gap-2.5 flex-wrap pt-2">
-        <span className="font-inter text-[11px] font-bold text-ink-soft bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-full px-4 py-1.5 uppercase tracking-wider">
-          {typeText}
-        </span>
-        {trickText && (
-          <span className="font-inter text-[11px] font-bold text-ink-soft bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-full px-4 py-1.5 uppercase tracking-wider">
-            {trickText}
-          </span>
-        )}
-      </div>
+      {/* Example Sentence Box */}
+      {exampleText && (
+        <div
+          className="mt-5 backdrop-blur-sm rounded-xl rounded-l-[4px] py-3.5 px-4 shadow-sm relative z-10 border"
+          style={{
+            background: 'var(--vcard-example-bg)',
+            borderColor: 'var(--vcard-example-border)',
+            borderLeftWidth: '5px',
+            borderLeftColor: theme.border,
+          }}
+        >
+          <p className="font-inter text-[13px] text-ink-soft leading-relaxed">
+            {exampleText}
+          </p>
+        </div>
+      )}
     </div>
   );
 }

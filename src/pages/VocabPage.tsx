@@ -1,17 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, X, SlidersHorizontal, Layers } from 'lucide-react';
+import { Search, X, ChevronDown } from 'lucide-react';
 import { Navbar } from '../components/layout/Navbar';
 import { Footer } from '../components/layout/Footer';
 import { VocabCard } from '../components/vocab/VocabCard';
 import { OpenVocabCard } from '../components/vocab/OpenVocabCard';
-import { CategoryBadge } from '../components/vocab/CategoryBadge';
 import { VocabCardSkeleton } from '../components/common/Skeleton';
 import { PracticeSessionLauncher } from '../components/vocab/PracticeSessionLauncher';
 import { useVocabList } from '../features/vocab/useVocabList';
-import { useAuthStore } from '../store/useAuthStore';
-import { USE_CASE_TAGS } from '../types';
-import type { UseCaseTag } from '../types';
 import { useDebounce } from '../hooks/useDebounce';
 
 export default function VocabPage() {
@@ -20,17 +16,13 @@ export default function VocabPage() {
   const [openCardId, setOpenCardId] = useState<number | null>(null);
   const debouncedSearch = useDebounce(localSearch, 400);
 
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
-
   const {
     vocabList,
     isLoading,
     activeFilters,
     page,
     totalPages,
-    totalCount,
     pageSize,
-    setFilter,
     clearFilters,
     setSearch,
     setPage,
@@ -69,38 +61,28 @@ export default function VocabPage() {
       <main className="min-h-[calc(100vh-80px)] bg-transparent">
         <div className="vv-container pt-5 px-7 pb-20">
 
-          {/* Page header — dynamic title based on auth state */}
-          <div className="mb-9">
-            <h1 className="font-bricolage text-[clamp(28px,4vw,42px)] font-bold text-ink mb-2 tracking-[-0.02em]">
-              {isAuthenticated ? 'My Vault' : 'Vocabularies'}
-            </h1>
-            <p className="text-[15px] text-ink-soft font-inter m-0">
-              {totalCount.toLocaleString()} words. Filter by exam, search by meaning, or just browse.
-            </p>
-          </div>
-
-          {/* ── Filters + Search bar ── */}
-          <div className="mb-8 flex flex-col gap-4">
+          {/* ── Header & Search Area ── */}
+          <div className="flex flex-col gap-4 mb-8">
             {/* Search & Cards per page Controls */}
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              {/* Search Box */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
+              {/* Sleek Search Box */}
               <div
-                className="flex items-center gap-2.5 p-[5px] border-2 border-solid border-ink rounded-full bg-cream-card transition-shadow duration-250 ease-[var(--ease)] w-full max-w-[520px] focus-within:shadow-[0_0_0_4px_color-mix(in_srgb,var(--ink)_15%,transparent)]"
+                className="flex items-center gap-2.5 px-4 py-3 border border-[#cbd5e1] dark:border-white/10 rounded-[100px] bg-white dark:bg-[#18181b] transition-all duration-200 ease-in-out flex-1 w-full focus-within:shadow-[0_4px_20px_rgba(0,0,0,0.06)] dark:focus-within:shadow-[0_4px_20px_rgba(0,0,0,0.4)] focus-within:border-[#94a3b8] dark:focus-within:border-white/25"
               >
-                <Search size={18} className="text-ink-soft ml-[14px] shrink-0" aria-hidden="true" />
+                <Search size={18} className="text-[#94a3b8] dark:text-ink-soft shrink-0" aria-hidden="true" />
                 <input
                   type="text"
                   placeholder="Search words, meanings, mnemonics, or exam tags…"
                   aria-label="Search vocabulary"
                   value={localSearch}
                   onChange={(e) => setLocalSearch(e.target.value)}
-                  className="flex-1 bg-transparent border-none outline-none text-ink text-[15px] font-medium py-3 px-0 font-inter"
+                  className="flex-1 bg-transparent border-none outline-none text-[#0f172a] dark:text-[#f8fafc] text-[14px] font-medium py-0 px-0 font-inter placeholder:text-[#94a3b8] dark:placeholder:text-ink-soft/70 placeholder:font-normal min-w-0"
                   id="vocab-search-input"
                 />
                 {localSearch && (
                   <button
                     onClick={() => setLocalSearch('')}
-                    className="text-ink py-2 px-3 bg-transparent border-none cursor-pointer"
+                    className="text-[#64748b] dark:text-ink-soft hover:text-[#0f172a] dark:hover:text-[#f8fafc] bg-transparent border-none cursor-pointer p-0 shrink-0 transition-colors"
                     aria-label="Clear search"
                   >
                     <X size={16} strokeWidth={2.5} />
@@ -108,23 +90,35 @@ export default function VocabPage() {
                 )}
               </div>
 
-              {/* Cards Per Page Dropdown */}
-              <div className="flex items-center gap-2 font-space text-[12px] font-bold text-ink-soft shrink-0">
-                <Layers size={14} className="text-ink-soft" />
-                <span>Cards per page:</span>
-                <select
-                  value={pageSize}
-                  onChange={(e) => setPageSize(Number(e.target.value))}
-                  className="bg-cream-card text-ink font-space font-bold border-2 border-solid border-ink rounded-xl py-1.5 px-3 outline-none cursor-pointer text-[12px] transition-colors hover:border-orange-500"
-                  aria-label="Select cards per page"
-                >
-                  {[9, 12, 18, 24, 36, 48].map((size) => (
-                    <option key={size} value={size}>
-                      {size}
-                    </option>
-                  ))}
-                </select>
+              {/* Sleek Cards Per Page Dropdown */}
+              <div className="flex items-center gap-3 font-inter text-[13.5px] font-semibold text-[#334155] dark:text-ink-soft shrink-0 sm:ml-1">
+                <span className="tracking-wide">Cards per page:</span>
+                <div className="relative flex items-center">
+                  <select
+                    value={pageSize}
+                    onChange={(e) => setPageSize(Number(e.target.value))}
+                    className="appearance-none bg-white dark:bg-[#18181b] text-[#0f172a] dark:text-[#f8fafc] font-inter font-bold border border-[#cbd5e1] dark:border-white/10 rounded-[14px] py-2 pl-4 pr-10 outline-none cursor-pointer text-[14px] transition-all hover:border-[#94a3b8] dark:hover:border-white/25 hover:shadow-sm"
+                    aria-label="Select cards per page"
+                  >
+                    {[9, 12, 18, 24, 36, 48].map((size) => (
+                      <option key={size} value={size} className="bg-white dark:bg-[#18181b] text-[#0f172a] dark:text-[#f8fafc]">
+                        {size}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3.5 text-[#0f172a] dark:text-[#f8fafc] pointer-events-none" strokeWidth={3} />
+                </div>
               </div>
+
+              {/* Reel Mode / Practice */}
+              {!isLoading && vocabList.length > 0 && (
+                <PracticeSessionLauncher
+                  cards={vocabList}
+                  label="Reel Mode"
+                  iconClassName="fill-white dark:fill-transparent"
+                  className="sm:ml-1 !bg-[#fff1f2] !text-[#e11d48] hover:!bg-[#ffe4e6] !border border-[#fecdd3] dark:!bg-rose-950/40 dark:!text-rose-400 dark:hover:!bg-rose-900/50 dark:!border-rose-800/40 !px-4 !py-2 !rounded-[14px] font-inter !text-[13.5px] !shadow-none tracking-wide"
+                />
+              )}
             </div>
 
             {/* Active search notice */}
@@ -139,40 +133,6 @@ export default function VocabPage() {
                 </button>
               </div>
             )}
-
-            {/* Tag filter bar + Practice CTA */}
-            <div className="flex flex-wrap items-center gap-2 justify-between">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="font-space text-[11px] font-bold text-ink-soft tracking-[0.06em] uppercase mr-1 flex items-center gap-1">
-                  <SlidersHorizontal size={12} strokeWidth={2.5} />
-                  Filter
-                </span>
-                {USE_CASE_TAGS.map((tag) => (
-                  <CategoryBadge
-                    key={tag}
-                    tag={tag as UseCaseTag}
-                    active={activeFilters.includes(tag as UseCaseTag)}
-                    onClick={() => setFilter(tag as UseCaseTag)}
-                  />
-                ))}
-                {hasFilters && (
-                  <button
-                    onClick={() => { clearFilters(); setLocalSearch(''); }}
-                    className="font-space font-bold text-[11px] tracking-[0.04em] text-ink bg-transparent border-2 border-solid border-ink rounded-full py-[3px] px-2.5 cursor-pointer transition-colors duration-200 ease-[var(--ease)] hover:bg-ink hover:text-cream"
-                    aria-label="Clear all filters"
-                  >
-                    Clear all
-                  </button>
-                )}
-              </div>
-              {/* Practice CTA — label changes with filters */}
-              {!isLoading && vocabList.length > 0 && (
-                <PracticeSessionLauncher
-                  cards={vocabList}
-                  label={hasFilters ? 'Filtered Words' : 'Current Page'}
-                />
-              )}
-            </div>
           </div>
 
           {/* ── Results grid ── */}

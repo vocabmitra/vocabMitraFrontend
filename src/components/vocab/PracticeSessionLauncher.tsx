@@ -10,6 +10,8 @@ interface PracticeSessionLauncherProps {
   label?: string;
   /** Extra tailwind classes for the button */
   className?: string;
+  /** Extra tailwind classes for the icon */
+  iconClassName?: string;
 }
 
 /**
@@ -21,6 +23,7 @@ export function PracticeSessionLauncher({
   cards,
   label = 'Visible Words',
   className = '',
+  iconClassName = '',
 }: PracticeSessionLauncherProps) {
   const navigate = useNavigate();
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -51,7 +54,7 @@ export function PracticeSessionLauncher({
         } ${className}`}
       aria-label={`Practice ${cards.length} ${label}`}
     >
-      <Zap size={15} className={isDisabled ? '' : 'fill-white'} />
+      <Zap size={15} className={isDisabled ? '' : (iconClassName || 'fill-white')} />
       Practice {cards.length > 0 ? `${cards.length} ` : ''}{label}
     </button>
   );

@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
+import { AUTH_TOKEN_KEY } from '../utils/constants';
 
 /**
  * useAuthGate — exact pattern from spec Section 6.
@@ -15,9 +16,10 @@ export function useAuthGate() {
   const navigate = useNavigate();
 
   return function requireAuth(action: () => void) {
-    const token = localStorage.getItem('vv-auth-token') || localStorage.getItem('AUTH_TOKEN_KEY');
     const authState = useAuthStore.getState();
-    const isLoggedIn = Boolean((token && token !== 'null' && token !== 'undefined') || authState.isAuthenticated || authState.user);
+    const token = authState.token || localStorage.getItem(AUTH_TOKEN_KEY) || localStorage.getItem('vv-auth-token');
+    const hasValidToken = Boolean(token && token !== 'null' && token !== 'undefined' && token.trim() !== '');
+    const isLoggedIn = hasValidToken && (authState.isAuthenticated || Boolean(authState.user));
 
     if (isLoggedIn) {
       action();
